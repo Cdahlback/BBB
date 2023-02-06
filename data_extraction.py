@@ -3,6 +3,8 @@ import requests
 import re
 import csv
 from time import time
+import ThreadPoolExecutorPlus
+from itertools import repeat
 
 
 def extract_phone_data(url):
@@ -66,20 +68,61 @@ def extract_email_data(url):
     return round(t1, 5)
 
 
+def get_statuscode(lst):
+    """
+    Gets the status code of the list of urls using threading.
+    It sends a maximum of 70 (requests) threads at a time to maximize speed.
+
+    :param lst: list of urls
+    :return: a list of status codes
+    """
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/74.0.3729.169 Safari/537.36 '
+    }
+    timeout = 5
+    results = []
+    for result in executor.map(status_code, lst, repeat(headers), repeat(timeout)):
+        results.append(result)
+
+    return results
+
+
+def status_code(url, headers, timeout):
+    """
+    Gets a single url and returns the status code
+
+    :param url: a single url
+    :param headers: a dictionary that contains user agent strings.
+    User agent string is contained in the HTTP headers and is intended to identify devices requesting online content.
+    :param timeout: limits the maximum time for calling a function
+    :return: status code of the url if it receives a response within the given time, if not returns -1
+    """
+    try:
+        r = requests.get(url, verify=True, timeout=timeout, headers=headers)
+        return r.status_code
+    except:
+        return -1
+
+
 inputFile = open("txt_files/urls_with_no_email.txt", "r")
 inputReader = csv.reader(inputFile)
 
-# this is where we should split the data into 100 row blocks,
-# also where we will put the multithreading when we get to that
+url_list = []
+for row in inputReader:
+    if row[0] == "1000012166":
+        break
+    url_list.append(row[1])
 
+status_codes = get_statuscode(url_list)
+for code in status_codes:
+    print(code)
 
-# when we switch over to pd files instead of txt, we will have to change this for loop, since this is hardcoded ATM
 t0 = time()
 times = []
-for row in inputReader:
-    if row[0] == "1000001312":
-        break
-    t = extract_email_data(row[1])
+for url in url_list:
+    t = extract_email_data(url)
     # makes sure the time is positive ( since we return -1 if the url doesn't open )
     if t > -1:
         times.append(t)
