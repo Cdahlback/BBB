@@ -5,7 +5,7 @@ import csv
 from time import time
 import ThreadPoolExecutorPlus
 from itertools import repeat
-
+import pandas as pd
 
 def extract_phone_data(url):
     t0 = time()

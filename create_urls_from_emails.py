@@ -1,5 +1,6 @@
 import csv
 import re
+import pandas as pd
 import validators       # Package that can validate URLs and emails with call to validate.url() or .email()
 
 # I want to take "emails_no_url.txt" as an input
@@ -36,6 +37,15 @@ def build_url(email):
             return email
     return email
 
+# create dataframe
+data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+
+emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
+# print(emailsNoURL)
+URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna())][['BusinessID', 'Website']]
+# print(URLsNoEmail)
+URLsNoPhone = data.loc[(data['Website'].notna()) & (data['Phone'].isna())][['BusinessID', 'Website']]
+# print(URLsNoPhone)
 
 # input file from where we get our emails
 ipt_file = open("txt_files/emails_with_no_url.txt", "r")
@@ -50,20 +60,20 @@ opt_file1 = open("txt_files/unsuccessful_emails_to_extract_urls.txt", "w")
 out_writer1 = csv.writer(opt_file1)
 
 # iterate over ipt file
-for line in ipt_reader:
-    # place the business id you want to stop at (this will change once threading is introduced)
-    if line[0] == "1000003569":
-        break
-    # save email and business id
-    email = line[1]
-    business_id = line[0]
-    # get either an empty string (didn't pass build_url) or a successfully built url
-    url = build_url(email)
-    # make sure the url is not empty before writing it to the output file
-    if validators.url(url):
-        out_writer.writerow([business_id, url])
-    else:
-        out_writer1.writerow([business_id, url])
+# for line in ipt_reader:
+#     # place the business id you want to stop at (this will change once threading is introduced)
+#     if line[0] == "1000003569":
+#         break
+#     # save email and business id
+#     email = line[1]
+#     business_id = line[0]
+#     # get either an empty string (didn't pass build_url) or a successfully built url
+#     url = build_url(email)
+#     # make sure the url is not empty before writing it to the output file
+#     if validators.url(url):
+#         out_writer.writerow([business_id, url])
+#     else:
+#         out_writer1.writerow([business_id, url])
 
 # close files
 ipt_file.close()
