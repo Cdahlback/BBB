@@ -3,6 +3,49 @@ import re
 import pandas as pd
 import validators       # Package that can validate URLs and emails with call to validate.url() or .email()
 
+import ThreadPoolExecutorPlus
+from itertools import repeat
+import requests
+
+
+def get_statuscode(df):
+    """
+    Gets the status code of the list of urls using threading.
+    It sends a maximum of 70 (requests) threads at a time to maximize speed.
+
+    :param lst: list of urls
+    :return: a list of status codes
+    """
+    urls = df['Website'].values[:50]
+    ids = df['BusinessID'].values[:50]
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/74.0.3729.169 Safari/537.36 '
+    }
+    timeout = 5
+    results = []
+    for result in executor.map(status_code, urls, ids, repeat(headers), repeat(timeout)):
+        results.append(result)
+    return pd.DataFrame(results, columns=['BusinessID', 'StatusCode'])
+
+
+def status_code(url, id, headers, timeout):
+    """
+    Gets a single url and returns the status code
+
+    :param url: a single url
+    :param headers: a dictionary that contains user agent strings.
+    User agent string is contained in the HTTP headers and is intended to identify devices requesting online content.
+    :param timeout: limits the maximum time for calling a function
+    :return: status code of the url if it receives a response within the given time, if not returns -1
+    """
+    try:
+        r = requests.get(url, verify=True, timeout=timeout, headers=headers)
+        return id, r.status_code
+    except:
+        return id, -1
+
 # I want to take "emails_no_url.txt" as an input
 # Iterate through all the emails
 #   extract the domain name
@@ -46,14 +89,26 @@ emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (dat
 # URLsNoPhone = data.loc[(data['Website'].notna()) & (data['Phone'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
 # print(URLsNoPhone)
 
+
 # extract URLs for all emails
 extractedURLs = emailsNoURL
 extractedURLs["Website"] = emailsNoURL['Email'].apply(lambda email: build_url(email))
 successfulURLs = extractedURLs.loc[extractedURLs['Website'].notna()]
-print(successfulURLs)
+# print(successfulURLs)
 unsuccessfulURLs = extractedURLs.loc[extractedURLs['Website'].isna()]
-print(unsuccessfulURLs)
+# print(unsuccessfulURLs)
+from time import time
 
+t0 = time()
+statusCodeDF = get_statuscode(successfulURLs)
+t1 = time() - t0
+print(t1)
+
+new_df = pd.merge(successfulURLs, statusCodeDF, how='inner')
+
+new_df = new_df.loc[new_df['StatusCode'] == 200]
+
+new_df.to_csv('good_emails.csv')
 # input file from where we get our emails
 # ipt_file = open("txt_files/emails_with_no_url.txt", "r")
 # ipt_reader = csv.reader(ipt_file)
@@ -86,3 +141,4 @@ print(unsuccessfulURLs)
 # ipt_file.close()
 # opt_file.close()
 # opt_file1.close()
+
