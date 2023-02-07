@@ -4,9 +4,9 @@ import re
 import csv
 from time import time
 import ThreadPoolExecutorPlus
-
+from itertools import repeat
+import pandas as pd
 from get_status_codes import get_statuscode
-
 
 def extract_phone_data(url):
     t0 = time()
@@ -64,6 +64,13 @@ def extract_email_data(url):
 # open input file
 inputFile = open("txt_files/urls_with_no_email.txt", "r")
 inputReader = csv.reader(inputFile)
+
+# pandas
+data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+
+URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
+
+urlList = URLsNoEmail['Website'].values[:100]
 
 # extract all urls from file, place them in list for our url validator
 url_list = []

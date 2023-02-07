@@ -3,7 +3,6 @@
 # module to read/write to csv
 import csv
 
-
 def extract_all(opt_file_path):
     """Extracts all from the file"""
     inputFile = open('mn_bbb_businesses.csv', 'r')
