@@ -102,6 +102,13 @@ def status_code(url, headers, timeout):
 inputFile = open("txt_files/urls_with_no_email.txt", "r")
 inputReader = csv.reader(inputFile)
 
+# pandas
+data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+
+URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
+
+urlList = URLsNoEmail['Website'].values[:100]
+
 # extract all urls from file, place them in list for our url validator
 url_list = []
 for row in inputReader:
