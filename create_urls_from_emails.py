@@ -82,7 +82,7 @@ def build_url(email):
 # create dataframe
 data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
 
-emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Email']]
+emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (data['BBBID'] != 704)][['BusinessID', 'Email']]
 # print(emailsNoURL)
 # URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
 # print(URLsNoEmail)
@@ -106,7 +106,7 @@ print(t1)
 
 new_df = pd.merge(successfulURLs, statusCodeDF, how='inner')
 
-new_df = new_df.loc[new_df['StatusCode'] == 200]
+new_df = new_df.loc[(new_df['StatusCode'] != 404) & (new_df['StatusCode'] != -1) & (new_df['StatusCode'] != 403)]
 
 new_df.to_csv('good_emails.csv')
 # input file from where we get our emails
