@@ -8,6 +8,25 @@ from itertools import repeat
 import pandas as pd
 from get_status_codes import get_statuscode
 
+
+def contains_contacts_page(html):
+    for tag in html.find_all('a'):
+        possible_contact = tag.get('href')
+        if possible_contact:
+            if 'contact' in possible_contact.lower():
+                return True
+    return False
+
+
+def contains_reviews_page(html):
+    for tag in html.find_all('a'):
+        possible_review = tag.get('href')
+        if possible_review:
+            if 'review' in possible_review.lower():
+                return True
+    return False
+
+
 def extract_phone_data(url):
     t0 = time()
     # get the html
@@ -37,11 +56,11 @@ def extract_phone_data(url):
 def extract_email_data(id, url):
     t0 = time()
     # get the html
-    # print(id)
-    # print(url)
-
-    response = requests.get(url)
-    soup = bs4.BeautifulSoup(response.content, "html.parser")
+    try:
+        response = requests.get(url)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
 
     # Extract email addresses
     email_addresses = {'BusinessID': id}
@@ -73,11 +92,26 @@ def extract_email_data(id, url):
 # inputReader = csv.reader(inputFile)
 
 # pandas
-data = pd.read_csv("good_emails.csv", low_memory=False)
-# print(extract_email_data(data))
-result = [extract_email_data(id, url) for id, url in zip(data['BusinessID'], data['Website']) if extract_email_data(id, url) != None]
-print(result)
+data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
 # URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
+# result = [extract_email_data(id, url) for id, url in zip(URLsNoEmail['BusinessID'], URLsNoEmail['Website']) if extract_email_data(id, url) != None]
+# print(result)
+
+scraped_urls = pd.read_csv('good_emails.csv')
+urls = scraped_urls['Website'].values
+print(urls)
+
+# Just for testing, more efficient ways using pandas should exist to check each url
+for i, url in enumerate(urls):
+    try:
+        response = requests.get(url)
+        html = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        continue
+    # print(html)
+    print(url)
+    print('Contains Contacts?', contains_contacts_page(html))
+    print('Contains Reviews?', contains_reviews_page(html))
 
 # urlList = URLsNoEmail['Website'].values[:100]
 
