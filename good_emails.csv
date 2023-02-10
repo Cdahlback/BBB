@@ -1,21 +1,21 @@
-,BusinessID,Email,Website,StatusCode
-0,1000000014,hr@lewk.com,https://www.lewk.com/,200
-3,1000000059,info@magicbrad.com,https://www.magicbrad.com/,200
-4,1000000060,emichaelis@guardiancounsel.com,https://www.guardiancounsel.com/,200
-5,1000000074,gloria@russellresourcesllc.com,https://www.russellresourcesllc.com/,200
-8,1000000091,office@kmhsteel.com,https://www.kmhsteel.com/,200
-11,1000000148,chase@crosslake.net,https://www.crosslake.net/,200
-13,1000000169,info@luvmeagain.org,https://www.luvmeagain.org/,200
-15,1000000207,wlutz@midwestvisioncenters.com,https://www.midwestvisioncenters.com/,200
-18,1000001270,pauljdonnay@frontiernet.net,https://www.frontiernet.net/,200
-22,1000001295,claire.florin@workoutloud.com,https://www.workoutloud.com/,200
-24,1000001316,rosehiplodge@frontiernet.net,https://www.frontiernet.net/,200
-28,1000001354,jamie@northlandpainting.com,https://www.northlandpainting.com/,200
-29,1000001361,kedrey1@fairview.org,https://www.fairview.org/,200
-30,1000001377,lancep@gppaustin.com,https://www.gppaustin.com/,200
-32,1000001410,sales@powerpanels.net,https://www.powerpanels.net/,200
-33,1000001424,darrinaci@frontiernet.net,https://www.frontiernet.net/,200
-35,1000001449,craig@gvtel.com,https://www.gvtel.com/,200
-43,1000001547,scott@nldservices.com,https://www.nldservices.com/,200
-45,1000001609,pco@frontiernet.net,https://www.frontiernet.net/,200
-47,1000001678,eng@gipo-rpi.com,https://www.gipo-rpi.com/,200
+,BusinessID,BusinessName,Email,Website,StatusCode
+1,1000000002,Domino's Pizza,,https://www.dominos.com/en/,200
+2,1000000003,Vetter Homes Inc,,https://vetterhomes.com/,200
+3,1000000004,Leimer Construction,,https://m.facebook.com/Leimer-Construction-663358517012565/,200
+4,1000000005,Karja Construction,,https://www.buildzoom.com/contractor/karja-construction-inc,200
+5,1000000009,"Larry Brooks Builders, Inc.",,https://opencorporates.com/companies/us_mn/b37772ca-acd4-e011-a886-001ec94ffe7f,200
+6,1000000013,Holysmokerpits,,https://www.lthforum.com/bb/viewtopic.php?p=499017,200
+7,1000000016,Live Tree Nursery,,https://gmg.greatermankato.com/Garden-Centers/Live-Tree-Nursery-2923,200
+8,1000000021,Black Jack Seal Coating,,https://blackjackcoatings.com/collections/blacktop-driveway-sealers,200
+9,1000000022,Klein Lawn Care,,http://kleinlawncare.com/,200
+10,1000000024,new 2 you,,http://new-2-you.org/,200
+11,1000000025,River and Son,,https://en.wikipedia.org/wiki/Son_River,200
+13,1000000029,Code 3 Construction LLC,,https://www.facebook.com/CODE3LLC/,200
+14,1000000037,Peltier Plumbing,,https://www.buildzoom.com/contractor/peltier-plumbing,200
+15,1000000038,Lakeside Lawn & Landscape,,https://www.facebook.com/mylakesidelawn/,200
+16,1000000039,Lakeside Lawn Service,,https://www.facebook.com/LakesideLawnCareLLC/,200
+17,1000000041,Sky Visions,,https://www.skyvisionsusa.com/,200
+18,1000000044,Albin Remodeling,,https://www.albin-homes.com/,200
+19,1000000045,Commercial Millwork Solutions,,https://www.bloomberg.com/profile/company/0494418D:US,200
+20,1000000047,Contract Textiles & Furnishing,,https://contracttextiles.org/,200
+21,1000000014,Lewk,hr@lewk.com,https://www.lewk.com/,200

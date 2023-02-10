@@ -9,7 +9,7 @@ import tldextract
 from googlesearch import search
 
 
-# STATUS CODE FUNCTIONS
+# STATUS CODE METHODS
 # ------------------------------------------------------------------
 def get_statuscode(df):
     """
@@ -71,13 +71,11 @@ def build_url(email):
             return "https://www.{0}/".format(domain_name)
 
 
-def getURL(company_name, Url, rating_sites):
+def getURL(company_name, rating_sites):
     """
     Return company's URL given company name
 
     :param company_name: the name of the company
-    :param Url: a list where URL is stored
-
     :return: company's URL if found, else return ''
     """
     try:
@@ -85,8 +83,9 @@ def getURL(company_name, Url, rating_sites):
         term = ' '.join([company_name])
         for j in search(term, num=10, stop=10, pause=2):
             if filter(j, rating_sites):
-                Url.append(j)
-        return Url
+                return j
+            else:
+                continue
     except:
         return ''
 
@@ -119,40 +118,40 @@ rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce
 # regex to detect valid email (works great so far, may need building upon
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
-# boolean conditional to decide if to run businesses without urls and emails (for testing purpose)
-run_business_with_no_url_and_email = False
-
-# create dataframe
+# read in data
 data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
 
+t0 = time()
+
 emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (data['BBBID'] == 704)][
-    ['BusinessID', 'Email']]
+    ['BusinessID', 'BusinessName', 'Email']]
 
 businessNoURLorEmail = data.loc[(data['Email'].isna()) & (data['Website'].isna()) & (data['BBBID'] == 704)][
-    ['BusinessID', 'BusinessName']]
+    ['BusinessID', 'BusinessName', 'Email']]
 
 # extract URLs for all emails
 extractedURLs_withEmail = emailsNoURL
 extractedURLs_withEmail["Website"] = emailsNoURL['Email'].apply(lambda email: build_url(email))
 
-if run_business_with_no_url_and_email:
-    # extract URLs for business without URL and email
-    extractedURLs_noEmail = businessNoURLorEmail
-    extractedURLs_noEmail['Website'] = businessNoURLorEmail['BusinessName'].apply(
-        lambda company_name: getURL(company_name, [], rating_sites))
+# extract URLs for business without URL and email
+extractedURLs_noEmail = businessNoURLorEmail
+extractedURLs_noEmail['Website'] = businessNoURLorEmail['BusinessName'].apply(
+    lambda company_name: getURL(company_name, rating_sites))
 
-if run_business_with_no_url_and_email:
-    # combine all successful URLs and businesses with still no URL
-    successfulURLs = (extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].notna()]) & (extractedURLs_noEmail.loc[
-        extractedURLs_noEmail['Website'].notna()])
-    unsuccessfulURLs = (extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].isna()]) & (
-        extractedURLs_noEmail.loc[extractedURLs_noEmail['Website'].isna()])
-else:
-    successfulURLs = extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].notna()]
-    unsuccessfulURLs = extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].isna()]
+# create dataframe for businesses with no URL and email
+successfulURLs_noEmail = extractedURLs_noEmail.loc[extractedURLs_noEmail['Website'].notna()]
+unsuccessfulURLs_noEmail = extractedURLs_noEmail.loc[extractedURLs_noEmail['Website'].isna()]
 
-t0 = time()
+# create dataframe for URL no email
+successfulURLs_withEmail = extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].notna()]
+unsuccessfulURLs_withEmail = extractedURLs_withEmail.loc[extractedURLs_withEmail['Website'].isna()]
+
+# merge both dataframes
+successfulURLs = pd.DataFrame.append(successfulURLs_noEmail, successfulURLs_withEmail)
+
+# Run status code function and print to new file
 statusCodeDF = get_statuscode(successfulURLs)
+
 t1 = time() - t0
 print(t1)
 
