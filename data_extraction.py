@@ -27,6 +27,18 @@ def contains_reviews_page(html):
     return False
 
 
+def contains_zipCode(html, zip):
+    """
+    :param html: url extracted html
+    :param zip: business zipcode to find
+    :return: True if found, false if not
+    """
+    for text in html.find_all(text=re.compile(r'\d{5}')):
+        if re.search(str(zip), text):
+            return True
+    return False
+
+
 def extract_phone_data(url):
     t0 = time()
     # get the html
