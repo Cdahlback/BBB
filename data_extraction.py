@@ -1,15 +1,13 @@
 import bs4
 import requests
 import re
-import csv
-from time import time
-import ThreadPoolExecutorPlus
-from itertools import repeat
-import pandas as pd
-from get_status_codes import get_statuscode
-
 
 def contains_contacts_page(html):
+    '''
+    Checks for a contacts page inside a webpage
+    :param html: html extracted from url
+    :return: True if found, False if not
+    '''
     for tag in html.find_all('a'):
         possible_contact = tag.get('href')
         if possible_contact:
@@ -18,10 +16,15 @@ def contains_contacts_page(html):
     return False
 
 
-def has_business_name(soup, business_name):
-    """Check if the soup contains the given business name."""
+def has_business_name(html, business_name):
+    """
+    Check if the soup contains the given business name.
+    :param html: html extracted from url
+    :param business_name: the name of the business to look for
+    :return: True if found, False if not
+    """
     # Find all text nodes in the soup
-    for text in soup.find_all(text=True):
+    for text in html.find_all(text=True):
         # Check if the business name appears in the text
         if business_name.lower() in text.lower():
             return True
@@ -30,6 +33,11 @@ def has_business_name(soup, business_name):
 
 
 def contains_reviews_page(html):
+    '''
+    Checks for a reviews page inside the webpage
+    :param html: html extracted from url
+    :return: True if found, False if not
+    '''
     for tag in html.find_all('a'):
         possible_review = tag.get('href')
         if possible_review:
@@ -82,14 +90,6 @@ def extract_email_data(id, url):
     :param url: url associated with extracted emails
     :return: dictionary of all emails associated with a business
     """
-    try:
-        response = requests.get(url, timeout=5)
-        soup = bs4.BeautifulSoup(response.content, "html.parser")
-    except Excpetion as e:
-        print(str(e))
-        print("bad url")
-        return None
-
     try:
         response = requests.get(url)
         soup = bs4.BeautifulSoup(response.content, "html.parser")

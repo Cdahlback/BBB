@@ -1,5 +1,5 @@
 from create_urls_from_emails import build_url
-from get_status_codes import get_statuscode, status_code
+from Not_Our_Code.get_status_codes import get_statuscode, status_code
 from data_extraction import extract_email_data, extract_phone_data
 from time import time
 

@@ -1,11 +1,5 @@
-import csv
 import re
-import requests
-import ThreadPoolExecutorPlus
-import pandas as pd
-
-from elis_functions import cleanEmail
-from itertools import repeat
+from Not_Our_Code.elis_functions import cleanEmail
 
 # list of domain names we don't want
 bad_domain_names = ['yahoo.com', 'gmail.com', "hotmail.com", "icloud.com", "comcast.net", "GMAIL.COM",
@@ -59,9 +53,3 @@ def filter(url, rating_sites):
         if sub.domain.lower() == i:
             return False
     return True
-
-
-# emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
-# URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
-# URLsNoPhone = data.loc[(data['Website'].notna()) & (data['Phone'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
-
