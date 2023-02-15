@@ -15,45 +15,6 @@ bad_domain_names = ['yahoo.com', 'gmail.com', "hotmail.com", "icloud.com", "comc
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 
-def get_statuscode(df):
-    """
-    Gets the status code of the list of urls using threading.
-    It sends a maximum of 70 (requests) threads at a time to maximize speed.
-
-    :param lst: list of urls
-    :return: a list of status codes
-    """
-    urls = df['Website'].values[:50]
-    ids = df['BusinessID'].values[:50]
-    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/74.0.3729.169 Safari/537.36 '
-    }
-    timeout = 5
-    results = []
-    for result in executor.map(status_code, urls, ids, repeat(headers), repeat(timeout)):
-        results.append(result)
-    return pd.DataFrame(results, columns=['BusinessID', 'StatusCode'])
-
-
-def status_code(url, id, headers, timeout):
-    """
-    Gets a single url and returns the status code
-
-    :param url: a single url
-    :param headers: a dictionary that contains user agent strings.
-    User agent string is contained in the HTTP headers and is intended to identify devices requesting online content.
-    :param timeout: limits the maximum time for calling a function
-    :return: status code of the url if it receives a response within the given time, if not returns -1
-    """
-    try:
-        r = requests.get(url, verify=True, timeout=timeout, headers=headers)
-        return id, r.status_code
-    except:
-        return id, -1
-
-
 def build_url(email):
     """
     :param email: email to build url from
