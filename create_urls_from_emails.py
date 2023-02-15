@@ -65,6 +65,41 @@ def build_url(email):
             return "https://www.{0}/".format(domain_name)
 
 
+def getURL(company_name, rating_sites):
+    """
+    Return company's URL given company name
+
+    :param company_name: the name of the company
+    :return: company's URL if found, else return ''
+    """
+    try:
+
+        term = ' '.join([company_name])
+        for j in search(term, num=10, stop=10, pause=2):
+            if filter(j, rating_sites):
+                return j
+            else:
+                continue
+    except:
+        return ''
+
+
+def filter(url, rating_sites):
+    """
+    A function that checks if found url are rating sites
+
+    :param url: the url
+    :param rating_sites: list of any known rating sites
+    :return: True if url is a not a rating site, false otherwise
+    """
+    sub = tldextract.extract(url)
+    # print("Subdomain ", sub.domain)
+    for i in rating_sites:
+        if sub.domain.lower() == i:
+            return False
+    return True
+
+
 # emailsNoURL = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
 # URLsNoEmail = data.loc[(data['Website'].notna()) & (data['Email'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
 # URLsNoPhone = data.loc[(data['Website'].notna()) & (data['Phone'].isna()) & (data['BBBID'] == 704)][['BusinessID', 'Website']]
