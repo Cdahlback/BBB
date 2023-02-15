@@ -18,6 +18,17 @@ def contains_contacts_page(html):
     return False
 
 
+def has_business_name(soup, business_name):
+    """Check if the soup contains the given business name."""
+    # Find all text nodes in the soup
+    for text in soup.find_all(text=True):
+        # Check if the business name appears in the text
+        if business_name.lower() in text.lower():
+            return True
+    # The business name was not found in the soup
+    return False
+
+
 def contains_reviews_page(html):
     for tag in html.find_all('a'):
         possible_review = tag.get('href')
