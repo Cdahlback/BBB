@@ -23,6 +23,43 @@ def extract_phone_data(id, url):
         print(str(e))
         print("bad url")
         return None
+=======
+def contains_contacts_page(html):
+    for tag in html.find_all('a'):
+        possible_contact = tag.get('href')
+        if possible_contact:
+            if 'contact' in possible_contact.lower():
+                return True
+    return False
+
+
+def contains_reviews_page(html):
+    for tag in html.find_all('a'):
+        possible_review = tag.get('href')
+        if possible_review:
+            if 'review' in possible_review.lower():
+                return True
+    return False
+
+
+def contains_zipCode(html, zip):
+    """
+    :param html: url extracted html
+    :param zip: business zipcode to find
+    :return: True if found, false if not
+    """
+    for text in html.find_all(text=re.compile(r'\d{5}')):
+        if re.search(str(zip), text):
+            return True
+    return False
+
+
+def extract_phone_data(url):
+    t0 = time()
+    # get the html
+    response = requests.get(url)
+    soup = bs4.BeautifulSoup(response.content, "html.parser")
+>>>>>>> IndVarFunctions
 
     # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
     phone_numbers = {'BusinessID': id}
