@@ -1,4 +1,4 @@
-from create_urls_from_emails import build_url
+from create_urls import build_url_from_email
 from Not_Our_Code.get_status_codes import get_statuscode, status_code
 from data_extraction import extract_email_data, extract_phone_data
 from time import time
@@ -16,7 +16,7 @@ def extract_urls_from_emails(data):
 
     # extract URLs for all emails without urls
     extracted_urls = emails_no_url
-    extracted_urls["Website"] = emails_no_url['Email'].apply(lambda email: build_url(email))
+    extracted_urls["Website"] = emails_no_url['Email'].apply(lambda email: build_url_from_email(email))
     successful_urls = extracted_urls.loc[extracted_urls['Website'].notna()]
 
     # prints the time taken (For testing purposes, can be removed for PROD)
@@ -61,21 +61,13 @@ def merge_new_data(df1, df2):
 
 if __name__ == "__main__":
     # First we add as many urls to our database in anyway we know how
-    data = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
-    email_no_url = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', "BusinessName", "StreetAddress", "City", "PostalCode", "Phone", 'Email', "Website", "TOBID", "IsBBBAccredited", "BBBRatingScore", "NumberOfEmployees", "IsHQ", "IsCharity"]]
-    email_and_url = data.loc[(data['Email'].notna()) & (data['Website'].notna())][['BusinessID', "BusinessName", "StreetAddress", "City", "PostalCode", "Phone", 'Email', "Website", "TOBID", "IsBBBAccredited", "BBBRatingScore", "NumberOfEmployees", "IsHQ", "IsCharity"]]
-    url_no_email = data.loc[(data['Email'].isna()) & (data['Website'].notna())][['BusinessID', "BusinessName", "StreetAddress", "City", "PostalCode", "Phone", 'Email', "Website", "TOBID", "IsBBBAccredited", "BBBRatingScore", "NumberOfEmployees", "IsHQ", "IsCharity"]]
-
-    email_no_url.to_csv("email_no_url.csv", sep='\t', encoding='utf-8')
-    email_and_url.to_csv("email_and_url.csv", sep='\t', encoding='utf-8')
-    url_no_email.to_csv("url_no_email.csv", sep='\t', encoding='utf-8')
-    # urls_to_add = extract_urls_from_emails(data)
-    # urls_to_add.append(extract_urls_from_web())
+    urls_to_add = extract_urls_from_emails(data)
+    urls_to_add.append(extract_urls_from_web())
     # # Merge the two data frames so they have all the urls
-    #
+    
     # # Here we need to clean the urls, ensuring they match regex and have a status code of 200
-    #
+
     # # Once we have MAX possible urls, we may start extracting data
-    # possible_new_emails = extract_emails_from_urls(data)
+    possible_new_emails = extract_emails_from_urls(data)
 
 
