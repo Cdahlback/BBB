@@ -2,6 +2,21 @@ import bs4
 import requests
 import re
 
+"""
+For CODE REVIEWER:
+This file is used to hold all our functions which extract data from a url
+There are two types of functions you see here, listed below
+
+- functions which start with "contains"
+    - These functions scrape html/soup for independent variables we plan to use in our ML model 
+      (don't know what model will work best quite yet)
+    - Return a 0 or 1 which tells us if the ind var was found within our html/soup
+
+- functions which start with extract
+    - Scrape html/soup for data types we are looking to fill in our csv file (emails, phone#s, addresses)
+    - Return the data type(s) we found from that single html/soup
+"""
+
 def contains_contacts_page(html):
     '''
     Checks for a contacts page inside a webpage
@@ -16,7 +31,7 @@ def contains_contacts_page(html):
     return False
 
 
-def has_business_name(html, business_name):
+def contains_business_name(html, business_name):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
