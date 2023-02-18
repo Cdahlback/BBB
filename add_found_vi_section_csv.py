@@ -1,9 +1,9 @@
 import csv
-input_file_name = 'mn_bbb_businesses.csv'
-input_file_name2 = 'good_emails.csv'
+input_file_name = 'data/mn_bbb_businesses.csv'
+input_file_name2 = 'data/good_emails.csv'
 
-output_file_name = 'mn_bbb_businesses_foundVia.csv'
-output_file_name2 = 'good_emails_foundVia.csv'
+output_file_name = 'data/mn_bbb_businesses_foundVia.csv'
+output_file_name2 = 'data/good_emails_foundVia.csv'
 
 with open(input_file_name, 'r') as input_file:
     csv_reader = csv.reader(input_file)
