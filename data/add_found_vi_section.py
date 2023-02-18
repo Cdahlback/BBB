@@ -53,3 +53,56 @@ with open(output_file_name2, 'w', newline='') as output_file2:
     csv_writer2 = csv.writer(output_file2)
 
     csv_writer2.writerows(updated_rows)
+
+# import pandas as pd
+# import numpy as np
+#
+# import pandas as pd
+# import numpy as np
+#
+# input_file_name = 'mn_bbb_addresses.csv'
+#
+# output_file_name = 'new.csv'
+#
+# df = pd.read_csv(input_file_name)
+#
+#
+# def has_email_and_url(s):
+#     return ("@" in s) and ("http" in s)
+#
+#
+# found_via = lambda row: "BBB" if (not pd.isnull(row['Email']) and not pd.isnull(row['Website'])) else "email" if not pd.isnull(row['Email']) else "google search"
+#
+#
+# df['foundVia'] = df.apply(lambda row: found_via(row), axis=1)
+#
+# df.to_csv(output_file_name, index=False)
+
+# found_via = lambda row: "BBB" if ("http" in str(row['Text']) and "@" in str(row['Text'])) else "email" if "@" in str(row['Text']) else "google search"
+#
+# df['foundVia'] = df.apply(lambda row: found_via(row), axis=1)
+#
+# df.to_csv(output_file_name, index=False)
+
+# def contains_email(cell):
+#     if pd.isna(cell):
+#         return False
+#     if '@' in str(cell):
+#         return True
+#     return False
+#
+# def contains_url(cell):
+#     if pd.isna(cell):
+#         return False
+#     if 'http' in str(cell):
+#         return True
+#     return False
+#
+# found_via = lambda row: "BBB" if ("http" in str(row) and "@" in str(row)) else "email" if "@" in str(row) else "gs"
+#
+# df["found via"] = df.apply(lambda row: found_via(row), axis=1)
+#
+# df.to_csv(output_file_name, index=False)
+
+# df = pd.read_csv('c')
+# df.head()
