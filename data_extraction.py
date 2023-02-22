@@ -1,4 +1,4 @@
-import bs4
+from bs4 import BeautifulSoup
 import requests
 import re
 
@@ -44,6 +44,40 @@ def contains_business_name(html, business_name):
         if business_name.lower() in text.lower():
             return True
     # The business name was not found in the soup
+    return False
+
+
+def contains_business_name_in_copyright(html, business_name):
+    """
+    Check if the soup contains the given business name.
+    :param html: html extracted from url
+    :param business_name: the name of the business to look for
+    :return: True if found, False if not
+    """
+    for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
+        if business_name.lower() in text.lower():
+            return True
+    return False
+
+
+def contains_social_media_links(html):
+    """
+    Question: Should we look for how many social media pages it has?
+
+    Check if the soup contains a social media section.
+    :param html:
+    :return:
+    """
+    links = soup.find_all('a')
+
+    # Check each link to see if it points to a social media website
+    social_media_sites = ['facebook', 'twitter', 'instagram', 'linkedin']
+    for link in links:
+        href = link.get('href')
+        if href and any(site in href.lower() for site in social_media_sites):
+            return True
+
+    # If we didn't find any social media links, return False
     return False
 
 
