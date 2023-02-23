@@ -1,5 +1,7 @@
 import re
 from Not_Our_Code.elis_functions import cleanEmail
+from googlesearch import search
+import tldextract
 
 """
 For CODE REVIEWER:
@@ -42,23 +44,33 @@ def build_url_from_email(email):
             return "https://www.{0}/".format(domain_name)
 
 
-def get_url_from_search(company_name, rating_sites):
+def get_url_from_search(company_name, rating_sites, company_city_state=""):
     """
     Return company's URL given company name
 
     :param company_name: the name of the company
     :return: company's URL if found, else return ''
     """
-    try:
-
-        term = ' '.join([company_name])
-        for j in search(term, num=10, stop=10, pause=2):
-            if filter(j, rating_sites):
-                return j
-            else:
-                continue
-    except:
-        return ''
+    if company_city_state == "":
+        try:
+            term = ' '.join([company_name])
+            for j in search(term, num=10, stop=10, pause=2):
+                if filter(j, rating_sites):
+                    return j
+                else:
+                    continue
+        except:
+            return ''
+    else:
+        try:
+            term = ' '.join([company_name, company_city_state])
+            for j in search(term, num=10, stop=10, pause=2):
+                if filter(j, rating_sites):
+                    return j
+                else:
+                    continue
+        except:
+            return ''
 
 
 def filter(url, rating_sites):
