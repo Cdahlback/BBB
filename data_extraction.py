@@ -40,7 +40,7 @@ def contains_contacts_page(Website):
     return False
 
 
-def contains_business_name(Website, Business_name):
+def contains_business_name(Website, BusinessName):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -57,13 +57,13 @@ def contains_business_name(Website, Business_name):
     # Find all text nodes in the soup
     for text in soup.find_all(text=True):
         # Check if the business name appears in the text
-        if Business_name.lower() in text.lower():
+        if BusinessName.lower() in text.lower():
             return True
     # The business name was not found in the soup
     return False
 
 
-def contains_business_name_in_copyright(Website, business_name):
+def contains_business_name_in_copyright(Website, BusinessName):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -78,7 +78,7 @@ def contains_business_name_in_copyright(Website, business_name):
 
 
     for text in soup.find_all(text=u"\N{COPYRIGHT SIGN}"):
-        if business_name.lower() in text.lower():
+        if BusinessName.lower() in text.lower():
             return True
     return False
 
@@ -152,7 +152,7 @@ def contains_zipCode(Website, PostalCode):
     return False
 
 
-def extract_phone_data(BusinessID,Website):
+def extract_phone_data(BusinessID, Website):
     """
     Function to find phone numbers
     :param id: id associated with extracted phone #s
@@ -168,7 +168,7 @@ def extract_phone_data(BusinessID,Website):
         return None
 
     # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
-    phone_numbers = {'BusinessID': id}
+    phone_numbers = {'BusinessID': BusinessID}
     counter = 0
     for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
