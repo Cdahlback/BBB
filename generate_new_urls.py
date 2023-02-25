@@ -5,7 +5,7 @@ import pandas as pd
 from time import time
 
 # read in data
-data = pd.read_csv("data/text.csv", low_memory=False)
+data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv.csv", low_memory=False)
 
 t0 = time()
 
@@ -24,11 +24,8 @@ extracted_URLs_with_emails['Website'] = emails_no_URL['Email'].apply(lambda emai
 
 # extract URLs for business without URL and email
 extracted_URLs_with_search = business_no_URL_or_email.reset_index(drop=True)
-print(extracted_URLs_with_search)
 search_function = thread_search_urls(business_no_URL_or_email)
-print(search_function)
 extracted_URLs_with_search['Website'] = search_function['Website']
-print(extracted_URLs_with_search)
 
 # create Dataframe for URL with email
 successful_URLs_email = extracted_URLs_with_emails.loc[extracted_URLs_with_emails['Website'].notna()]
@@ -49,8 +46,10 @@ print(t1)
 
 successful_status_codes = pd.merge(successful_total_URLs, status_code_DF, how='inner')
 # need only URls that have acceptable status codes
-successful_status_codes = successful_status_codes.loc[successful_status_codes['StatusCode'] == 200]
+successful_status_codes = successful_status_codes.loc[(successful_status_codes['StatusCode'] >= 200) &
+                                                      (successful_status_codes['StatusCode'] < 400)]
 
 complied_dataframe = pd.DataFrame.append(successful_status_codes, BBB_urls)
+complied_dataframe = complied_dataframe.reset_index(drop=True)
 
 complied_dataframe.to_csv('data/generated_urls.csv')

@@ -59,9 +59,9 @@ def thread_search_urls(df):
     results = []
     rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
     business_names = df['BusinessName'].values[:]
-    # business_cities = df['City'].values[:]
+    business_cities = df['City'].values[:]
     business_id = df['BusinessID'].values[:]
-    for result in executor.map(get_url_from_search, business_names, repeat(rating_sites), business_id):
+    for result in executor.map(get_url_from_search, business_names, repeat(rating_sites), business_id, business_cities):
         results.append(result)
     return pd.DataFrame(results, columns=['BusinessID', 'Website'])
 
@@ -82,7 +82,7 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
                 else:
                     continue
         except:
-            return business_id, ''
+            raise ValueError("To many requests")
     else:
         try:
             term = ' '.join([company_name, company_city_state])
@@ -92,7 +92,7 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
                 else:
                     continue
         except:
-            return business_id, ''
+            raise ValueError("To many requests")
 
 
 def filter(url, rating_sites):

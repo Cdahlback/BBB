@@ -15,5 +15,6 @@ has_Neither['FoundVia'] = 'Search'
 
 frames = [has_URL, has_Email, has_Neither]
 mn_bbb_businesses_foundVia = pd.concat(frames)
+compiled = mn_bbb_businesses_foundVia.reset_index(drop=True)
 
-mn_bbb_businesses_foundVia.to_csv('data/mn_bbb_businesses_foundVia.csv')
+compiled.to_csv('data/mn_bbb_businesses_foundVia.csv')
