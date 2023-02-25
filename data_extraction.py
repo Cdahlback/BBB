@@ -1,6 +1,9 @@
+import bs4
 from bs4 import BeautifulSoup
 import requests
 import re
+
+
 
 """
 For CODE REVIEWER:
@@ -17,13 +20,19 @@ There are two types of functions you see here, listed below
     - Return the data type(s) we found from that single html/soup
 """
 
-def contains_contacts_page(html):
+def contains_contacts_page(Website):
     '''
     Checks for a contacts page inside a webpage
     :param html: html extracted from url
     :return: True if found, False if not
     '''
-    for tag in html.find_all('a'):
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+    for tag in soup.find_all('a'):
         possible_contact = tag.get('href')
         if possible_contact:
             if 'contact' in possible_contact.lower():
@@ -31,36 +40,50 @@ def contains_contacts_page(html):
     return False
 
 
-def contains_business_name(html, business_name):
+def contains_business_name(Website, Business_name):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
     :param business_name: the name of the business to look for
     :return: True if found, False if not
     """
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+
     # Find all text nodes in the soup
-    for text in html.find_all(text=True):
+    for text in soup.find_all(text=True):
         # Check if the business name appears in the text
-        if business_name.lower() in text.lower():
+        if Business_name.lower() in text.lower():
             return True
     # The business name was not found in the soup
     return False
 
 
-def contains_business_name_in_copyright(html, business_name):
+def contains_business_name_in_copyright(Website, business_name):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
     :param business_name: the name of the business to look for
     :return: True if found, False if not
     """
-    for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+
+    for text in soup.find_all(text=u"\N{COPYRIGHT SIGN}"):
         if business_name.lower() in text.lower():
             return True
     return False
 
 
-def contains_social_media_links(html):
+def contains_social_media_links(Website):
     """
     Question: Should we look for how many social media pages it has?
 
@@ -68,6 +91,13 @@ def contains_social_media_links(html):
     :param html:
     :return:
     """
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+
     links = soup.find_all('a')
 
     # Check each link to see if it points to a social media website
@@ -81,13 +111,21 @@ def contains_social_media_links(html):
     return False
 
 
-def contains_reviews_page(html):
+def contains_reviews_page(Website):
     '''
     Checks for a reviews page inside the webpage
     :param html: html extracted from url
     :return: True if found, False if not
     '''
-    for tag in html.find_all('a'):
+
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+
+    for tag in soup.find_all('a'):
         possible_review = tag.get('href')
         if possible_review:
             if 'review' in possible_review.lower():
@@ -95,60 +133,67 @@ def contains_reviews_page(html):
     return False
 
 
-def contains_zipCode(html, zip):
+def contains_zipCode(Website, PostalCode):
     """
     :param html: url extracted html
     :param zip: business zipcode to find
     :return: True if found, false if not
     """
-    for text in html.find_all(text=re.compile(r'\d{5}')):
-        if re.search(str(zip), text):
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
+
+
+    for text in soup.find_all(text=re.compile(r'\d{5}')):
+        if re.search(str(PostalCode), text):
             return True
     return False
 
 
-def extract_phone_data(id,html):
+def extract_phone_data(BusinessID,Website):
     """
     Function to find phone numbers
     :param id: id associated with extracted phone #s
     :param url: url associated with extracted phone #s
     :return: dictionary of all phone #s associated with a business
     """
-    # try:
-    #     response = requests.get(url)
-    #     soup = bs4.BeautifulSoup(response.content, "html.parser")
-    # except Exception as e:
-    #     print(str(e))
-    #     print("bad url")
-    #     return None
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except Exception as e:
+        print(str(e))
+        print("bad url")
+        return None
 
     # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
     phone_numbers = {'BusinessID': id}
     counter = 0
-    for tag in html.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
+    for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
         phone_numbers["Phone#{0}:".format(counter)] = tag.string
 
     if len(phone_numbers) >= 1:
         return phone_numbers
 
-def extract_email_data(id, html):
+def extract_email_data(BusinessID, Website):
     """
     Function to find emails
     :param id: id associated with extracted emails
     :param url: url associated with extracted emails
     :return: dictionary of all emails associated with a business
     """
-    # try:
-    #     response = requests.get(url)
-    #     soup = bs4.BeautifulSoup(response.content, "html.parser")
-    # except:
-    #     return
+    try:
+        response = requests.get(Website)
+        soup = bs4.BeautifulSoup(response.content, "html.parser")
+    except:
+        return
 
     # Extract email addresses
     email_addresses = {'BusinessID': id}
     email_number = 0
-    for tag in html.find_all('a'):
+    for tag in soup.find_all('a'):
         email = tag.get('href')
         if email:
             if 'mailto:' in email:
