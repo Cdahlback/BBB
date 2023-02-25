@@ -107,48 +107,48 @@ def contains_zipCode(html, zip):
     return False
 
 
-def extract_phone_data(id, url):
+def extract_phone_data(id,html):
     """
     Function to find phone numbers
     :param id: id associated with extracted phone #s
     :param url: url associated with extracted phone #s
     :return: dictionary of all phone #s associated with a business
     """
-    try:
-        response = requests.get(url)
-        soup = bs4.BeautifulSoup(response.content, "html.parser")
-    except Exception as e:
-        print(str(e))
-        print("bad url")
-        return None
+    # try:
+    #     response = requests.get(url)
+    #     soup = bs4.BeautifulSoup(response.content, "html.parser")
+    # except Exception as e:
+    #     print(str(e))
+    #     print("bad url")
+    #     return None
 
     # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
     phone_numbers = {'BusinessID': id}
     counter = 0
-    for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
+    for tag in html.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
         phone_numbers["Phone#{0}:".format(counter)] = tag.string
 
     if len(phone_numbers) >= 1:
         return phone_numbers
 
-def extract_email_data(id, url):
+def extract_email_data(id, html):
     """
     Function to find emails
     :param id: id associated with extracted emails
     :param url: url associated with extracted emails
     :return: dictionary of all emails associated with a business
     """
-    try:
-        response = requests.get(url)
-        soup = bs4.BeautifulSoup(response.content, "html.parser")
-    except:
-        return
+    # try:
+    #     response = requests.get(url)
+    #     soup = bs4.BeautifulSoup(response.content, "html.parser")
+    # except:
+    #     return
 
     # Extract email addresses
     email_addresses = {'BusinessID': id}
     email_number = 0
-    for tag in soup.find_all('a'):
+    for tag in html.find_all('a'):
         email = tag.get('href')
         if email:
             if 'mailto:' in email:
