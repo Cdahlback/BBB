@@ -14,6 +14,7 @@ df['contains_zipCode'] = ""
 df['extract_phone_data'] = ""
 df['extract_email_data'] = ""
 
+# Apply 8 functions to the appropriate columns in the dataframe
 df['contains_contacts_page'] = df.apply(lambda row: contains_contacts_page(row['Website']), axis=1)
 df['contains_business_name'] = df.apply(lambda row: contains_business_name(row['Website'], row['BusinessName']), axis=1)
 df['contains_business_name_in_copyright'] = df.apply(lambda row: contains_business_name_in_copyright(row['Website'], row['BusinessName']), axis=1)
@@ -22,6 +23,18 @@ df['contains_reviews_page'] = df.apply(lambda row: contains_reviews_page(row['We
 df['contains_zipCode'] = df.apply(lambda row: contains_zipCode(row['Website'], row['PostalCode']), axis=1)
 #df['extract_phone_data'] = df.apply(lambda row: extract_phone_data(row['BusinessID'], row['Website']), axis=1)
 df['extract_email_data'] = df.apply(lambda row:extract_email_data(row['BusinessID'], row['Website']), axis=1)
+
+df.to_csv('output.csv', index=False)
+
+
+
+
+
+
+
+
+
+
 
 
 # df['contains_contacts_page'] = df['Website'].apply(contains_contacts_page)
@@ -34,4 +47,4 @@ df['extract_email_data'] = df.apply(lambda row:extract_email_data(row['BusinessI
 # df['extract_email_data'] = df.apply(extract_email_data, arg1='BusinessName', arg2='Website')
 
 
-df.to_csv('output.csv', index=False)
+
