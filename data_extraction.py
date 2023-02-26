@@ -68,7 +68,7 @@ def contains_social_media_links(html):
     :param html:
     :return:
     """
-    links = soup.find_all('a')
+    links = html.find_all('a')
 
     # Check each link to see if it points to a social media website
     social_media_sites = ['facebook', 'twitter', 'instagram', 'linkedin']
@@ -141,7 +141,7 @@ def extract_email_data(id, url):
     """
     try:
         response = requests.get(url)
-        soup = bs4.BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response.content, "html.parser")
     except:
         return
 
@@ -156,6 +156,6 @@ def extract_email_data(id, url):
                     continue
                 email_number += 1
                 email_addresses['Email' + str(email_number)] = email
-    if len(email_addresses) > 1:
+    if len(email_addresses) >= 1:
         return email_addresses
 

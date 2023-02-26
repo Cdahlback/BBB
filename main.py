@@ -2,7 +2,7 @@ from create_urls import build_url_from_email
 from Not_Our_Code.get_status_codes import get_statuscode, status_code
 from data_extraction import extract_email_data, extract_phone_data
 from time import time
-
+import numpy as np
 import pandas as pd
 
 
@@ -20,15 +20,31 @@ def extract_urls_from_emails(data):
     successful_urls = extracted_urls.loc[extracted_urls['Website'].notna()]
 
     # prints the time taken (For testing purposes, can be removed for PROD)
-    t0 = time()
-    status_code_df = get_statuscode(successful_urls)
-    t1 = time() - t0
-    print(t1)
+    status_code_df = get_statuscode(successful_urls["Website"].to_list())
+    successful_urls["status_code"] = status_code_df
+    data['status_code'] = np.nan
+    data['found_via'] = np.nan
 
-    # merge successful_urls with status codes given
-    new_df = pd.merge(successful_urls, status_code_df, how='inner')
-    new_df = new_df.loc[(new_df['StatusCode'] != 404) & (new_df['StatusCode'] != -1) & (new_df['StatusCode'] != 403)]
-    return new_df
+    # merge the two df
+    # Logic to merge:
+    # Only update if the website cell is null
+    for row in successful_urls.iterrows():
+        # Extract info to merge into data
+        status_code = row[1]["status_code"]
+        url_extracted = row[1]["Website"]
+        business_id = row[1]["BusinessID"]
+        # find index of row with possible missing value
+        row_idx = data.index[data['BusinessID'] == business_id].tolist()
+        if len(row_idx) > 1:
+            print(row_idx)
+        # if that row is missing the website (11 is the column index of website)
+        if pd.isnull(data.iloc[row_idx[0], 11]):
+            data.loc[row_idx[0], 11] = url_extracted
+            data.loc[row_idx[0], 24] = int(status_code)
+            data.loc[row_idx[0], 25] = "email"
+
+    data = data.loc[(data['status_code'] < 300) & (data['status_code'] > 199)]
+    return data
 
 
 def extract_emails_from_urls(data):
@@ -60,14 +76,13 @@ def merge_new_data(df1, df2):
 
 
 if __name__ == "__main__":
-    # First we add as many urls to our database in anyway we know how
-    urls_to_add = extract_urls_from_emails(data)
-    urls_to_add.append(extract_urls_from_web())
-    # # Merge the two data frames so they have all the urls
-    
-    # # Here we need to clean the urls, ensuring they match regex and have a status code of 200
+    df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+    extract_urls_from_emails(df)
 
-    # # Once we have MAX possible urls, we may start extracting data
-    possible_new_emails = extract_emails_from_urls(data)
 
+# First we add as many urls to our database in anyway we know how
+    # df = extract_urls_from_emails(df)
+    # df.append(extract_urls_from_web())
+
+    # Once we have MAX possible urls, we may start extracting data
 
