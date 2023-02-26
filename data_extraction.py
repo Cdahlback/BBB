@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import whois
+from urllib.parse import urlparse
 
 """
 For CODE REVIEWER:
@@ -105,6 +107,28 @@ def contains_zipCode(html, zip):
         if re.search(str(zip), text):
             return True
     return False
+
+def url_contains_phone_number(soup, number):
+    for text in soup.find_all(text = True):
+        if number in text.replace("-", ""):
+            return True
+    return False
+
+def url_contains_email(soup, email):
+    for tag in soup.find_all('a'):
+        href = tag.get('href')
+        if email in href:
+            return True
+    return False
+
+def get_domain_owner(url):
+    domain = urlparse(url).netloc
+    try:
+        w = whois.whois(domain)
+    except Exception:
+        return ""
+    else:
+        return w.registrar
 
 
 def extract_phone_data(id, url):
