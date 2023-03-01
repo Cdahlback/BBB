@@ -11,8 +11,10 @@ df['contains_business_name_in_copyright'] = ""
 df['contains_social_media_links'] = ""
 df['contains_reviews_page'] = ""
 df['contains_zipCode'] = ""
-df['extract_phone_data'] = ""
-df['extract_email_data'] = ""
+# df['extract_phone_data'] = ""
+# df['extract_email_data'] = ""
+
+#extract the urls
 
 # Apply 8 functions to the appropriate columns in the dataframe
 df['contains_contacts_page'] = df.apply(lambda row: contains_contacts_page(row['Website']), axis=1)
