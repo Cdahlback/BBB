@@ -67,13 +67,15 @@ def thread_search_urls(df):
     return pd.DataFrame(results, columns=['BusinessID', 'Website'])
 
 
-def get_url_from_search(company_name, rating_sites, business_id, company_city_state):
+def get_url_from_search(company_name, rating_sites, business_id, company_city_state=""):
     """
     Return company's URL given company name
 
     :param company_name: the name of the company
     :return: company's URL if found, else return ''
     """
+    if pd.isnull(company_city_state):
+        company_city_state = ""
     term = ' '.join([company_name, company_city_state])
     businessid_and_website = {}
     for j in search(term, num_results=10):

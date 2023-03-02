@@ -7,17 +7,9 @@ from time import time
 # read in data
 data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False)
 
-def add_missing_to_dataframe(df, column_name, missing_values):
-    new_data = pd.DataFrame(missing_values, columns=[column_name])
-
-    df = df.append(new_data)
-
-    df = df.reset_index(drop=True)
-
-    return df
-
-
 t0 = time()
+
+"""Add urls from search"""
 
 # set aside all businesses that already have URLs
 BBB_urls = data.loc[data['Website'].notna()]
@@ -26,16 +18,23 @@ BBB_urls = data.loc[data['Website'].notna()]
 emails_no_URL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (data['BBBID'] == 704)]
 
 # extract business with no URL or email
-business_no_URL_or_email = data.loc[(data['Email'].isna()) & (data['Website'].isna()) & (data['BBBID'] == 704)]
-
+business_no_URL_and_email = data.loc[(data['Email'].isna()) & (data['Website'].isna()) & (data['BBBID'] == 704)]
+business_no_URL_and_email = business_no_URL_and_email.head(50)
 # Extract URLs for all emails
 extracted_URLs_with_emails = emails_no_URL
 extracted_URLs_with_emails['Website'] = emails_no_URL['Email'].apply(lambda email: build_url_from_email(email))
 
 # extract URLs for business without URL and email
-extracted_URLs_with_search = business_no_URL_or_email.reset_index(drop=True)
-search_function = thread_search_urls(business_no_URL_or_email)
-extracted_URLs_with_search['Website'] = search_function['Website']
+extracted_URLs_with_search = business_no_URL_and_email.reset_index(drop=True)
+search_function = thread_search_urls(business_no_URL_and_email)
+missing_websites = search_function['Website'].tolist()
+
+business_no_URL_and_email['Website'] = missing_websites
+
+extracted_URLs_with_search = business_no_URL_and_email
+
+
+"""Add urls from email"""
 
 # create Dataframe for URL with email
 successful_URLs_email = extracted_URLs_with_emails.loc[extracted_URLs_with_emails['Website'].notna()]
