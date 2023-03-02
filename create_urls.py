@@ -5,6 +5,7 @@ import tldextract
 import ThreadPoolExecutorPlus
 import pandas as pd
 from itertools import repeat
+from time import sleep
 
 """
 For CODE REVIEWER:
@@ -55,12 +56,12 @@ def thread_search_urls(df):
     :param df: list of urls
     :return: a list of status codes
     """
-    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=10)
     results = []
     rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
-    business_names = df['BusinessName'].values[:]
-    business_cities = df['City'].values[:]
-    business_id = df['BusinessID'].values[:]
+    business_names = df['BusinessName'].tolist()
+    business_cities = df['City'].tolist()
+    business_id = df['BusinessID'].tolist()
     for result in executor.map(get_url_from_search, business_names, repeat(rating_sites), business_id, business_cities):
         results.append(result)
     return pd.DataFrame(results, columns=['BusinessID', 'Website'])
@@ -73,26 +74,20 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
     :param company_name: the name of the company
     :return: company's URL if found, else return ''
     """
-    if company_city_state == "":
-        try:
-            term = ' '.join([company_name])
-            for j in search(term, num=10, stop=10, pause=2):
-                if filter(j, rating_sites):
-                    return business_id, j
-                else:
-                    continue
-        except:
-            raise ValueError("To many requests")
-    else:
-        try:
-            term = ' '.join([company_name, company_city_state])
-            for j in search(term, num=10, stop=10, pause=2):
-                if filter(j, rating_sites):
-                    return business_id, j
-                else:
-                    continue
-        except:
-            raise ValueError("To many requests")
+    term = ' '.join([company_name, company_city_state])
+    try:
+        for j in search(term, num=3, stop=10, pause=4):
+            if filter(j, rating_sites):
+                print(business_id, j)
+                return business_id, j
+            else:
+                continue
+    except:
+        sleep(2)
+        print(business_id, '')
+        return business_id, ''
+    print(business_id, '')
+    return business_id, ''
 
 
 def filter(url, rating_sites):

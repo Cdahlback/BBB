@@ -5,7 +5,7 @@ import pandas as pd
 from time import time
 
 # read in data
-data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv.csv", low_memory=False)
+data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False)
 
 t0 = time()
 
@@ -49,7 +49,7 @@ successful_status_codes = pd.merge(successful_total_URLs, status_code_DF, how='i
 successful_status_codes = successful_status_codes.loc[(successful_status_codes['StatusCode'] >= 200) &
                                                       (successful_status_codes['StatusCode'] < 400)]
 
-complied_dataframe = pd.DataFrame.append(successful_status_codes, BBB_urls)
-complied_dataframe = complied_dataframe.reset_index(drop=True)
+complied_dataframe = pd.DataFrame.append(BBB_urls, successful_status_codes)
+complied_dataframe.reset_index(drop=True)
 
-complied_dataframe.to_csv('data/generated_urls.csv')
+complied_dataframe.to_csv('data/generated_urls.csv', index=False)
