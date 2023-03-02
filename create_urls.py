@@ -29,7 +29,8 @@ We have two functions which build new urls for us
 
 # list of domain names we don't want
 bad_domain_names = ['yahoo.com', 'gmail.com', "hotmail.com", "icloud.com", "comcast.net", "GMAIL.COM",
-                    "outlook.com", "msn.com", "arvig.net", "charter.net", "winona.edu", "aol.com"]
+                    "outlook.com", "msn.com", "arvig.net", "charter.net", "winona.edu", "aol.com", "frontier.net",
+                    "frontiernet.net", "results.net"]
 
 # regex to detect valid email (works great so far, may need building upon
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
