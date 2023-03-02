@@ -8,23 +8,24 @@ import numpy as np
 df = pd.read_csv('data/mn_bbb_businesses.csv', low_memory=False)
 counter = 0
 browser = webdriver.Chrome()
-# set containing all urls we've gone through
+
+# set containing all urls we've gone through, must update after each person has done a portion of
+# their 400
 s = set()
 
 while counter < 400:
-    df["checked_manually"] = np.nan
-    row_index = random.randint(0, len(df) - 1)
+    row_index = random.randint(1, len(df) - 1)
     row = df.loc[row_index]
-    row_idx = row["BusinessID"]
     business_name = row["BusinessName"]
     url = row["Website"]
     if url in s or url is np.nan:
         continue
     else:
+        counter += 1
         s.add(url)
         browser.get(url)
         associated = input("Enter 1 if associated with {0}, 0 if not".format(business_name))
-        df.loc[row_idx, "manually_checked"] = associated
+        df.loc[row_index, "manually_checked"] = associated
 
 
 # Psudo

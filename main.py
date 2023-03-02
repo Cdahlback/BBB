@@ -1,6 +1,7 @@
 from create_urls import build_url_from_email
 from Not_Our_Code.get_status_codes import get_statuscode, status_code
 from data_extraction import extract_email_data, extract_phone_data
+from fill_ind_var_columns import fill_columns
 from time import time
 import numpy as np
 import pandas as pd
@@ -12,38 +13,35 @@ def extract_urls_from_emails(data):
     :param data: passed in dataframe from main
     :return: New DataFrame with columns BusinessID, Website.
     """
-    emails_no_url = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
+    emails_no_url = data.copy(deep=True)
+    emails_no_url = emails_no_url.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
 
     # extract URLs for all emails without urls
-    extracted_urls = emails_no_url
-    extracted_urls["Website"] = emails_no_url['Email'].apply(lambda email: build_url_from_email(email))
-    successful_urls = extracted_urls.loc[extracted_urls['Website'].notna()]
-
-    # prints the time taken (For testing purposes, can be removed for PROD)
-    status_code_df = get_statuscode(successful_urls["Website"].to_list())
+    emails_no_url["Website"] = emails_no_url['Email'].apply(lambda email: build_url_from_email(email))
+    successful_urls = emails_no_url.copy(deep=True)
+    successful_urls = successful_urls.loc[successful_urls['Website'].notna()]
+    # .to_list()
+    status_code_df = get_statuscode(successful_urls["Website"])
     successful_urls["status_code"] = status_code_df
-    data['status_code'] = np.nan
-    data['found_via'] = np.nan
 
     # merge the two df
     # Logic to merge:
     # Only update if the website cell is null
-    for row in successful_urls.iterrows():
+    for index, row in successful_urls.iterrows():
         # Extract info to merge into data
-        status_code = row[1]["status_code"]
-        url_extracted = row[1]["Website"]
-        business_id = row[1]["BusinessID"]
+        status_code = row["status_code"]
+        url_extracted = row["Website"]
+        business_id = row["BusinessID"]
         # find index of row with possible missing value
-        row_idx = data.index[data['BusinessID'] == business_id].tolist()
-        if len(row_idx) > 1:
-            print(row_idx)
+        col_idx_website = data.columns.get_loc("Website")
+        col_idx_found_via = data.columns.get_loc("found_via")
         # if that row is missing the website (11 is the column index of website)
-        if pd.isnull(data.iloc[row_idx[0], 11]):
-            data.loc[row_idx[0], 11] = url_extracted
-            data.loc[row_idx[0], 24] = int(status_code)
-            data.loc[row_idx[0], 25] = "email"
+        if pd.isnull(data.loc[index, "Website"]):
+            data.loc[index, "Website"] = url_extracted
+            data.loc[index, 'status_code'] = int(status_code)
+            data.loc[index, "found_via"] = "email"
 
-    data = data.loc[(data['status_code'] < 300) & (data['status_code'] > 199)]
+    # data = data.loc[(data['status_code'] == 200)]
     return data
 
 
@@ -60,29 +58,17 @@ def extract_emails_from_urls(data):
     return result
 
 
-def merge_new_data(df1, df2):
-    """
-
-    :param df1: dataset which to append values to
-    :param df2: dataset used to fill in values
-    :return: dataset with filled in values
-    """
-    df1.reset_index(drop=True)
-    df2.reset_index(drop=True)
-
-    for idx in df1.index:
-        if df1["Website"][idx] is None and df2["Website"][idx] is not None:
-            df1["Website"][idx] = df2["Website"][idx]
-
-
 if __name__ == "__main__":
     df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
-    extract_urls_from_emails(df)
+    df['found_via'] = np.nan
+    # Add all found URLs from cells with emails
+    df = extract_urls_from_emails(df.iloc[:5000,:])
+    # Add all found URLs from searching the web
+    # extract_urls_from_search(df)
 
-
-# First we add as many urls to our database in anyway we know how
-    # df = extract_urls_from_emails(df)
-    # df.append(extract_urls_from_web())
+    # Fill columns for independent variables
+    df = fill_columns(df)
+    print(df)
 
     # Once we have MAX possible urls, we may start extracting data
 
