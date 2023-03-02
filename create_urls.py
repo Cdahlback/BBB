@@ -1,6 +1,11 @@
 import re
 from Not_Our_Code.elis_functions import cleanEmail
 from googlesearch import search
+import tldextract
+import ThreadPoolExecutorPlus
+import pandas as pd
+from itertools import repeat
+from time import sleep
 from tldextract import tldextract
 
 """
@@ -45,23 +50,46 @@ def build_url_from_email(email):
             return "https://www.{0}/".format(domain_name)
 
 
-def get_url_from_search(company_name, rating_sites):
+def thread_search_urls(df):
+    """
+    Gets the status code of the list of urls using threading.
+    It sends a maximum of 70 (requests) threads at a time to maximize speed.
+
+    :param df: list of urls
+    :return: a list of status codes
+    """
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=50)
+    results = []
+    rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
+    business_names = df['BusinessName'].tolist()
+    business_cities = df['City'].tolist()
+    business_id = df['BusinessID'].tolist()
+    for result in executor.map(get_url_from_search, business_names, repeat(rating_sites), business_id, business_cities):
+        results.append(result)
+    return pd.DataFrame(results, columns=['BusinessID', 'Website'])
+
+
+def get_url_from_search(company_name, rating_sites, business_id, company_city_state=""):
     """
     Return company's URL given company name
 
     :param company_name: the name of the company
     :return: company's URL if found, else return ''
     """
-    try:
+    if pd.isnull(company_city_state):
+        company_city_state = ""
+    term = ' '.join([company_name, company_city_state])
+    businessid_and_website = {}
+    for j in search(term, num_results=10):
+        if filter(j, rating_sites):
+            print(business_id, j)
+            return business_id, j
+        else:
+            continue
 
-        term = ' '.join([company_name])
-        for j in search(term, num=10, stop=10, pause=2):
-            if filter(j, rating_sites):
-                return j
-            else:
-                continue
-    except:
-        return ''
+    print(business_id, '')
+    return business_id, ''
+
 
 
 def filter(url, rating_sites):

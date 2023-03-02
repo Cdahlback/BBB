@@ -1,9 +1,12 @@
+import bs4
 from bs4 import BeautifulSoup
 import requests
 import re
 import whois
 from urllib.parse import urlparse
 import numpy as np
+
+
 
 """
 For CODE REVIEWER:
@@ -20,7 +23,7 @@ There are two types of functions you see here, listed below
     - Return the data type(s) we found from that single html/soup
 """
 
-def contains_contacts_page(html):
+def contains_contacts_page(Website):
     '''
     Checks for a contacts page inside a webpage
     :param html: html extracted from url
@@ -36,9 +39,7 @@ def contains_contacts_page(html):
     else:
         return np.nan
 
-
-
-def contains_business_name(html, business_name):
+def contains_business_name(Website, BusinessName):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -56,8 +57,7 @@ def contains_business_name(html, business_name):
     else:
         return np.nan
 
-
-def contains_business_name_in_copyright(html, business_name):
+def contains_business_name_in_copyright(Website, BusinessName):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -72,8 +72,7 @@ def contains_business_name_in_copyright(html, business_name):
     else:
         return np.nan
 
-
-def contains_social_media_links(html):
+def contains_social_media_links(Website):
     """
     Question: Should we look for how many social media pages it has?
 
@@ -89,14 +88,13 @@ def contains_social_media_links(html):
             href = link.get('href')
             if href and any(site in href.lower() for site in social_media_sites):
                 return True
-
         # If we didn't find any social media links, return False
         return False
     else:
         return np.nan
 
 
-def contains_reviews_page(html):
+def contains_reviews_page(Website):
     '''
     Checks for a reviews page inside the webpage
     :param html: html extracted from url
@@ -112,8 +110,7 @@ def contains_reviews_page(html):
     else:
         return np.nan
 
-
-def contains_zipCode(html, zip):
+def contains_zipCode(Website, PostalCode):
     """
     :param html: url extracted html
     :param zip: business zipcode to find
@@ -158,7 +155,7 @@ def get_domain_owner(url):
         return w.registrar
 
 
-def extract_phone_data(id, url):
+def extract_phone_data(BusinessID, Website):
     """
     Function to find phone numbers
     :param id: id associated with extracted phone #s
@@ -166,7 +163,7 @@ def extract_phone_data(id, url):
     :return: dictionary of all phone #s associated with a business
     """
     try:
-        response = requests.get(url)
+        response = requests.get(Website)
         soup = bs4.BeautifulSoup(response.content, "html.parser")
     except Exception as e:
         print(str(e))
@@ -174,7 +171,7 @@ def extract_phone_data(id, url):
         return None
 
     # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
-    phone_numbers = {'BusinessID': id}
+    phone_numbers = {'BusinessID': BusinessID}
     counter = 0
     for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
@@ -183,7 +180,7 @@ def extract_phone_data(id, url):
     if len(phone_numbers) >= 1:
         return phone_numbers
 
-def extract_email_data(id, url):
+def extract_email_data(BusinessID, Website):
     """
     Function to find emails
     :param id: id associated with extracted emails
@@ -191,7 +188,7 @@ def extract_email_data(id, url):
     :return: dictionary of all emails associated with a business
     """
     try:
-        response = requests.get(url)
+        response = requests.get(Website)
         soup = BeautifulSoup(response.content, "html.parser")
     except:
         return
