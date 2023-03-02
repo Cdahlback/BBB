@@ -6,6 +6,7 @@ import ThreadPoolExecutorPlus
 import pandas as pd
 from itertools import repeat
 from time import sleep
+from tldextract import tldextract
 
 """
 For CODE REVIEWER:
