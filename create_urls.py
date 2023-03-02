@@ -56,7 +56,7 @@ def thread_search_urls(df):
     :param df: list of urls
     :return: a list of status codes
     """
-    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=10)
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=50)
     results = []
     rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
     business_names = df['BusinessName'].tolist()
@@ -67,7 +67,7 @@ def thread_search_urls(df):
     return pd.DataFrame(results, columns=['BusinessID', 'Website'])
 
 
-def get_url_from_search(company_name, rating_sites, business_id, company_city_state=""):
+def get_url_from_search(company_name, rating_sites, business_id, company_city_state):
     """
     Return company's URL given company name
 
@@ -75,19 +75,17 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
     :return: company's URL if found, else return ''
     """
     term = ' '.join([company_name, company_city_state])
-    try:
-        for j in search(term, num=3, stop=10, pause=4):
-            if filter(j, rating_sites):
-                print(business_id, j)
-                return business_id, j
-            else:
-                continue
-    except:
-        sleep(2)
-        print(business_id, '')
-        return business_id, ''
+    businessid_and_website = {}
+    for j in search(term, num_results=10):
+        if filter(j, rating_sites):
+            print(business_id, j)
+            return business_id, j
+        else:
+            continue
+
     print(business_id, '')
     return business_id, ''
+
 
 
 def filter(url, rating_sites):

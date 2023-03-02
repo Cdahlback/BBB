@@ -7,6 +7,16 @@ from time import time
 # read in data
 data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False)
 
+def add_missing_to_dataframe(df, column_name, missing_values):
+    new_data = pd.DataFrame(missing_values, columns=[column_name])
+
+    df = df.append(new_data)
+
+    df = df.reset_index(drop=True)
+
+    return df
+
+
 t0 = time()
 
 # set aside all businesses that already have URLs
