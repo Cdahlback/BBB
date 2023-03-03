@@ -198,7 +198,7 @@ def cleanEmail(email):
         print('14. Removing email that uses IP-style domain')
         return ''
     # If missing a dot before top-level domain, add it
-    domain = re.sub('(?<!\.)((?=com$)|(?=net$)|(?=org$)|(?=edu$)|(?=gov$))', '.', domain)
+    domain = re.sub('(?<!\.)((?=com$)|(?=net$)|(?=org$)|(?=edu$)|(?=gov$))', '..', domain)
     spl = domain.split('.')
     if len(spl) < 2 or len(spl[-1]) < 2:
         # Technically legal, but dotless emails discouraged (and unsupported here)
@@ -209,7 +209,7 @@ def cleanEmail(email):
         print('16. Removing email with unlisted top-level domain')
         return ''
     domain = domain.lower()  # standardize to lowercase
-    domain = re.sub('[;:,]', '.', domain)  # change any [;:,] to . in domain
+    domain = re.sub('[;:,]', '..', domain)  # change any [;:,] to . in domain
     domain = re.sub('\.om$', '.com', domain)  # replace .om with .com (if at the end)
 
     domain = re.sub('[^a-zA-Z0-9.-]', '', domain)  # remove non-alphanumeric or . or -
@@ -265,7 +265,7 @@ def getDomain(url):
                     'ethicalwesternpa.com', 'wisebuyingmall.com', 'trustab.org', 'gotrust.org',
                     'wordpress.com', 'bluehost.com']
     url = url.lower()  # standardize to lowercase
-    url = re.sub('[;,]|(:(?!//))', '.', url)  # change any [;:,] to . in URL
+    url = re.sub('[;,]|(:(?!//))', '..', url)  # change any [;:,] to . in URL
     extracted = tldextract.extract(url)  # extract domain name
     domain = '.'.join(extracted[1:])  # and join suffix
     domain = re.sub('\.om$', '.com', domain)  # replace .om with .com (if at the end)
