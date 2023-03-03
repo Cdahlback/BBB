@@ -5,7 +5,6 @@ import tldextract
 import ThreadPoolExecutorPlus
 import pandas as pd
 from itertools import repeat
-from time import sleep
 from tldextract import tldextract
 
 """
@@ -23,7 +22,7 @@ We have two functions which build new urls for us
     - 10 potential urls are extracted (excluding rating_sites) and the best match is returned
         - We may modify it if we find these urls are "bad" (aren't related to the company)
     - return the top url of choice from our algo
-    
+
 
 """
 
@@ -58,7 +57,7 @@ def thread_search_urls(df):
     :param df: list of urls
     :return: a list of status codes
     """
-    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=50)
+    executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=1)
     results = []
     rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
     business_names = df['BusinessName'].tolist()
@@ -79,8 +78,7 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
     if pd.isnull(company_city_state):
         company_city_state = ""
     term = ' '.join([company_name, company_city_state])
-    businessid_and_website = {}
-    for j in search(term, num_results=10):
+    for j in search(term, num_results=3):
         if filter(j, rating_sites):
             print(business_id, j)
             return business_id, j
@@ -89,7 +87,6 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
 
     print(business_id, '')
     return business_id, ''
-
 
 
 def filter(url, rating_sites):
