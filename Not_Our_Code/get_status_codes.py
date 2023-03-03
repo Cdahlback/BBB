@@ -50,8 +50,8 @@ def get_statuscode_forPandas(df):
     :param df: dataframe
     :return: a list of status codes
     """
-    urls = df['Website'].values[:50]
-    ids = df['BusinessID'].values[:50]
+    urls = df['Website'].values[:]
+    ids = df['BusinessID'].values[:]
     executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '

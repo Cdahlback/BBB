@@ -7,8 +7,6 @@ from time import time
 # read in data
 data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False)
 
-t0 = time()
-
 """Add urls from search"""
 
 # set aside all businesses that already have URLs
@@ -19,20 +17,22 @@ emails_no_URL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (d
 
 # extract business with no URL or email
 business_no_URL_and_email = data.loc[(data['Email'].isna()) & (data['Website'].isna()) & (data['BBBID'] == 704)]
-business_no_URL_and_email = business_no_URL_and_email.head(50)
+
+# runtime for url generation
+generation_time = time()
+
 # Extract URLs for all emails
 extracted_URLs_with_emails = emails_no_URL
 extracted_URLs_with_emails['Website'] = emails_no_URL['Email'].apply(lambda email: build_url_from_email(email))
 
 # extract URLs for business without URL and email
-extracted_URLs_with_search = business_no_URL_and_email.reset_index(drop=True)
 search_function = thread_search_urls(business_no_URL_and_email)
 missing_websites = search_function['Website'].tolist()
-
 business_no_URL_and_email['Website'] = missing_websites
+extracted_URLs_with_search = business_no_URL_and_email.reset_index(drop=True)
 
-extracted_URLs_with_search = business_no_URL_and_email
-
+t1 = time() - generation_time
+print("URL Generation runtime: ".format(t1))
 
 """Add urls from email"""
 
@@ -47,11 +47,14 @@ unsuccessful_URLs_search = extracted_URLs_with_search.loc[extracted_URLs_with_se
 # merge both Dataframes
 successful_total_URLs = pd.DataFrame.append(successful_URLs_email, successful_URLs_search)
 
+# runtime for status code function
+status_time = time()
+
 # run status code function and print to new file
 status_code_DF = get_statuscode_forPandas(successful_total_URLs)
 
-t1 = time() - t0
-print(t1)
+t2 = time() - status_time
+print("Status code runtime: {0}".format(t2))
 
 successful_status_codes = pd.merge(successful_total_URLs, status_code_DF, how='inner')
 # need only URls that have acceptable status codes
