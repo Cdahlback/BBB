@@ -22,7 +22,7 @@ We have two functions which build new urls for us
     - 10 potential urls are extracted (excluding rating_sites) and the best match is returned
         - We may modify it if we find these urls are "bad" (aren't related to the company)
     - return the top url of choice from our algo
-    
+
 
 """
 
@@ -87,7 +87,6 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
 
     print(business_id, '')
     return business_id, ''
-
 
 
 def filter(url, rating_sites):

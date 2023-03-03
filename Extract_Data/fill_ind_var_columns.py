@@ -1,7 +1,7 @@
 import time
 
 import pandas as pd
-from data_extraction import *
+from Extract_Data.data_extraction import *
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
