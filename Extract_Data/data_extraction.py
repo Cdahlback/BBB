@@ -23,7 +23,7 @@ There are two types of functions you see here, listed below
     - Return the data type(s) we found from that single html/soup
 """
 
-def contains_contacts_page(Website):
+def contains_contacts_page(html):
     '''
     Checks for a contacts page inside a webpage
     :param html: html extracted from url
@@ -39,7 +39,7 @@ def contains_contacts_page(Website):
     else:
         return np.nan
 
-def contains_business_name(Website, BusinessName):
+def contains_business_name(html, business_name):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -57,7 +57,7 @@ def contains_business_name(Website, BusinessName):
     else:
         return np.nan
 
-def contains_business_name_in_copyright(Website, BusinessName):
+def contains_business_name_in_copyright(html, BusinessName):
     """
     Check if the soup contains the given business name.
     :param html: html extracted from url
@@ -72,7 +72,7 @@ def contains_business_name_in_copyright(Website, BusinessName):
     else:
         return np.nan
 
-def contains_social_media_links(Website):
+def contains_social_media_links(html):
     """
     Question: Should we look for how many social media pages it has?
 
@@ -94,7 +94,7 @@ def contains_social_media_links(Website):
         return np.nan
 
 
-def contains_reviews_page(Website):
+def contains_reviews_page(html):
     '''
     Checks for a reviews page inside the webpage
     :param html: html extracted from url
@@ -110,7 +110,7 @@ def contains_reviews_page(Website):
     else:
         return np.nan
 
-def contains_zipCode(Website, PostalCode):
+def contains_zipCode(html, zip):
     """
     :param html: url extracted html
     :param zip: business zipcode to find

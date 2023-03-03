@@ -1,8 +1,7 @@
-from create_urls import build_url_from_email
-from Not_Our_Code.get_status_codes import get_statuscode, status_code
-from data_extraction import extract_email_data, extract_phone_data
-from fill_ind_var_columns import fill_columns
-from time import time
+from Extract_Data.create_urls import build_url_from_email
+from Not_Our_Code.get_status_codes import get_statuscode
+from Extract_Data.data_extraction import extract_email_data
+from Extract_Data.fill_ind_var_columns import fill_columns
 import numpy as np
 import pandas as pd
 
@@ -24,24 +23,16 @@ def extract_urls_from_emails(data):
     status_code_df = get_statuscode(successful_urls["Website"])
     successful_urls["status_code"] = status_code_df
 
-    # merge the two df
-    # Logic to merge:
-    # Only update if the website cell is null
+    # Iterate over rows of our successful_urls (urls which were extracted from emails and given a status code
     for index, row in successful_urls.iterrows():
-        # Extract info to merge into data
-        status_code = row["status_code"]
-        url_extracted = row["Website"]
-        business_id = row["BusinessID"]
-        # find index of row with possible missing value
-        col_idx_website = data.columns.get_loc("Website")
-        col_idx_found_via = data.columns.get_loc("found_via")
-        # if that row is missing the website (11 is the column index of website)
+        # if that row is missing the website
         if pd.isnull(data.loc[index, "Website"]):
-            data.loc[index, "Website"] = url_extracted
-            data.loc[index, 'status_code'] = int(status_code)
+            # update the row with what we built
+            data.loc[index, "Website"] = row['Website']
+            data.loc[index, 'status_code'] = int(row['status_code'])
             data.loc[index, "found_via"] = "email"
 
-    # data = data.loc[(data['status_code'] == 200)]
+    data = data.loc[(data['status_code'].isin([200, 403]))]
     return data
 
 
@@ -62,7 +53,7 @@ if __name__ == "__main__":
     df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
     df['found_via'] = np.nan
     # Add all found URLs from cells with emails
-    df = extract_urls_from_emails(df.iloc[:5000,:])
+    df = extract_urls_from_emails(df)
     # Add all found URLs from searching the web
     # extract_urls_from_search(df)
 

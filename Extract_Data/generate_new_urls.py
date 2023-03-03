@@ -5,7 +5,7 @@ import pandas as pd
 from time import time
 
 # read in data
-data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False)
+data = pd.read_csv("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/mn_bbb_businesses.csv", low_memory=False)
 
 t0 = time()
 
@@ -19,7 +19,7 @@ emails_no_URL = data.loc[(data['Email'].notna()) & (data['Website'].isna()) & (d
 
 # extract business with no URL or email
 business_no_URL_and_email = data.loc[(data['Email'].isna()) & (data['Website'].isna()) & (data['BBBID'] == 704)]
-business_no_URL_and_email = business_no_URL_and_email.head(50)
+business_no_URL_and_email = business_no_URL_and_email.head(5000)
 # Extract URLs for all emails
 extracted_URLs_with_emails = emails_no_URL
 extracted_URLs_with_emails['Website'] = emails_no_URL['Email'].apply(lambda email: build_url_from_email(email))
