@@ -1,6 +1,8 @@
 import re
-from Not_Our_Code.elis_functions import cleanEmail
-from googlesearch import search
+from elis_functions import cleanEmail
+#from googlesearch import search
+import time
+import yagooglesearch
 import tldextract
 import ThreadPoolExecutorPlus
 import pandas as pd
@@ -60,11 +62,14 @@ def thread_search_urls(df):
     executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=1)
     results = []
     rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
-    business_names = df['BusinessName'].tolist()
-    business_cities = df['City'].tolist()
-    business_id = df['BusinessID'].tolist()
-    for result in executor.map(get_url_from_search, business_names, repeat(rating_sites), business_id, business_cities):
-        results.append(result)
+
+    for index, row in df.iterrows():
+        business_name = df.loc[index, "BusinessName"]
+        business_city = df.loc[index, 'City']
+        business_id = df.loc[index, 'BusinessID']
+        business_id, website = get_url_from_search(business_name, rating_sites, business_id, business_city)
+        results.append(website)
+        time.sleep(10)
     return pd.DataFrame(results, columns=['BusinessID', 'Website'])
 
 
@@ -77,8 +82,20 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
     """
     if pd.isnull(company_city_state):
         company_city_state = ""
-    term = ' '.join([company_name, company_city_state])
-    for j in search(term, num_results=3):
+    query = ' '.join([company_name, company_city_state])
+    print(query)
+    client = yagooglesearch.SearchClient(
+        query,
+        num=30,
+        max_search_result_urls_to_return=1,
+        http_429_cool_off_time_in_minutes=60,
+        http_429_cool_off_factor=1.1,
+        # proxy="socks5h://127.0.0.1:9050",
+        verbosity=5,
+        verbose_output=False,  # False (only URLs) or True (rank, title, description, and URL)
+    )
+
+    for j in client.search():
         if filter(j, rating_sites):
             print(business_id, j)
             return business_id, j
@@ -104,3 +121,14 @@ def filter(url, rating_sites):
         if sub.domain.lower() == i:
             return False
     return True
+
+# Change this to your name
+data = pd.read_csv("data/dylan.csv", low_memory=False)
+searches = data.loc[data['FoundVia'] == 'Search']
+#print(searches)
+#print(searches['BusinessName'])
+result = thread_search_urls(searches)
+
+# Change this to your name
+result.to_csv('dylan_results.csv')
+
