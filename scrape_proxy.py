@@ -15,19 +15,17 @@
 import requests
 from bs4 import BeautifulSoup
 
+def scrape_https_proxies(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find('table')
+    data = []
+    for row in table.find_all('tr'):
+        cols = row.find_all('td')
+        if cols and cols[6].get_text() == 'yes':
+            data.append(cols[0].get_text())
+    return data
+
 url = 'https://free-proxy-list.net/'
-
-response = requests.get(url)
-
-soup = BeautifulSoup(response.content, 'html.parser')
-
-table = soup.find('ID Adrress')
-
-https_proxies = []
-
-for row in table.find_all('<tr>'):
-    cells = row.find_all('<td>')
-    if len(cells) > 6 and cells[6].get_text() == 'yes':
-        https_proxies.append(cells[0].get_text())
-
+https_proxies = scrape_https_proxies(url)
 print(https_proxies)
