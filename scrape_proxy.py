@@ -29,3 +29,4 @@ def scrape_https_proxies(url):
 url = 'https://free-proxy-list.net/'
 https_proxies = scrape_https_proxies(url)
 print(https_proxies)
+print(len(https_proxies))
