@@ -1,8 +1,8 @@
-from create_urls import build_url_from_email
-from Not_Our_Code.get_status_codes import get_statuscode, status_code
-from data_extraction import extract_email_data, extract_phone_data
-from time import time
-
+from Extract_Data.create_urls import build_url_from_email
+from Not_Our_Code.get_status_codes import get_statuscode
+from Extract_Data.data_extraction import extract_email_data
+from Extract_Data.fill_ind_var_columns import fill_columns
+import numpy as np
 import pandas as pd
 
 
@@ -12,23 +12,28 @@ def extract_urls_from_emails(data):
     :param data: passed in dataframe from main
     :return: New DataFrame with columns BusinessID, Website.
     """
-    emails_no_url = data.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
+    emails_no_url = data.copy(deep=True)
+    emails_no_url = emails_no_url.loc[(data['Email'].notna()) & (data['Website'].isna())][['BusinessID', 'Email']]
 
     # extract URLs for all emails without urls
-    extracted_urls = emails_no_url
-    extracted_urls["Website"] = emails_no_url['Email'].apply(lambda email: build_url_from_email(email))
-    successful_urls = extracted_urls.loc[extracted_urls['Website'].notna()]
+    emails_no_url["Website"] = emails_no_url['Email'].apply(lambda email: build_url_from_email(email))
+    successful_urls = emails_no_url.copy(deep=True)
+    successful_urls = successful_urls.loc[successful_urls['Website'].notna()]
+    # .to_list()
+    status_code_df = get_statuscode(successful_urls["Website"])
+    successful_urls["status_code"] = status_code_df
 
-    # prints the time taken (For testing purposes, can be removed for PROD)
-    t0 = time()
-    status_code_df = get_statuscode(successful_urls)
-    t1 = time() - t0
-    print(t1)
+    # Iterate over rows of our successful_urls (urls which were extracted from emails and given a status code
+    for index, row in successful_urls.iterrows():
+        # if that row is missing the website
+        if pd.isnull(data.loc[index, "Website"]):
+            # update the row with what we built
+            data.loc[index, "Website"] = row['Website']
+            data.loc[index, 'status_code'] = int(row['status_code'])
+            data.loc[index, "found_via"] = "email"
 
-    # merge successful_urls with status codes given
-    new_df = pd.merge(successful_urls, status_code_df, how='inner')
-    new_df = new_df.loc[(new_df['StatusCode'] != 404) & (new_df['StatusCode'] != -1) & (new_df['StatusCode'] != 403)]
-    return new_df
+    data = data.loc[(data['status_code'].isin([200, 403]))]
+    return data
 
 
 def extract_emails_from_urls(data):
@@ -44,30 +49,17 @@ def extract_emails_from_urls(data):
     return result
 
 
-def merge_new_data(df1, df2):
-    """
-
-    :param df1: dataset which to append values to
-    :param df2: dataset used to fill in values
-    :return: dataset with filled in values
-    """
-    df1.reset_index(drop=True)
-    df2.reset_index(drop=True)
-
-    for idx in df1.index:
-        if df1["Website"][idx] is None and df2["Website"][idx] is not None:
-            df1["Website"][idx] = df2["Website"][idx]
-
-
 if __name__ == "__main__":
-    # First we add as many urls to our database in anyway we know how
-    urls_to_add = extract_urls_from_emails(data)
-    urls_to_add.append(extract_urls_from_web())
-    # # Merge the two data frames so they have all the urls
-    
-    # # Here we need to clean the urls, ensuring they match regex and have a status code of 200
+    df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+    df['found_via'] = np.nan
+    # Add all found URLs from cells with emails
+    df = extract_urls_from_emails(df)
+    # Add all found URLs from searching the web
+    # extract_urls_from_search(df)
 
-    # # Once we have MAX possible urls, we may start extracting data
-    possible_new_emails = extract_emails_from_urls(data)
+    # Fill columns for independent variables
+    df = fill_columns(df)
+    print(df)
 
+    # Once we have MAX possible urls, we may start extracting data
 
