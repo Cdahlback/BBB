@@ -1,5 +1,5 @@
 from create_urls import build_url_from_email, thread_search_urls
-from Not_Our_Code.get_status_codes import get_statuscode_forPandas
+from get_status_codes import get_statuscode_forPandas
 
 import pandas as pd
 from time import time
