@@ -123,12 +123,12 @@ def filter(url, rating_sites):
     return True
 
 # Change this to your name
-data = pd.read_csv("data/dylan.csv", low_memory=False)
+data = pd.read_csv("data/biruk.csv", low_memory=False)
 searches = data.loc[data['FoundVia'] == 'Search']
-#print(searches)
-#print(searches['BusinessName'])
+print(searches)
+print(searches['BusinessName'])
 result = thread_search_urls(searches)
 
 # Change this to your name
-result.to_csv('dylan_results.csv')
+result.to_csv('biruk_results.csv')
 
