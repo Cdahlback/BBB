@@ -25,16 +25,23 @@
 
 # complete.to_csv('data/biruk_results.csv')
 import csv
-import re
 
-# Open log file and create output CSV file
-with open('yagooglesearch.py.log', 'r') as log_file, open('data/biruk_results.csv', 'w', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerow(['URL'])  # Write header row to CSV file
+# specify the input and output file names
+input_file = "yagooglesearch.py.log"
+output_file = "data/biruk_results.csv"
 
-    # Iterate through each row in log file
-    for row in log_file:
-        # Use regular expression to find URLs in row
-        urls = re.findall(r'(https?://\S+)', row)
-        for url in urls:
-            writer.writerow([url])  # Write URL to CSV file
+# open the input and output files
+with open(input_file, "r") as in_file, open(output_file, "w", newline="") as out_file:
+    # create a CSV writer for the output file
+    csv_writer = csv.writer(out_file)
+
+    # loop over each line in the input file
+    for line in in_file:
+        # check if the line contains "Found unique URL"
+        if "Found unique URL" in line:
+            # extract the URL from the line
+            url = line[line.index("http"):].strip()
+
+            csv_writer.writerow([url])
+
+
