@@ -5,7 +5,7 @@ import numpy as np
 
 """MUST CLEAN ALL URLS PRIOR TO RUNNING THIS SCRIPT"""
 
-df = pd.read_csv('/Users/Dylan/Documents/GitHub/BBB/manual_checking_data/dylan_manual_check.csv', low_memory=False)
+df = pd.read_csv('C:\\Users\\17633\\Documents\\GitHub\\BBB\\manual_checking_data\\biruk_manual_check.csv', low_memory=False)
 counter = 0
 browser = webdriver.Chrome()
 
