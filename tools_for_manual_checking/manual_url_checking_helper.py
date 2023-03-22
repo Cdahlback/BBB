@@ -5,7 +5,7 @@ import numpy as np
 
 """MUST CLEAN ALL URLS PRIOR TO RUNNING THIS SCRIPT"""
 
-df = pd.read_csv('data/mn_bbb_businesses.csv', low_memory=False)
+df = pd.read_csv('data/dylan_manual_check.csv', low_memory=False)
 counter = 0
 browser = webdriver.Chrome()
 
