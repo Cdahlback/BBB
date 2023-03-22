@@ -5,27 +5,33 @@ import numpy as np
 
 """MUST CLEAN ALL URLS PRIOR TO RUNNING THIS SCRIPT"""
 
-df = pd.read_csv('data/dylan_manual_check.csv', low_memory=False)
+df = pd.read_csv('/Users/Dylan/Documents/GitHub/BBB/manual_checking_data/dylan_manual_check.csv', low_memory=False)
 counter = 0
 browser = webdriver.Chrome()
 
 # set containing all urls we've gone through, must update after each person has done a portion of
 # their 400
-s = set()
+# s = set()
 
 while counter < 400:
-    row_index = random.randint(1, len(df) - 1)
-    row = df.loc[row_index]
+    # row_index = random.randint(1, len(df) - 1)
+    row = df.loc[counter]
     business_name = row["BusinessName"]
+    address = row['StreetAddress']
+    city = row['City']
+    TOB = row['TOBDescription']
     url = row["Website"]
-    if url in s or url is np.nan:
-        continue
-    else:
-        counter += 1
-        s.add(url)
-        browser.get(url)
-        associated = input("Enter 1 if associated with {0}, 0 if not".format(business_name))
-        df.loc[row_index, "manually_checked"] = associated
+    # if url in s or url is np.nan:
+    #     continue
+    # else:
+        # counter += 1
+        # s.add(url)
+    browser.get(url)
+    associated = input("Enter 1 if associated 0 if not.\n"
+                       "Business name: {0}\n"
+                       "Address: {1}, {2}\n"
+                       "Type of Business: {3}\n".format(business_name, address, city, TOB))
+    df.loc[counter, "manually_checked"] = associated
 
 
 # Psudo
