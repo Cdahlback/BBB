@@ -32,7 +32,7 @@ while counter < 400:
                        "Address: {1}, {2}\n"
                        "Type of Business: {3}\n".format(business_name, address, city, TOB))
     df.loc[counter, "manually_checked"] = associated
-    df.to_csv('dylan_checked_rows.csv')
+    df.to_csv('biruk_checked_rows.csv')
     counter += 1
 
 
