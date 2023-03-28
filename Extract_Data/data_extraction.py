@@ -5,6 +5,7 @@ import re
 import whois
 from urllib.parse import urlparse
 import numpy as np
+import pandas as pd
 
 
 
@@ -12,16 +13,15 @@ import numpy as np
 For CODE REVIEWER:
 This file is used to hold all our functions which extract data from a url
 There are two types of functions you see here, listed below
-
 - functions which start with "contains"
     - These functions scrape html/soup for independent variables we plan to use in our ML model 
       (don't know what model will work best quite yet)
     - Return a 0 or 1 which tells us if the ind var was found within our html/soup
-
 - functions which start with extract
     - Scrape html/soup for data types we are looking to fill in our csv file (emails, phone#s, addresses)
     - Return the data type(s) we found from that single html/soup
 """
+
 
 def contains_contacts_page(html):
     '''
@@ -38,6 +38,7 @@ def contains_contacts_page(html):
         return False
     else:
         return np.nan
+
 
 def contains_business_name(html, business_name):
     """
@@ -57,6 +58,7 @@ def contains_business_name(html, business_name):
     else:
         return np.nan
 
+
 def contains_business_name_in_copyright(html, BusinessName):
     """
     Check if the soup contains the given business name.
@@ -66,16 +68,16 @@ def contains_business_name_in_copyright(html, BusinessName):
     """
     if html is not None:
         for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
-            if business_name.lower() in text.lower():
+            if BusinessName.lower() in text.lower():
                 return True
         return False
     else:
         return np.nan
 
+
 def contains_social_media_links(html):
     """
     Question: Should we look for how many social media pages it has?
-
     Check if the soup contains a social media section.
     :param html:
     :return:
@@ -110,12 +112,15 @@ def contains_reviews_page(html):
     else:
         return np.nan
 
+
 def contains_zipCode(html, zip):
     """
     :param html: url extracted html
     :param zip: business zipcode to find
     :return: True if found, false if not
     """
+    if pd.isnull(zip):
+        return False
     if html is not None:
         for text in html.find_all(text=re.compile(r'\d{5}')):
             if re.search(str(zip), text):
@@ -124,17 +129,29 @@ def contains_zipCode(html, zip):
     else:
         return np.nan
 
+
 def url_contains_phone_number(html, number):
+    """
+    Checks if the phone number for this business is in teh html
+    :param html:
+    :param number:
+    :return:
+    """
+    if pd.isnull(number):
+        return False
     if html is not None:
-        for text in html.find_all(text = True):
-            if number in text.replace("-", ""):
+        for text in html.find_all(text=True):
+            if str(number) in text.replace("-", ""):
                 return True
         return False
     else:
         return np.nan
 
+
 def url_contains_email(html, email):
     if html is not None and email is not None:
+        if pd.isnull(email):
+            return False
         for tag in html.find_all('a'):
             href = tag.get('href')
             if href is None:
@@ -144,6 +161,7 @@ def url_contains_email(html, email):
         return False
     else:
         return np.nan
+
 
 def get_domain_owner(url):
     domain = urlparse(url).netloc
@@ -206,4 +224,3 @@ def extract_email_data(BusinessID, Website):
                 email_addresses['Email' + str(email_number)] = email
     if len(email_addresses) >= 1:
         return email_addresses
-
