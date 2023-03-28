@@ -36,6 +36,33 @@ def extract_urls_from_emails(data):
     return data
 
 
+def add_found_via_column(data):
+    """
+    Adds the found_via column to the dataset
+    :param data: original dataset
+    :return:
+    """
+
+    data['FoundVia'] = ''
+
+    has_URL = data.loc[data['Website'].notna()]
+    has_URL['FoundVia'] = "BBB"
+
+    has_Email = data.loc[data['Email'].notna() & data['Website'].isna()]
+    has_Email['FoundVia'] = "Email"
+
+    has_Neither = data.loc[data['Email'].isna() & data['Website'].isna()]
+    has_Neither['FoundVia'] = 'Search'
+
+    frames = [has_URL, has_Email, has_Neither]
+    mn_bbb_businesses_foundVia = pd.concat(frames)
+    compiled = mn_bbb_businesses_foundVia.reset_index(drop=True)
+
+    # We will want to change this so it just returns the data with a new column
+    compiled.to_csv('data/mn_bbb_businesses_foundVia.csv')
+    return compiled
+
+
 def extract_emails_from_urls(data):
     """
     Extract ALL emails from ALL websites
