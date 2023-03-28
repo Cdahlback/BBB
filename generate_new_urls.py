@@ -1,4 +1,4 @@
-from create_urls import build_url_from_email, thread_search_urls
+from Extract_Data.create_urls import build_url_from_email, search_urls
 from Not_Our_Code.get_status_codes import get_statuscode_forPandas
 
 import pandas as pd
@@ -27,7 +27,7 @@ extracted_URLs_with_emails = emails_no_URL
 extracted_URLs_with_emails['Website'] = emails_no_URL['Email'].apply(lambda email: build_url_from_email(email))
 
 # extract URLs for business without URL and email
-search_function = thread_search_urls(business_no_URL_and_email)
+search_function = search_urls(business_no_URL_and_email)
 missing_websites = search_function['Website'].tolist()
 business_no_URL_and_email['Website'] = missing_websites
 extracted_URLs_with_search = business_no_URL_and_email.reset_index(drop=True)

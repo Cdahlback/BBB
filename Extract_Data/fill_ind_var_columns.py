@@ -22,11 +22,6 @@ def add_ind_var_columns(data):
 def fill_columns(data):
     data_copy = data.copy(deep=True)
     data_copy = data_copy.iloc[:500,:]
-    # df = df.assign(Percentage=lambda x: (x['Total_Marks'] / 500 * 100))
-    # for row in iterrows()
-    #   if we have a website
-    #       get the html
-    #       run the html through all ind var scrapers
     t0 = time.time()
     for index, row in data_copy.iterrows():
         website = row["Website"] if row["Website"] else None
@@ -70,11 +65,4 @@ def get_html(website):
         return html
     except Exception as e:
         return None
-    # except Exception as e:
-    #     return None
-
-
-# we want to go over every row of the file
-#   extract the html of the website if there is one, if not continue
-#   use the html to call each function of the ind var scrapers
 
