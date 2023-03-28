@@ -1,8 +1,6 @@
 from Extract_Data.create_urls import build_url_from_email
 from Not_Our_Code.get_status_codes import get_statuscode
 from Extract_Data.data_extraction import extract_email_data
-from Extract_Data.fill_ind_var_columns import fill_columns
-import numpy as np
 import pandas as pd
 
 
@@ -42,7 +40,6 @@ def add_found_via_column(data):
     :param data: original dataset
     :return:
     """
-
     data['FoundVia'] = ''
 
     has_URL = data.loc[data['Website'].notna()]
@@ -78,15 +75,8 @@ def extract_emails_from_urls(data):
 
 if __name__ == "__main__":
     df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
-    df['found_via'] = np.nan
     # Add all found URLs from cells with emails
-    df = extract_urls_from_emails(df)
     # Add all found URLs from searching the web
-    # extract_urls_from_search(df)
-
-    # Fill columns for independent variables
-    df = fill_columns(df)
-    print(df)
 
     # Once we have MAX possible urls, we may start extracting data
 

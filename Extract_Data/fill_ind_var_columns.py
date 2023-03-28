@@ -7,6 +7,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
+"""Script to run our independent variable scrapers for entire database"""
+
+
 def add_ind_var_columns(data):
     data['contains_contacts_page'] = np.nan
     data['contains_business_name'] = np.nan

@@ -3,7 +3,11 @@ import pandas as pd
 import random
 import numpy as np
 
-"""MUST CLEAN ALL URLS PRIOR TO RUNNING THIS SCRIPT"""
+"""
+MUST CLEAN ALL URLS PRIOR TO RUNNING THIS SCRIPT
+Used to help assist our team in automating the manual checking process
+Uses selenium to open webpages
+"""
 
 df = pd.read_csv('data/mn_bbb_businesses.csv', low_memory=False)
 counter = 0
