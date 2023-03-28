@@ -3,7 +3,7 @@ from sklearn import tree
 import matplotlib.pyplot as plt
 
 # Pull data
-data = pd.read_csv("data/mn_bbb_businesses_foundVia.csv", low_memory=False).dropna(subset=["BBBRatingScore", "NumberOfEmployees", "NumberOfPartTimeEmployees"])
+data = pd.read_csv("../data/mn_bbb_businesses_foundVia.csv", low_memory=False).dropna(subset=["BBBRatingScore", "NumberOfEmployees", "NumberOfPartTimeEmployees"])
 
 # Pick independent variables
 independent_variables = ["IsBBBAccredited", "BBBRatingScore", "NumberOfEmployees", "NumberOfPartTimeEmployees", "IsHQ", "IsCharity"]

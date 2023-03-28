@@ -74,7 +74,7 @@ def extract_emails_from_urls(data):
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("data/mn_bbb_businesses.csv", low_memory=False)
+    df = pd.read_csv("../data/mn_bbb_businesses.csv", low_memory=False)
     # Add all found URLs from cells with emails
     # Add all found URLs from searching the web
 
