@@ -4,18 +4,26 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
 # Read dataset
-data = pd.read_csv("C:/Users/nicky/Documents/GitHub/BBB/data/filled_ind_var.csv")
+data = pd.read_csv("../data/filled_ind_var.csv", low_memory=False)
 
 model_data = data[:1600]
 
 holdout_data = data[1600:]
 
-variables = ["contains_contacts_page",
+variables = [
+             "contains_contacts_page",
              "contains_business_name",
+             "contains_business_name_in_copyright",
              "contains_social_media_links",
+             "contains_reviews_page",
+             "contains_zipCode",
              "url_contains_email",
+             "url_contains_phone_number",
              "BBBRatingScore",
-             "IsBBBAccredited"]
+             "IsHQ",
+             "IsCharity",
+             "IsBBBAccredited"
+             ]
 
 # Show correlation between variables
 corr_data = data.loc[:, variables + ["manually_checked"]]
@@ -31,7 +39,7 @@ X = model_data.loc[:, variables].values
 print(X)
 
 # Split data into testing and training sets
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
 
 # Building the model and fitting the data to it
 website_relation_model = LogisticRegression()
