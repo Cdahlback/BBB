@@ -36,13 +36,13 @@ print(Y)
 
 
 X = model_data.loc[:, variables].values
-print(X)
 
 # Split data into testing and training sets
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
 
 # Building the model and fitting the data to it
 website_relation_model = LogisticRegression()
+# Train the model
 website_relation_model.fit(x_train, y_train)
 
 # Checking the predictive power of the model using the testing sets
