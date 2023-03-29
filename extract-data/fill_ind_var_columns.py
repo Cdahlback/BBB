@@ -1,7 +1,5 @@
 import time
-
-import pandas as pd
-from Extract_Data.data_extraction import *
+from data_extraction import *
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
@@ -11,6 +9,11 @@ from bs4 import BeautifulSoup
 
 
 def add_ind_var_columns(data):
+    """
+    A function that takes a DataFrame 'data' and adds several columns with boolean values
+    :param data: data that is associated with website URL's.
+    :return: the modified DataFrame with the new columns added.
+    """
     data['contains_contacts_page'] = np.nan
     data['contains_business_name'] = np.nan
     data['contains_business_name_in_copyright'] = np.nan
@@ -23,6 +26,9 @@ def add_ind_var_columns(data):
 
 
 def fill_columns(data):
+    """
+    A function
+    """
     data_copy = data.copy(deep=True)
     data_copy = data_copy.iloc[:500,:]
     t0 = time.time()
