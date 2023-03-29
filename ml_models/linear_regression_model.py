@@ -7,122 +7,59 @@ from matplotlib.backends.backend_pdf import PdfPages
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
-
-
-def vizualize_compare_true_and_pred(y_test, y_pred_test):
-    plt.scatter(y_test, y_pred_test)
-    plt.title("True vs Pred")
-    plt.xlabel("True Values")
-    plt.ylabel("Predicted Values")
-
-    m = y_test.min()
-    M = y_test.max()
-
-    plt.plot((m, M), (m, M), color='red')
-    return plt
-
-
-def visualize_line_of_best_fit(x_test, y_test, y_pred_test, model, feature):
-    plt.scatter(x_test, y_test)
-    plt.plot(x_test, y_pred_test, color='red')
-    plt.title("Line of best fit")
-    plt.title("Model coef: {:0.3f}, Intercept: {:0.2f}".format(model.coef_[0], model.intercept_))
-    plt.xlabel(feature)
-    plt.ylabel("manually_checked");
-    return plt
-
-
-def visualize_feature_vs_dep_var(df, feature):
-    # Possibly need to print
-    sns.scatterplot(data=df,
-                    x=feature,
-                    y='manually_checked')
-    plt.title("feature vs dep var")
-    return plt
-
-
-def save_image(filename):
-    # PdfPages is a wrapper around pdf
-    # file so there is no clash and create
-    # files with no error.
-    p = PdfPages(filename)
-
-    # get_fignums Return list of existing
-    # figure numbers
-    fig_nums = plt.get_fignums()
-    figs = [plt.figure(n) for n in fig_nums]
-
-    # iterating over the numbers in list
-    for fig in figs:
-        # and saving the files
-        fig.savefig(p, format='pdf')
-
-        # close the object
-    p.close()
+from Vizualization.RegressionVizualization import *
 
 
 def test_different_inputs(df, feature):
+    """
+    Given a dataframe and a feature, evaluate the model with different random_state values
+    :param df:
+    :param feature:
+    :return:
+    """
     for i in range(50):
         X = df[[feature]].values
         y = df['manually_checked'].values
 
+        # train/split data
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=i)
+            X, y, test_size=0.3, random_state=i)
 
+        # create model
         model = LogisticRegression()
 
+        # fit model to train data
         model.fit(X_train, y_train)
 
+        # predict test/train
         y_pred_test = model.predict(X_test)
         y_pred_train = model.predict(X_train)
 
+        # get r^2 score for train/test
         train_score = r2_score(y_train, y_pred_train)
         test_score = r2_score(y_test, y_pred_test)
 
+        # predict the output given the features
         y_pred = model.predict(X)
+        # calc Mean Average Error and Mean Squared Error
         mae = mean_absolute_error(y, y_pred)
         mse = mean_squared_error(y, y_pred)
 
-        # Call visualization
+        # Call visualization and load them into save_image()
         plt1 = vizualize_compare_true_and_pred(y_test, y_pred_test)
         plt2 = visualize_line_of_best_fit(X_test, y_test, y_pred_test, model, feature)
         plt3 = visualize_feature_vs_dep_var(df, feature)
         plt4 = plot_logistic_regression_bar(model, feature)
         plt5 = plot_logistic_regression_plot(model, X, y)
 
+        # Save plots
         save_image("multi_plot_image.pdf")
 
+        # print data (change to update a df)
         print("Model tested with feature {0} random_state: {1}".format(feature, i))
         print("R_2 (train): {0} | R_2 (test): {1}".format(train_score, test_score))
         print("MSE: {0} | MAE {1}".format(mse, mae))
         print("")
-
-
-def plot_logistic_regression_bar(model, feature):
-    # Extract feature names and coefficients
-    coefficients = model.coef_[0]
-
-    # Create a DataFrame of coefficients
-    coef_df = pd.DataFrame({'feature': feature, 'coefficient': coefficients})
-
-    # Create a bar chart of coefficients
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(x='coefficient', y='feature', data=coef_df, orient='h', ax=ax)
-    ax.set_title('Logistic Regression Coefficients')
-    ax.set_xlabel('Coefficient')
-    ax.set_ylabel('Feature')
-    return plt
-
-
-def plot_logistic_regression_plot(model, X, y):
-    # Create a logistic regression plot
-    fig, ax = plt.subplots(figsize=(8, 6))
-    x = model.predict_proba(X)[:, 1]
-    sns.regplot(x=model.predict_proba(X)[:, 1], y=y, logistic=True, ax=ax)
-    ax.set_title('Logistic Regression Plot')
-    ax.set_xlabel('Predicted Probability')
-    ax.set_ylabel('Actual Outcome')
-    return plt
 
 
 if __name__ == "__main__":
