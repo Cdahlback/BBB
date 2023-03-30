@@ -59,20 +59,49 @@ def contains_business_name(html, business_name):
         return np.nan
 
 
-def contains_business_name_in_copyright(html, BusinessName):
+# def contains_business_name_in_copyright(html, BusinessName):
+#     """
+#     Check if the soup contains the given business name.
+#     :param html: html extracted from url
+#     :param business_name: the name of the business to look for
+#     :return: True if found, False if not
+#     """
+#     if html is not None:
+#         for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
+#             if BusinessName.lower() in text.lower():
+#                 return True
+#         return False
+#     else:
+#         return np.nan
+
+def contains_business_name_in_copyright(html, business_name):
     """
-    Check if the soup contains the given business name.
-    :param html: html extracted from url
-    :param business_name: the name of the business to look for
-    :return: True if found, False if not
+    Check if the given business name is present in the footer of the website by comparing the number of matching words
+    in the footer text and the business name. If at least 50% of the words in the business name are found in the footer text,
+    the function returns True. Otherwise, it returns False.
+    param html (BeautifulSoup object): The parsed HTML content of the website.
+    param business_name (str): The name of the business to search for.
+    Returns: True if the business name is found in the footer of the website, False otherwise.
     """
+
     if html is not None:
-        for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
-            if BusinessName.lower() in text.lower():
-                return True
-        return False
-    else:
-        return np.nan
+        try:
+            footer = html.find('footer')
+            if footer is not None:
+                footer_text = footer.text
+                footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())  # extract all words from the footer text
+                business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+                matches = set(footer_text_words) & set(business_name_words) # get the set of words that appear in both footer and business name
+                num_matches = len(matches)
+                if num_matches >= len(business_name_words) / 2:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+
+        except Exception as e:
+            return False
 
 
 def contains_social_media_links(html):
