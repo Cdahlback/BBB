@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch, MagicMock
-
 from bs4 import BeautifulSoup
-
 from Extract_Data.fill_ind_var_columns import get_html
+
+"""File used to test getting the html from a website using bs4"""
 
 
 class TestGetHtml(unittest.TestCase):

@@ -1,6 +1,7 @@
 import unittest
 from Extract_Data.data_extraction import *
 
+"""File used to test our independent variable scrapers for our machine learning model"""
 
 class TestIndVarScrapers(unittest.TestCase):
     def test_url_contains_email(self):

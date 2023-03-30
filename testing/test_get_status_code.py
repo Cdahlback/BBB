@@ -5,6 +5,8 @@ import requests
 
 from Not_Our_Code.get_status_codes import status_code
 
+"""File used to test our function which gets status codes for a website"""
+
 
 class TestStatusCode(unittest.TestCase):
 
