@@ -26,7 +26,7 @@ def test_different_inputs(df, feature):
             X, y, test_size=0.3, random_state=i)
 
         # create model
-        model = LogisticRegression()
+        model = LinearRegression()
 
         # fit model to train data
         model.fit(X_train, y_train)
