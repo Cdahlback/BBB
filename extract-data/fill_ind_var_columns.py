@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 def add_ind_var_columns(data):
     """
     A function that takes a DataFrame 'data' and adds several columns with boolean values
-    :param data: data that is associated with website URL's.
+    :param data: data that is associated with Business URLS.
     :return: the modified DataFrame with the new columns added.
     """
     data['contains_contacts_page'] = np.nan
@@ -27,11 +27,14 @@ def add_ind_var_columns(data):
 
 def fill_columns(data):
     """
-    A function
+    A function to fill in the new columns  with information scraped from the Business URL.
+    :param data: data that is associated with the Business URLS.
+    :return: cope of the data with new columns added.
     """
     data_copy = data.copy(deep=True)
     data_copy = data_copy.iloc[:500,:]
     t0 = time.time()
+
     for index, row in data_copy.iterrows():
         website = row["Website"] if row["Website"] else None
         if pd.isnull(website):
@@ -65,6 +68,11 @@ def fill_columns(data):
 
 
 def get_html(website):
+    """
+     A function
+     :param website: The URL of the website to retrieve the HTML from.
+     :return: The HTML content of the page
+    """
     if website is None:
         return None
     try:
