@@ -1,7 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from Extract_Data.create_urls import build_url_from_email
+from Extract_Data.create_urls import build_url_from_email, extract_domain_name
+
+"""File used to test creation of urls, creation from emails and also web searches"""
 
 
 class TestCreateURLs(unittest.TestCase):
@@ -38,3 +40,26 @@ class TestCreateURLs(unittest.TestCase):
         result = build_url_from_email(email)
 
         self.assertEqual(result, expected_result)
+
+    def test_extract_domain_name(self):
+        url = "https://www.example.com"
+        expected_result = "example.com"
+        self.assertEqual(extract_domain_name(url), expected_result)
+
+        url = "https://www.yelp.com"
+        self.assertIsNone(extract_domain_name(url))
+
+        url = "https://example.com"
+        expected_result = "example.com"
+        self.assertEqual(extract_domain_name(url), expected_result)
+
+        url = "https://www.blog.example.com"
+        expected_result = "example.com"
+        self.assertEqual(extract_domain_name(url), expected_result)
+
+        url = "https://www.example.com:8080"
+        expected_result = "example.com"
+        self.assertEqual(extract_domain_name(url), expected_result)
+
+        url = "this is not a valid url"
+        self.assertIsNone(extract_domain_name(url))
