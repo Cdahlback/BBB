@@ -1,7 +1,5 @@
 import time
-
-import pandas as pd
-from Extract_Data.data_extraction import *
+from data_extraction import *
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
@@ -11,6 +9,11 @@ from bs4 import BeautifulSoup
 
 
 def add_ind_var_columns(data):
+    """
+    A function that takes a DataFrame 'data' and adds several columns with boolean values
+    :param data: data that is associated with Business URLS.
+    :return: the modified DataFrame with the new columns added.
+    """
     data['contains_contacts_page'] = np.nan
     data['contains_business_name'] = np.nan
     data['contains_business_name_in_copyright'] = np.nan
@@ -23,9 +26,15 @@ def add_ind_var_columns(data):
 
 
 def fill_columns(data):
+    """
+    A function to fill in the new columns  with information scraped from the Business URL.
+    :param data: data that is associated with the Business URLS.
+    :return: cope of the data with new columns added.
+    """
     data_copy = data.copy(deep=True)
     data_copy = data_copy.iloc[:500,:]
     t0 = time.time()
+
     for index, row in data_copy.iterrows():
         website = row["Website"] if row["Website"] else None
         if pd.isnull(website):
@@ -50,8 +59,8 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "contains_social_media_links"] = contains_social_media_links(html)
             data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
             data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, zip)
-            data_copy.loc[row_idx[0], "url_contains_phone_number"] = url_contains_phone_number(html, phone_number)
-            data_copy.loc[row_idx[0], "url_contains_email"] = url_contains_email(html, email)
+            data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, phone_number)
+            data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
 
     t1 = time.time() - t0
     print(t1)
@@ -59,6 +68,11 @@ def fill_columns(data):
 
 
 def get_html(website):
+    """
+     A function
+     :param website: The URL of the website to retrieve the HTML from.
+     :return: The HTML content of the page
+    """
     if website is None:
         return None
     try:

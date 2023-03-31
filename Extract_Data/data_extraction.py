@@ -4,9 +4,7 @@ import requests
 import re
 import whois
 from urllib.parse import urlparse
-import numpy as np
 import pandas as pd
-
 
 
 """
@@ -24,146 +22,153 @@ There are two types of functions you see here, listed below
 
 
 def contains_contacts_page(html):
-    '''
-    Checks for a contacts page inside a webpage
+    """
+    Check if the html contains a contacts page.
     :param html: html extracted from url
-    :return: True if found, False if not
-    '''
-    if html is not None:
-        for tag in html.find_all('a'):
-            possible_contact = tag.get('href')
-            if possible_contact:
-                if 'contact' in possible_contact.lower():
-                    return True
+    :return: True if a contacts page is found in the html, False if not
+    """
+    if html is None:
         return False
-    else:
-        return np.nan
+    # Find all a tags in the html
+    for tag in html.find_all('a'):
+        # Get the next href link and check if it contains the word contact
+        possible_contact = tag.get('href')
+        if possible_contact and 'contact' in possible_contact.lower():
+            return True
+    # No contacts page was found
+    return False
 
 
 def contains_business_name(html, business_name):
     """
-    Check if the soup contains the given business name.
+    Check if the html contains the given business name.
     :param html: html extracted from url
     :param business_name: the name of the business to look for
-    :return: True if found, False if not
+    :return: True if the business name is found in the html, False if not
     """
-    if html is not None:
-        # Find all text nodes in the soup
-        for text in html.find_all(text=True):
-            # Check if the business name appears in the text
-            if business_name.lower() in text.lower():
-                return True
-        # The business name was not found in the soup
+    if html is None:
         return False
-    else:
-        return np.nan
+    # Find all text nodes in the html
+    for text in html.find_all(text=True):
+        # Check if the business name appears in the text
+        if business_name.lower() in text.lower():
+            return True
+    # The business name was not found in the html
+    return False
 
 
-def contains_business_name_in_copyright(html, BusinessName):
+def contains_business_name_in_copyright(html, business_name):
     """
-    Check if the soup contains the given business name.
-    :param html: html extracted from url
-    :param business_name: the name of the business to look for
-    :return: True if found, False if not
+    Check if the given business name is present in the footer of the website by comparing the number of matching words
+    in the footer text and the business name. If at least 50% of the words in the business name are found in the footer
+    text, the function returns True. Otherwise, it returns False.
+    :param html: (BeautifulSoup object): The parsed HTML content of the website
+    :param business_name: (str): The name of the business to search for
+    :return: True if the business name is found in the footer of the website, False otherwise
     """
-    if html is not None:
-        for text in html.find_all(text=u"\N{COPYRIGHT SIGN}"):
-            if BusinessName.lower() in text.lower():
-                return True
+    if html is None:
         return False
-    else:
-        return np.nan
+    try:
+        footer = html.find('footer')
+        if footer is None:
+            return False
+        footer_text = footer.text
+        # Extract all words from the footer text
+        footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+        business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+        # Get the set of words that appear in both footer and business name
+        matches = set(footer_text_words) & set(business_name_words)
+        num_matches = len(matches)
+        return num_matches >= len(business_name_words) / 2
+    except Exception:
+        return False
 
 
 def contains_social_media_links(html):
     """
-    Question: Should we look for how many social media pages it has?
-    Check if the soup contains a social media section.
-    :param html:
-    :return:
+    Check if the html contains a social media section.
+    :param html: html extracted from url
+    :return: True if a social media section is found in the html, False if not
     """
-    if html is not None:
-        links = html.find_all('a')
-        # Check each link to see if it points to a social media website
-        social_media_sites = ['facebook', 'twitter', 'instagram', 'linkedin']
-        for link in links:
-            href = link.get('href')
-            if href and any(site in href.lower() for site in social_media_sites):
-                return True
-        # If we didn't find any social media links, return False
+    if html is None:
         return False
-    else:
-        return np.nan
+    links = html.find_all('a')
+    # Check each link to see if it points to a social media website
+    social_media_sites = ['facebook', 'twitter', 'instagram', 'linkedin']
+    for link in links:
+        href = link.get('href')
+        if href and any(site in href.lower() for site in social_media_sites):
+            return True
+    # If we didn't find any social media links, return False
+    return False
 
 
 def contains_reviews_page(html):
-    '''
-    Checks for a reviews page inside the webpage
+    """
+    Check if the html contains a reviews page.
     :param html: html extracted from url
-    :return: True if found, False if not
-    '''
-    if html is not None:
-        for tag in html.find_all('a'):
-            possible_review = tag.get('href')
-            if possible_review:
-                if 'review' in possible_review.lower():
-                    return True
-        return False
-    else:
-        return np.nan
-
-
-def contains_zipCode(html, zip):
+    :return: True if a reviews page is found in the html, False if not
     """
-    :param html: url extracted html
-    :param zip: business zipcode to find
-    :return: True if found, false if not
+    if html is None:
+        return False
+    for tag in html.find_all('a'):
+        possible_review = tag.get('href')
+        if possible_review and 'review' in possible_review.lower():
+            return True
+    return False
+
+
+def contains_zipCode(html, zip_code):
     """
-    if pd.isnull(zip):
-        return False
-    if html is not None:
-        for text in html.find_all(text=re.compile(r'\d{5}')):
-            if re.search(str(zip), text):
-                return True
-        return False
-    else:
-        return np.nan
-
-
-def url_contains_phone_number(html, number):
+    Check if the html contains the given zip code.
+    :param html: html extracted from url
+    :param zip_code: business zip code to find
+    :return: True if the zip code is found in the html, False if not
     """
-    Checks if the phone number for this business is in teh html
-    :param html:
-    :param number:
-    :return:
+    if pd.isnull(zip_code) or html is None:
+        return False
+    for text in html.find_all(text=re.compile(r'\d{5}')):
+        if re.search(str(zip_code), text):
+            return True
+
+
+def contains_phone_number(html, phone_number):
     """
-    if pd.isnull(number):
+    Check if the html contains the given phone number
+    :param html: html extracted from url
+    :param phone_number: business phone number to find
+    :return: True if the phone number is found in the html, False if not
+    """
+    if pd.isnull(phone_number) or html is None:
         return False
-    if html is not None:
-        for text in html.find_all(text=True):
-            if str(number) in text.replace("-", ""):
-                return True
-        return False
-    else:
-        return np.nan
+    for text in html.find_all(text=True):
+        if str(phone_number) in text.replace("-", ""):
+            return True
+    return False
 
 
-def url_contains_email(html, email):
-    if html is not None and email is not None:
-        if pd.isnull(email):
-            return False
-        for tag in html.find_all('a'):
-            href = tag.get('href')
-            if href is None:
-                return False
-            if email in href:
-                return True
+def contains_email(html, email):
+    """
+    Check if the html contains the given email address
+    :param html: html extracted from url
+    :param email: business email address to find
+    :return: True if the email address is found in the html, False if not
+    """
+    if pd.isnull(email) or html is None:
         return False
-    else:
-        return np.nan
+    for tag in html.find_all('a'):
+        href = tag.get('href')
+        if email in href:
+            return True
+    return False
 
 
 def get_domain_owner(url):
+    """
+    Gets the name of the owner for the given url's domain
+    :param url: url to check the domain owner of
+    :return: A string containing the name of the domain owner, an empty string if the name can't be found
+    """
     domain = urlparse(url).netloc
     try:
         w = whois.whois(domain)
@@ -173,23 +178,21 @@ def get_domain_owner(url):
         return w.registrar
 
 
-def extract_phone_data(BusinessID, Website):
+def extract_phone_data(business_id, url):
     """
-    Function to find phone numbers
-    :param id: id associated with extracted phone #s
-    :param url: url associated with extracted phone #s
-    :return: dictionary of all phone #s associated with a business
+    Finds phone numbers in the given url's webpage
+    :param business_id: id associated with a business
+    :param url: url to search for phone numbers in
+    :return: dictionary of all phone numbers found in the given url's webpage
     """
     try:
-        response = requests.get(Website)
+        response = requests.get(url)
         soup = bs4.BeautifulSoup(response.content, "html.parser")
-    except Exception as e:
-        print(str(e))
-        print("bad url")
+    except Exception:
         return None
 
-    # Extract phone numbers from soup using regex for phone numbers (need to modify re so it catches 5074401234)
-    phone_numbers = {'BusinessID': BusinessID}
+    # Extract phone numbers from soup using regex for phone numbers
+    phone_numbers = {'BusinessID': business_id}
     counter = 0
     for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
@@ -198,29 +201,29 @@ def extract_phone_data(BusinessID, Website):
     if len(phone_numbers) >= 1:
         return phone_numbers
 
-def extract_email_data(BusinessID, Website):
+
+def extract_email_data(business_id, url):
     """
-    Function to find emails
-    :param id: id associated with extracted emails
-    :param url: url associated with extracted emails
-    :return: dictionary of all emails associated with a business
+    Finds email addresses in the given url's webpage
+    :param business_id: id associated with a business
+    :param url: url to search for emails in
+    :return: dictionary of all emails found in the given url's webpage
     """
     try:
-        response = requests.get(Website)
+        response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
-    except:
-        return
+    except Exception:
+        return None
 
     # Extract email addresses
-    email_addresses = {'BusinessID': id}
+    email_addresses = {'BusinessID': business_id}
     email_number = 0
     for tag in soup.find_all('a'):
         email = tag.get('href')
-        if email:
-            if 'mailto:' in email:
-                if email in email_addresses:
-                    continue
-                email_number += 1
-                email_addresses['Email' + str(email_number)] = email
+        if email and 'mailto:' in email:
+            if email in email_addresses:
+                continue
+            email_number += 1
+            email_addresses['Email' + str(email_number)] = email
     if len(email_addresses) >= 1:
         return email_addresses
