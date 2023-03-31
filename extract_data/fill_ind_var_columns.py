@@ -59,8 +59,8 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "contains_social_media_links"] = contains_social_media_links(html)
             data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
             data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, zip)
-            data_copy.loc[row_idx[0], "url_contains_phone_number"] = url_contains_phone_number(html, phone_number)
-            data_copy.loc[row_idx[0], "url_contains_email"] = url_contains_email(html, email)
+            data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, phone_number)
+            data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
 
     t1 = time.time() - t0
     print(t1)
