@@ -188,9 +188,7 @@ def extract_phone_data(business_id, url):
     try:
         response = requests.get(url)
         soup = bs4.BeautifulSoup(response.content, "html.parser")
-    except Exception as e:
-        print(str(e))
-        print("bad url")
+    except Exception:
         return None
 
     # Extract phone numbers from soup using regex for phone numbers
@@ -215,7 +213,7 @@ def extract_email_data(business_id, url):
         response = requests.get(url)
         soup = BeautifulSoup(response.content, "html.parser")
     except Exception:
-        return
+        return None
 
     # Extract email addresses
     email_addresses = {'BusinessID': business_id}
