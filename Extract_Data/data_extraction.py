@@ -41,20 +41,35 @@ def contains_contacts_page(html):
 
 def contains_business_name(html, business_name):
     """
-    Check if the html contains the given business name.
-    :param html: html extracted from url
-    :param business_name: the name of the business to look for
-    :return: True if the business name is found in the html, False if not
+    check if the business name is in the url/html
+    :param html: html input from website
+    :param business_name: name of business we want to find
+    :return: bool True of False
     """
-    if html is None:
+    if html is not None:
+        # remove '&#39;' from string and replace with '
+        if re.search(r'&#39;', business_name):
+            business_name = re.sub('&#39;', '\'', business_name)
+        # remove any floating non-letter character
+        if re.search(r'\s\W\s', business_name):
+            business_name = re.sub(r'\s\W\s', ' ', business_name)
+        # remove any non-letter/digit characters
+        business_name = re.sub(r'[!\"#\$%&\'\(\)\*\+,-\.\:;<=>\?@\[\\\]\^_`{\|}~]', '', business_name)
+        name_lst = business_name.split()        # split business_name into list of words
+        found_name = 0                  # counter for every word in the list found on the html
+        for name in name_lst:           # loop through word in list
+            found = False
+            for text in html.find_all(text=True):
+                if name.lower() in text.lower():
+                    found = True        # found is mark true if word was found in html
+            if found:
+                found_name += 1         # add to counter
+        if found_name / len(name_lst) > 0.5:     # if more than half of the words in the list were found in the html
+            return True                          # then return True
+        else:
+            return False
+    else:
         return False
-    # Find all text nodes in the html
-    for text in html.find_all(text=True):
-        # Check if the business name appears in the text
-        if business_name.lower() in text.lower():
-            return True
-    # The business name was not found in the html
-    return False
 
 
 def contains_business_name_in_copyright(html, business_name):
