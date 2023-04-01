@@ -146,14 +146,14 @@ def contains_reviews_page(html):
     return False
 
 
-def contains_zipcode(html, zipcode):
+def contains_zipCode(html, zip_code):
     """
         Check if the html contains the given zip code.
         :param html: html extracted from url
         :param zip_code: business zip code to find
         :return: True if the zip code is found in the html, False if not
         """
-    if html is not None and zipcode is not None:
+    if html is not None and zip_code is not None:
         try:
             # Look for zip code in the body of the HTML
             body_text = html.text.lower()
@@ -169,7 +169,7 @@ def contains_zipcode(html, zipcode):
                     body_matches += footer_matches
 
             # Check if the zip code is in the list of matches
-            return str(zipcode) in body_matches
+            return str(zip_code) in body_matches
         except Exception as e:
             return False
     else:
@@ -180,9 +180,8 @@ def contains_phone_number(html, phone_number):
     """
     Function to check if a phone number is present in the HTML content of a webpage.
 
-    Param:
-    html: The BeautifulSoup object containing the HTML content of the webpage.
-    phone_number: The phone number to be checked.
+    Param html: The BeautifulSoup object containing the HTML content of the webpage.
+    Param phone_number: The phone number to be checked.
 
     Returns: bool
     """
