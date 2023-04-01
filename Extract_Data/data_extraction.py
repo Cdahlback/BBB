@@ -83,21 +83,32 @@ def contains_business_name_in_copyright(html, business_name):
     :param business_name: (str): The name of the business to search for
     :return: True if the business name is found in the footer of the website, False otherwise
     """
-    if html is None:
-        return False
-    try:
-        footer = html.find('footer')
-        if footer is None:
+    if html is not None:
+        try:
+            # Find the footer element in the HTML
+            footer = html.find('footer')
+
+            # If footer is found, extract the text and count the number of matching words
+            if footer is not None:
+                footer_text = footer.text
+                footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+                business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+                matches = set(footer_text_words) & set(business_name_words)
+                num_matches = len(matches)
+
+                # Check if the number of matching words is at least 50% of the words in the business name
+                if num_matches >= len(business_name_words) / 2:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+
+        except Exception as e:
+            # If an error occurs, return False
             return False
-        footer_text = footer.text
-        # Extract all words from the footer text
-        footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
-        business_name_words = re.findall(r'\b\w+\b', business_name.lower())
-        # Get the set of words that appear in both footer and business name
-        matches = set(footer_text_words) & set(business_name_words)
-        num_matches = len(matches)
-        return num_matches >= len(business_name_words) / 2
-    except Exception:
+    else:
+        # If html is None, return False
         return False
 
 
