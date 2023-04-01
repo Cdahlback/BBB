@@ -195,6 +195,35 @@ def get_domain_owner(url):
         return w.registrar
 
 
+def url_is_review_page(url, html):
+    """
+    checks if url is a review page by looking at url strong contents
+    :param url: input url
+    :param html: the html of the url parameter
+    :return: True if url is a review page, false if not
+    """
+    # list of rating sites we have already excluded from search.
+    rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi', 'yellowpages',
+                    'bizapedia']
+    # list of phrases that would indicate if the url is a review page.
+    indicator_list = ['/businessdirectory/', '/pages/', '/restaurants/', '/companies/', '/businesses/',
+                      '/contractor/', '/profile/', '/company-information/', '/directory/']
+    # Case 1: looping through the rating sites we already excluded from our search, making sure none slipped through.
+    for site in rating_sites:
+        if site in url.lower():
+            return True
+    # Case 2: if the url contains an indicator in the list, it will return true.
+    for indicator in indicator_list:
+        if indicator in url.lower():
+            return True
+    # Case 3: if the word 'review' appears in the html text, return true.
+    for text in html.find_all(text=True):
+        if 'review' in text.lower():
+            return True
+    # if no cases apply, return false
+    return False
+
+
 def extract_phone_data(business_id, url):
     """
     Finds phone numbers in the given url's webpage

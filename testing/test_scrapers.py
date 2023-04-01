@@ -153,6 +153,23 @@ class TestIndVarScrapers(unittest.TestCase):
         # test if the function returns np.nan for None html
         self.assertIsNone(contains_contacts_page(None))
 
+    def test_url_is_review_page(self):
+        # create review page url for case 1
+        c1_url = 'https://www.yellowpages.com/mn/example-business/'
+        # create review page url for case 2
+        c2_url = 'https://www.reviewpage.com/mn/companies/example-business/'
+        # create review page html for case 3
+        c3_html = BeautifulSoup('<html><body><a href="review">Reviews</a></body></html>', 'html.parser')
+        # create false test
+        false_url = 'https://www.examplebusiness.com/mankato/homepage/'
+        false_html = BeautifulSoup('<html><body><a href="contact">Contact Us</a></body></html>', 'html.parser')
+        # run true/false tests
+        self.assertTrue(url_is_review_page(c1_url, false_html))
+        self.assertTrue(url_is_review_page(c2_url, false_html))
+        self.assertTrue(url_is_review_page(false_url, c3_html))
+        self.assertFalse(url_is_review_page(false_url, false_html))
+
+
 class TestExtractData(unittest.TestCase):
     pass
 
