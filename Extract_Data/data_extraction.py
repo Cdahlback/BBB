@@ -91,7 +91,9 @@ def contains_business_name_in_copyright(html, business_name):
             # If footer is found, extract the text and count the number of matching words
             if footer is not None:
                 footer_text = footer.text
+                # extract all words from the footer text
                 footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+                # extract all words from the business name
                 business_name_words = re.findall(r'\b\w+\b', business_name.lower())
                 matches = set(footer_text_words) & set(business_name_words)
                 num_matches = len(matches)
@@ -105,10 +107,8 @@ def contains_business_name_in_copyright(html, business_name):
                 return False
 
         except Exception as e:
-            # If an error occurs, return False
             return False
     else:
-        # If html is None, return False
         return False
 
 
@@ -146,33 +146,67 @@ def contains_reviews_page(html):
     return False
 
 
-def contains_zipCode(html, zip_code):
+def contains_zipcode(html, zipcode):
     """
-    Check if the html contains the given zip code.
-    :param html: html extracted from url
-    :param zip_code: business zip code to find
-    :return: True if the zip code is found in the html, False if not
-    """
-    if pd.isnull(zip_code) or html is None:
+        Check if the html contains the given zip code.
+        :param html: html extracted from url
+        :param zip_code: business zip code to find
+        :return: True if the zip code is found in the html, False if not
+        """
+    if html is not None and zipcode is not None:
+        try:
+            # Look for zip code in the body of the HTML
+            body_text = html.text.lower()
+            zip_regex = re.compile(r'\b\d{5}\b')
+            body_matches = zip_regex.findall(body_text)
+
+            # If zip code not found in body, look in footer of the HTML
+            if not body_matches:
+                footer = html.find('footer')
+                if footer is not None:
+                    footer_text = footer.text.lower()
+                    footer_matches = zip_regex.findall(footer_text)
+                    body_matches += footer_matches
+
+            # Check if the zip code is in the list of matches
+            return str(zipcode) in body_matches
+        except Exception as e:
+            return False
+    else:
         return False
-    for text in html.find_all(text=re.compile(r'\d{5}')):
-        if re.search(str(zip_code), text):
-            return True
 
 
 def contains_phone_number(html, phone_number):
     """
-    Check if the html contains the given phone number
-    :param html: html extracted from url
-    :param phone_number: business phone number to find
-    :return: True if the phone number is found in the html, False if not
+    Function to check if a phone number is present in the HTML content of a webpage.
+
+    Param:
+    html: The BeautifulSoup object containing the HTML content of the webpage.
+    phone_number: The phone number to be checked.
+
+    Returns: bool
     """
-    if pd.isnull(phone_number) or html is None:
+    if html is not None:
+        # remove all non-digit characters from the phone number
+        phone_number_digits = re.sub(r'\D', '', phone_number)
+        try:
+            # find all phone numbers in the HTML, regardless of formatting
+            phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', html.text)
+
+            for match in phone_numbers:
+                # concatenate the digits of the found phone number
+                found_phone_number = ''.join(match)
+
+                if found_phone_number == phone_number_digits:
+                    return True
+
+
+            return False
+
+        except Exception as e:
+            return False
+    else:
         return False
-    for text in html.find_all(text=True):
-        if str(phone_number) in text.replace("-", ""):
-            return True
-    return False
 
 
 def contains_email(html, email):
