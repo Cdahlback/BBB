@@ -4,30 +4,38 @@ from bs4 import BeautifulSoup
 import re
 
 
-def contains_zipcode(html, zipcode):
+def contains_business_name_in_copyright(html, business_name):
     """
-        Check if the html contains the given zip code.
-        :param html: html extracted from url
-        :param zip_code: business zip code to find
-        :return: True if the zip code is found in the html, False if not
-        """
-    if html is not None and zipcode is not None:
+    Check if the given business name is present in the footer of the website by comparing the number of matching words
+    in the footer text and the business name. If at least 50% of the words in the business name are found in the footer
+    text, the function returns True. Otherwise, it returns False.
+    :param html: (BeautifulSoup object): The parsed HTML content of the website
+    :param business_name: (str): The name of the business to search for
+    :return: True if the business name is found in the footer of the website, False otherwise
+    """
+    if html is not None:
         try:
-            # Look for zip code in the body of the HTML
-            body_text = html.text.lower()
-            zip_regex = re.compile(r'\b\d{5}\b')
-            body_matches = zip_regex.findall(body_text)
+            # Find the footer element in the HTML
+            footer = html.find('footer')
 
-            # If zip code not found in body, look in footer of the HTML
-            if not body_matches:
-                footer = html.find('footer')
-                if footer is not None:
-                    footer_text = footer.text.lower()
-                    footer_matches = zip_regex.findall(footer_text)
-                    body_matches += footer_matches
+            # If footer is found, extract the text and count the number of matching words
+            if footer is not None:
+                footer_text = footer.text
+                # extract all words from the footer text
+                footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+                # extract all words from the business name
+                business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+                matches = set(footer_text_words) & set(business_name_words)
+                num_matches = len(matches)
 
-            # Check if the zip code is in the list of matches
-            return str(zipcode) in body_matches
+                # Check if the number of matching words is at least 50% of the words in the business name
+                if num_matches >= len(business_name_words) / 2:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+
         except Exception as e:
             return False
     else:
@@ -41,7 +49,7 @@ with open('../data/sample.csv') as csv_file:
     # Loop through each row in the CSV file
     for row in csv_reader:
         website = row['Website']
-        zipcode = row['PostalCode']
+        business_name = row['BusinessName']
 
         # Scrape the HTML from the website
         try:
@@ -49,10 +57,10 @@ with open('../data/sample.csv') as csv_file:
             html = BeautifulSoup(response.content, 'html.parser')
 
             # Check if the HTML contains the zip code
-            if contains_zipcode(html, zipcode):
-                print(f"Zip code {zipcode} found on {website}")
+            if contains_business_name_in_copyright(html, business_name):
+                print(f"Zip code {business_name} is found on {website}")
             else:
-                print(f"Zip code {zipcode} not found on {website}")
+                print(f"Zip code {business_name} not found on {website}")
 
         except Exception as e:
             print(f"Error processing {website}: {e}")
