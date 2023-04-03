@@ -22,6 +22,7 @@ def add_ind_var_columns(data):
     data['contains_zipCode'] = np.nan
     data['url_contains_phone_number'] = np.nan
     data['url_contains_email'] = np.nan
+    data['url_is_review_page'] = np.nan
     return data
 
 
@@ -32,7 +33,6 @@ def fill_columns(data):
     :return: cope of the data with new columns added.
     """
     data_copy = data.copy(deep=True)
-    data_copy = data_copy.iloc[:500,:]
     t0 = time.time()
 
     for index, row in data_copy.iterrows():
@@ -44,8 +44,6 @@ def fill_columns(data):
         print(time.time() - t2)
         if html is None:
             print("not found")
-            continue
-        elif pd.isnull(row["Email"]):
             continue
         else:
             business_name = row["BusinessName"]
@@ -60,7 +58,11 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
             data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, zip)
             data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, phone_number)
-            data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
+            try:
+                data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
+            except:
+                data_copy.loc[row_idx[0], "url_contains_email"] = False
+            data_copy.loc[row_idx[0], "url_is_review_page"] = url_is_review_page(website, html)
 
     t1 = time.time() - t0
     print(t1)
@@ -83,3 +85,9 @@ def get_html(website):
     except Exception as e:
         return None
 
+
+if __name__ == '__main__':
+    input = pd.read_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var.csv')
+    revised = add_ind_var_columns(input)
+    final = fill_columns(revised)
+    revised.to_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var2.csv')
