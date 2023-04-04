@@ -1,3 +1,4 @@
+import csv
 import random
 
 import pandas as pd
@@ -7,7 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from ml_models.Vizualization.ClassificationVisualization import *
 
-# Load the iris dataset
 
 data = pd.read_csv("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
 
@@ -52,18 +52,41 @@ def test_ipts_decision_tree(data, variables, r_s, ml_stats_df):
     # Measure the accuracy of the classifier
     accuracy = accuracy_score(y_test, y_pred)
 
+    # get feature importance for all vars
+    get_feature_importance(clf, variables)
+
     # save results
     dict_to_append = {"Accuracy" : accuracy, "VariablesUsed" : variables[:], "RandomStateUsed" : r_s}
 
-    # concatenate the new DataFrame with the original DataFrame
+    # update the dataframe
     ml_stats_df.loc[len(ml_stats_df.index)] = dict_to_append
     return ml_stats_df
 
 
-stats_df = pd.read_csv("../data/ml_stats.csv")
-for i in range(50, 150):
-    k = random.randint(1, len(variables))
-    vars_used = random.sample(variables, k)
-    stats_df = test_ipts_decision_tree(data, vars_used, i, stats_df)
+def get_highest_accuracy():
+    """Gets the top5 largest accuracies from testing different inputs"""
+    df = pd.read_csv("../data/ml_stats.csv")
+    new_df = df.loc[df["Accuracy"] >= .7]
+    new_df.to_csv("../data/top_preformers.csv")
 
-stats_df.to_csv("../data/ml_stats.csv")
+
+def get_feature_importance(clf, variables):
+    """Code block used to compute feature importance"""
+    # Compute feature importance
+    importances = clf.feature_importances_
+
+    # Print the feature importances
+    for feature, importance in zip(variables, importances):
+        print(f"{feature}: {importance:.3f}")
+
+
+def test_diff_inputs():
+    """Code block to test different features and save results to a csv"""
+    stats_df = pd.read_csv("../data/ml_data/ml_stats.csv")
+    for i in range(50, 150):
+        k = random.randint(1, len(variables))
+        vars_used = random.sample(variables, k)
+    stats_df = test_ipts_decision_tree(data, variables, 0, stats_df)
+    stats_df.to_csv("../data/ml_stats.csv")
+
+
