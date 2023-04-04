@@ -1,0 +1,151 @@
+,Unnamed: 0,Accuracy,VariablesUsed,RandomStateUsed
+0,0.0,0.6583333333333333,"['IsHQ', 'url_contains_phone_number', 'contains_business_name', 'url_contains_email', 'contains_business_name_in_copyright', 'contains_zipCode', 'IsBBBAccredited', 'contains_contacts_page', 'contains_social_media_links', 'BBBRatingScore']",0
+1,1.0,0.7083333333333334,"['contains_business_name', 'contains_contacts_page', 'IsCharity']",1
+2,2.0,0.675,"['contains_zipCode', 'contains_contacts_page', 'contains_business_name_in_copyright', 'contains_reviews_page', 'IsCharity', 'url_contains_email']",2
+3,3.0,0.6633333333333333,"['BBBRatingScore', 'IsBBBAccredited', 'contains_business_name', 'IsHQ']",3
+4,4.0,0.6883333333333334,"['url_contains_email', 'contains_social_media_links', 'IsHQ']",4
+5,5.0,0.7116666666666667,"['BBBRatingScore', 'url_contains_phone_number', 'contains_reviews_page', 'IsBBBAccredited', 'url_contains_email']",5
+6,6.0,0.6933333333333334,"['contains_business_name_in_copyright', 'contains_social_media_links', 'contains_business_name', 'IsHQ', 'contains_contacts_page', 'contains_reviews_page', 'url_contains_phone_number', 'url_contains_email']",6
+7,7.0,0.6883333333333334,"['contains_reviews_page', 'url_contains_phone_number']",7
+8,8.0,0.6766666666666666,"['BBBRatingScore', 'IsCharity', 'IsHQ', 'contains_business_name', 'contains_social_media_links']",8
+9,9.0,0.6783333333333333,"['IsBBBAccredited', 'IsCharity', 'contains_business_name']",9
+10,10.0,0.685,"['IsCharity', 'contains_business_name_in_copyright', 'contains_zipCode', 'contains_business_name', 'IsHQ', 'BBBRatingScore', 'url_contains_phone_number', 'IsBBBAccredited', 'url_contains_email', 'contains_reviews_page']",10
+11,11.0,0.6766666666666666,"['IsBBBAccredited', 'contains_business_name_in_copyright']",11
+12,12.0,0.6516666666666666,"['BBBRatingScore', 'contains_social_media_links', 'contains_reviews_page', 'IsBBBAccredited', 'contains_business_name', 'url_contains_phone_number', 'IsHQ', 'IsCharity', 'contains_contacts_page', 'contains_business_name_in_copyright', 'contains_zipCode']",12
+13,13.0,0.695,"['url_contains_phone_number', 'contains_reviews_page', 'contains_social_media_links', 'BBBRatingScore', 'IsBBBAccredited', 'IsCharity']",13
+14,14.0,0.6833333333333333,"['contains_contacts_page', 'IsHQ', 'IsCharity', 'contains_business_name']",14
+15,15.0,0.6616666666666666,"['IsCharity', 'contains_business_name_in_copyright', 'BBBRatingScore', 'contains_social_media_links', 'contains_zipCode', 'IsHQ']",15
+16,16.0,0.68,"['contains_business_name', 'IsHQ', 'url_contains_phone_number', 'contains_contacts_page', 'BBBRatingScore', 'contains_zipCode', 'IsCharity', 'IsBBBAccredited', 'url_contains_email']",16
+17,17.0,0.7,"['IsBBBAccredited', 'url_contains_phone_number', 'contains_business_name_in_copyright', 'contains_zipCode', 'contains_reviews_page', 'contains_business_name', 'BBBRatingScore', 'url_contains_email', 'IsHQ', 'contains_contacts_page', 'contains_social_media_links']",17
+18,18.0,0.6683333333333333,"['contains_reviews_page', 'url_contains_email', 'contains_contacts_page', 'IsBBBAccredited', 'IsHQ', 'BBBRatingScore', 'IsCharity', 'contains_social_media_links', 'contains_zipCode', 'contains_business_name', 'url_contains_phone_number']",18
+19,19.0,0.69,"['IsBBBAccredited', 'IsHQ', 'url_contains_phone_number', 'url_contains_email', 'contains_business_name_in_copyright', 'IsCharity']",19
+20,20.0,0.6916666666666667,"['IsCharity', 'contains_business_name']",20
+21,21.0,0.6666666666666666,"['contains_contacts_page', 'url_contains_phone_number', 'contains_business_name_in_copyright', 'IsHQ', 'IsCharity', 'contains_reviews_page', 'url_contains_email', 'contains_social_media_links', 'contains_business_name', 'contains_zipCode']",21
+22,22.0,0.6783333333333333,"['contains_reviews_page', 'contains_contacts_page']",22
+23,23.0,0.6583333333333333,"['IsBBBAccredited', 'contains_business_name', 'contains_business_name_in_copyright', 'contains_zipCode', 'url_contains_phone_number', 'IsHQ', 'BBBRatingScore', 'url_contains_email', 'contains_social_media_links']",23
+24,24.0,0.6633333333333333,"['contains_social_media_links', 'BBBRatingScore', 'IsCharity', 'contains_zipCode', 'url_contains_phone_number', 'contains_business_name']",24
+25,25.0,0.6683333333333333,['url_contains_phone_number'],25
+26,26.0,0.6983333333333334,"['url_contains_email', 'BBBRatingScore', 'IsCharity', 'IsBBBAccredited', 'url_contains_phone_number', 'contains_social_media_links']",26
+27,27.0,0.6316666666666667,"['IsBBBAccredited', 'contains_business_name_in_copyright', 'contains_business_name', 'url_contains_phone_number', 'IsCharity', 'contains_zipCode']",27
+28,28.0,0.685,"['contains_contacts_page', 'contains_zipCode', 'contains_business_name', 'contains_reviews_page']",28
+29,29.0,0.6666666666666666,['url_contains_phone_number'],29
+30,30.0,0.6583333333333333,"['contains_business_name', 'url_contains_phone_number', 'IsCharity', 'contains_business_name_in_copyright', 'contains_zipCode', 'contains_contacts_page', 'IsHQ', 'IsBBBAccredited']",30
+31,31.0,0.6833333333333333,"['IsCharity', 'IsHQ', 'contains_zipCode', 'contains_business_name_in_copyright', 'contains_business_name']",31
+32,32.0,0.685,"['contains_business_name', 'IsCharity', 'IsHQ', 'url_contains_phone_number', 'BBBRatingScore', 'contains_business_name_in_copyright']",32
+33,33.0,0.6883333333333334,"['BBBRatingScore', 'IsHQ', 'contains_reviews_page']",33
+34,34.0,0.6933333333333334,"['IsCharity', 'IsBBBAccredited', 'contains_social_media_links', 'url_contains_email', 'IsHQ', 'contains_business_name_in_copyright', 'contains_zipCode', 'contains_business_name', 'BBBRatingScore', 'url_contains_phone_number', 'contains_contacts_page']",34
+35,35.0,0.6533333333333333,"['contains_business_name', 'contains_business_name_in_copyright']",35
+36,36.0,0.7033333333333334,"['contains_business_name_in_copyright', 'IsCharity', 'url_contains_email', 'IsBBBAccredited', 'IsHQ', 'contains_business_name', 'contains_social_media_links']",36
+37,37.0,0.68,"['contains_social_media_links', 'contains_business_name', 'contains_reviews_page', 'contains_zipCode', 'url_contains_email', 'IsCharity', 'IsHQ', 'BBBRatingScore', 'IsBBBAccredited']",37
+38,38.0,0.6633333333333333,"['contains_contacts_page', 'contains_zipCode', 'contains_business_name', 'contains_business_name_in_copyright', 'BBBRatingScore', 'url_contains_phone_number', 'contains_social_media_links', 'IsCharity']",38
+39,39.0,0.67,"['contains_social_media_links', 'contains_business_name_in_copyright', 'contains_business_name', 'contains_reviews_page', 'contains_zipCode', 'url_contains_email', 'IsCharity', 'url_contains_phone_number', 'IsHQ']",39
+40,40.0,0.675,"['url_contains_email', 'IsBBBAccredited', 'BBBRatingScore', 'contains_social_media_links', 'url_contains_phone_number', 'contains_reviews_page', 'contains_contacts_page', 'IsCharity', 'IsHQ', 'contains_business_name', 'contains_zipCode', 'contains_business_name_in_copyright']",40
+41,41.0,0.6766666666666666,"['BBBRatingScore', 'contains_reviews_page', 'contains_contacts_page', 'url_contains_email', 'url_contains_phone_number', 'contains_zipCode', 'IsBBBAccredited', 'contains_business_name']",41
+42,42.0,0.655,"['contains_reviews_page', 'contains_contacts_page', 'IsBBBAccredited', 'IsHQ', 'contains_business_name_in_copyright', 'BBBRatingScore', 'url_contains_email', 'url_contains_phone_number', 'contains_zipCode']",42
+43,43.0,0.725,"['contains_contacts_page', 'contains_business_name_in_copyright']",43
+44,44.0,0.6733333333333333,"['contains_zipCode', 'url_contains_email', 'IsBBBAccredited', 'url_contains_phone_number', 'contains_contacts_page', 'contains_social_media_links', 'BBBRatingScore', 'contains_reviews_page', 'IsHQ', 'contains_business_name']",44
+45,45.0,0.6966666666666667,"['contains_zipCode', 'BBBRatingScore', 'IsHQ', 'contains_business_name', 'contains_business_name_in_copyright']",45
+46,46.0,0.695,"['IsHQ', 'IsBBBAccredited', 'contains_zipCode', 'contains_business_name_in_copyright']",46
+47,47.0,0.6716666666666666,"['url_contains_email', 'contains_business_name', 'IsHQ', 'IsBBBAccredited', 'contains_zipCode']",47
+48,48.0,0.6783333333333333,"['IsCharity', 'url_contains_phone_number', 'IsBBBAccredited', 'contains_zipCode', 'BBBRatingScore', 'IsHQ', 'contains_business_name_in_copyright']",48
+49,49.0,0.65,"['url_contains_phone_number', 'contains_business_name', 'IsCharity', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'BBBRatingScore', 'contains_zipCode', 'contains_social_media_links', 'contains_reviews_page']",49
+50,,0.675,"['BBBRatingScore', 'contains_zipCode']",50
+51,,0.6783333333333333,"['IsCharity', 'IsHQ', 'IsBBBAccredited', 'url_contains_email', 'BBBRatingScore', 'url_contains_phone_number', 'contains_zipCode', 'contains_contacts_page', 'contains_business_name', 'contains_social_media_links', 'contains_business_name_in_copyright', 'contains_reviews_page']",51
+52,,0.6916666666666667,"['contains_reviews_page', 'IsBBBAccredited', 'IsHQ']",52
+53,,0.6466666666666666,"['IsHQ', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'contains_contacts_page', 'contains_business_name', 'IsCharity', 'contains_zipCode']",53
+54,,0.66,"['BBBRatingScore', 'contains_social_media_links', 'url_contains_email', 'IsBBBAccredited', 'IsCharity', 'IsHQ', 'contains_contacts_page']",54
+55,,0.6733333333333333,"['contains_contacts_page', 'url_contains_phone_number', 'IsBBBAccredited', 'contains_business_name', 'contains_business_name_in_copyright', 'IsHQ', 'contains_zipCode', 'IsCharity', 'contains_reviews_page', 'url_contains_email', 'BBBRatingScore', 'contains_social_media_links']",55
+56,,0.65,"['contains_contacts_page', 'contains_reviews_page']",56
+57,,0.67,"['IsBBBAccredited', 'contains_business_name', 'url_contains_phone_number', 'IsCharity', 'contains_reviews_page', 'contains_business_name_in_copyright', 'contains_contacts_page', 'url_contains_email', 'contains_zipCode']",57
+58,,0.6783333333333333,"['IsBBBAccredited', 'contains_reviews_page']",58
+59,,0.6666666666666666,"['url_contains_email', 'url_contains_phone_number', 'contains_reviews_page', 'contains_business_name_in_copyright']",59
+60,,0.7033333333333334,"['contains_reviews_page', 'contains_social_media_links', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'contains_zipCode']",60
+61,,0.6866666666666666,"['contains_business_name', 'BBBRatingScore', 'IsCharity', 'IsBBBAccredited', 'url_contains_phone_number', 'contains_zipCode', 'url_contains_email', 'contains_business_name_in_copyright', 'contains_contacts_page', 'contains_reviews_page']",61
+62,,0.6616666666666666,"['IsBBBAccredited', 'contains_business_name', 'contains_reviews_page', 'contains_social_media_links', 'contains_business_name_in_copyright', 'BBBRatingScore', 'IsHQ', 'contains_zipCode', 'contains_contacts_page', 'url_contains_phone_number']",62
+63,,0.68,"['contains_business_name_in_copyright', 'contains_reviews_page', 'contains_business_name', 'IsHQ', 'url_contains_phone_number', 'BBBRatingScore', 'contains_social_media_links', 'contains_zipCode', 'contains_contacts_page']",63
+64,,0.6566666666666666,"['contains_reviews_page', 'contains_contacts_page', 'url_contains_phone_number', 'url_contains_email', 'IsBBBAccredited']",64
+65,,0.6816666666666666,"['url_contains_phone_number', 'IsBBBAccredited', 'BBBRatingScore', 'contains_business_name', 'contains_zipCode', 'IsCharity']",65
+66,,0.66,"['contains_zipCode', 'IsBBBAccredited', 'url_contains_phone_number', 'contains_business_name', 'contains_social_media_links', 'contains_contacts_page', 'contains_business_name_in_copyright', 'IsCharity']",66
+67,,0.6783333333333333,"['IsCharity', 'url_contains_email', 'contains_business_name', 'contains_reviews_page', 'contains_zipCode', 'BBBRatingScore']",67
+68,,0.6983333333333334,"['url_contains_email', 'IsBBBAccredited', 'url_contains_phone_number', 'BBBRatingScore', 'IsCharity', 'contains_social_media_links', 'contains_reviews_page', 'IsHQ', 'contains_contacts_page', 'contains_zipCode', 'contains_business_name_in_copyright']",68
+69,,0.645,"['contains_social_media_links', 'BBBRatingScore', 'IsCharity', 'IsBBBAccredited']",69
+70,,0.705,"['IsCharity', 'contains_business_name_in_copyright', 'contains_business_name', 'contains_contacts_page', 'IsHQ', 'contains_zipCode', 'BBBRatingScore']",70
+71,,0.6916666666666667,"['BBBRatingScore', 'IsHQ', 'IsCharity', 'contains_contacts_page', 'url_contains_phone_number', 'contains_business_name_in_copyright', 'contains_zipCode']",71
+72,,0.67,"['IsBBBAccredited', 'IsCharity', 'contains_contacts_page', 'contains_business_name', 'BBBRatingScore', 'contains_business_name_in_copyright', 'url_contains_email', 'contains_social_media_links', 'contains_zipCode', 'IsHQ', 'url_contains_phone_number']",72
+73,,0.6766666666666666,"['BBBRatingScore', 'url_contains_phone_number', 'IsCharity', 'contains_contacts_page', 'IsBBBAccredited', 'contains_business_name', 'contains_zipCode']",73
+74,,0.7016666666666667,"['contains_business_name_in_copyright', 'contains_business_name', 'contains_social_media_links', 'IsHQ', 'IsBBBAccredited', 'contains_contacts_page', 'IsCharity']",74
+75,,0.6816666666666666,"['contains_contacts_page', 'url_contains_phone_number', 'contains_reviews_page', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'url_contains_email', 'IsHQ', 'contains_business_name', 'contains_social_media_links', 'IsCharity', 'BBBRatingScore', 'contains_zipCode']",75
+76,,0.6683333333333333,"['contains_contacts_page', 'url_contains_phone_number', 'url_contains_email', 'contains_reviews_page', 'IsBBBAccredited', 'contains_zipCode', 'IsHQ', 'IsCharity', 'contains_business_name', 'BBBRatingScore']",76
+77,,0.6633333333333333,"['contains_social_media_links', 'BBBRatingScore', 'contains_reviews_page', 'IsBBBAccredited', 'contains_business_name', 'IsCharity', 'contains_business_name_in_copyright', 'contains_contacts_page']",77
+78,,0.6616666666666666,"['BBBRatingScore', 'IsHQ', 'contains_reviews_page', 'contains_contacts_page']",78
+79,,0.6883333333333334,"['BBBRatingScore', 'contains_reviews_page', 'contains_social_media_links', 'url_contains_email']",79
+80,,0.6833333333333333,"['BBBRatingScore', 'url_contains_email', 'contains_social_media_links', 'contains_contacts_page', 'url_contains_phone_number', 'IsBBBAccredited', 'contains_zipCode', 'contains_business_name']",80
+81,,0.69,['IsBBBAccredited'],81
+82,,0.675,"['contains_reviews_page', 'url_contains_phone_number', 'contains_business_name_in_copyright', 'url_contains_email', 'contains_zipCode', 'IsBBBAccredited', 'IsCharity', 'BBBRatingScore', 'contains_social_media_links', 'contains_business_name']",82
+83,,0.6916666666666667,"['contains_social_media_links', 'IsBBBAccredited', 'IsHQ', 'contains_reviews_page', 'url_contains_phone_number']",83
+84,,0.66,"['contains_zipCode', 'url_contains_phone_number', 'contains_contacts_page', 'contains_social_media_links', 'IsHQ', 'IsBBBAccredited', 'IsCharity', 'contains_business_name']",84
+85,,0.6633333333333333,"['contains_contacts_page', 'IsHQ', 'BBBRatingScore']",85
+86,,0.6733333333333333,"['IsBBBAccredited', 'IsHQ', 'contains_reviews_page', 'contains_business_name', 'url_contains_email', 'contains_zipCode', 'url_contains_phone_number', 'contains_contacts_page', 'contains_social_media_links', 'BBBRatingScore']",86
+87,,0.6916666666666667,"['url_contains_email', 'contains_business_name_in_copyright', 'contains_zipCode', 'IsHQ', 'contains_reviews_page', 'IsBBBAccredited', 'IsCharity', 'url_contains_phone_number']",87
+88,,0.68,"['IsBBBAccredited', 'contains_business_name_in_copyright', 'BBBRatingScore', 'contains_reviews_page', 'contains_business_name', 'contains_contacts_page', 'contains_zipCode', 'url_contains_phone_number', 'contains_social_media_links', 'url_contains_email']",88
+89,,0.6533333333333333,"['BBBRatingScore', 'contains_business_name']",89
+90,,0.6766666666666666,"['contains_zipCode', 'BBBRatingScore', 'contains_business_name_in_copyright', 'IsHQ']",90
+91,,0.6866666666666666,"['BBBRatingScore', 'contains_reviews_page', 'url_contains_email']",91
+92,,0.68,['IsBBBAccredited'],92
+93,,0.6916666666666667,"['url_contains_phone_number', 'IsBBBAccredited', 'contains_business_name_in_copyright', 'contains_zipCode', 'BBBRatingScore', 'contains_contacts_page', 'IsHQ', 'contains_social_media_links', 'contains_business_name', 'contains_reviews_page', 'IsCharity']",93
+94,,0.6666666666666666,"['contains_zipCode', 'IsBBBAccredited']",94
+95,,0.68,"['BBBRatingScore', 'contains_contacts_page', 'url_contains_email']",95
+96,,0.6716666666666666,"['BBBRatingScore', 'url_contains_email', 'contains_social_media_links', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'IsHQ', 'IsCharity', 'contains_reviews_page', 'contains_contacts_page', 'contains_business_name', 'contains_zipCode']",96
+97,,0.6983333333333334,"['IsCharity', 'contains_reviews_page', 'contains_social_media_links', 'contains_contacts_page', 'contains_zipCode', 'contains_business_name', 'url_contains_email', 'IsBBBAccredited', 'IsHQ', 'contains_business_name_in_copyright', 'url_contains_phone_number', 'BBBRatingScore']",97
+98,,0.6733333333333333,['contains_zipCode'],98
+99,,0.685,['url_contains_phone_number'],99
+100,,0.6566666666666666,"['url_contains_email', 'IsHQ', 'BBBRatingScore', 'IsBBBAccredited', 'contains_zipCode', 'contains_contacts_page']",100
+101,,0.6566666666666666,"['contains_social_media_links', 'BBBRatingScore', 'contains_contacts_page', 'contains_business_name']",101
+102,,0.6166666666666667,"['contains_contacts_page', 'url_contains_email', 'BBBRatingScore', 'IsHQ', 'contains_business_name', 'contains_business_name_in_copyright', 'url_contains_phone_number', 'contains_social_media_links', 'contains_zipCode']",102
+103,,0.6833333333333333,"['IsBBBAccredited', 'url_contains_email', 'BBBRatingScore', 'contains_contacts_page', 'contains_reviews_page', 'contains_zipCode', 'IsHQ']",103
+104,,0.6433333333333333,"['IsCharity', 'contains_social_media_links', 'BBBRatingScore', 'contains_contacts_page', 'url_contains_email', 'contains_business_name', 'contains_reviews_page', 'IsHQ', 'contains_zipCode', 'contains_business_name_in_copyright', 'url_contains_phone_number']",104
+105,,0.6666666666666666,"['IsBBBAccredited', 'IsHQ', 'contains_business_name', 'url_contains_email', 'contains_social_media_links', 'url_contains_phone_number']",105
+106,,0.6816666666666666,"['contains_contacts_page', 'IsBBBAccredited', 'BBBRatingScore', 'IsHQ', 'contains_business_name', 'IsCharity', 'contains_zipCode', 'url_contains_phone_number', 'contains_reviews_page', 'contains_business_name_in_copyright', 'url_contains_email']",106
+107,,0.685,['contains_social_media_links'],107
+108,,0.7,"['contains_reviews_page', 'IsBBBAccredited', 'url_contains_email']",108
+109,,0.6966666666666667,"['contains_social_media_links', 'url_contains_email', 'url_contains_phone_number', 'BBBRatingScore', 'IsHQ', 'IsCharity', 'contains_contacts_page', 'contains_business_name_in_copyright']",109
+110,,0.685,"['contains_zipCode', 'IsCharity', 'contains_business_name_in_copyright', 'contains_social_media_links', 'contains_contacts_page']",110
+111,,0.665,"['IsBBBAccredited', 'contains_reviews_page', 'url_contains_email', 'contains_zipCode', 'url_contains_phone_number', 'BBBRatingScore', 'contains_contacts_page', 'contains_business_name_in_copyright', 'contains_social_media_links']",111
+112,,0.6616666666666666,"['IsBBBAccredited', 'contains_business_name', 'contains_business_name_in_copyright', 'contains_social_media_links', 'IsHQ', 'url_contains_email', 'contains_reviews_page', 'IsCharity', 'contains_contacts_page', 'contains_zipCode', 'url_contains_phone_number', 'BBBRatingScore']",112
+113,,0.6833333333333333,"['contains_reviews_page', 'contains_contacts_page', 'BBBRatingScore', 'IsCharity', 'contains_zipCode', 'contains_business_name', 'url_contains_phone_number', 'contains_social_media_links', 'url_contains_email', 'IsBBBAccredited']",113
+114,,0.7016666666666667,"['contains_business_name_in_copyright', 'BBBRatingScore', 'IsBBBAccredited', 'contains_social_media_links', 'contains_contacts_page', 'contains_zipCode', 'contains_reviews_page', 'IsCharity']",114
+115,,0.695,"['contains_reviews_page', 'IsBBBAccredited', 'url_contains_phone_number', 'contains_social_media_links', 'IsHQ', 'contains_business_name', 'contains_zipCode', 'IsCharity', 'url_contains_email', 'contains_contacts_page', 'BBBRatingScore', 'contains_business_name_in_copyright']",115
+116,,0.6816666666666666,"['contains_social_media_links', 'url_contains_phone_number', 'IsHQ']",116
+117,,0.6733333333333333,"['contains_social_media_links', 'contains_reviews_page', 'BBBRatingScore', 'IsHQ', 'url_contains_email', 'url_contains_phone_number', 'contains_contacts_page', 'IsCharity', 'contains_business_name_in_copyright', 'IsBBBAccredited']",117
+118,,0.655,"['IsCharity', 'IsHQ', 'url_contains_phone_number', 'contains_contacts_page', 'contains_reviews_page', 'contains_zipCode', 'contains_business_name_in_copyright', 'BBBRatingScore', 'contains_business_name', 'url_contains_email', 'contains_social_media_links']",118
+119,,0.6833333333333333,"['contains_social_media_links', 'BBBRatingScore', 'contains_business_name_in_copyright']",119
+120,,0.6683333333333333,"['IsHQ', 'url_contains_phone_number', 'IsBBBAccredited', 'contains_social_media_links', 'contains_business_name', 'url_contains_email', 'contains_contacts_page', 'contains_business_name_in_copyright', 'BBBRatingScore', 'contains_zipCode', 'IsCharity', 'contains_reviews_page']",120
+121,,0.67,"['url_contains_phone_number', 'IsBBBAccredited', 'BBBRatingScore', 'contains_reviews_page', 'url_contains_email', 'contains_zipCode', 'IsHQ', 'contains_business_name']",121
+122,,0.67,"['contains_contacts_page', 'contains_social_media_links', 'IsCharity', 'contains_business_name', 'url_contains_email', 'contains_reviews_page', 'IsBBBAccredited', 'BBBRatingScore', 'IsHQ', 'contains_business_name_in_copyright', 'url_contains_phone_number', 'contains_zipCode']",122
+123,,0.685,"['IsCharity', 'contains_zipCode', 'contains_reviews_page', 'BBBRatingScore', 'IsHQ', 'contains_business_name', 'contains_contacts_page', 'contains_social_media_links', 'contains_business_name_in_copyright']",123
+124,,0.6733333333333333,"['url_contains_phone_number', 'IsBBBAccredited', 'IsCharity', 'url_contains_email', 'contains_business_name_in_copyright']",124
+125,,0.7,"['contains_reviews_page', 'IsCharity', 'url_contains_phone_number', 'contains_contacts_page', 'contains_business_name_in_copyright', 'contains_zipCode']",125
+126,,0.6966666666666667,"['contains_business_name_in_copyright', 'IsBBBAccredited']",126
+127,,0.66,"['IsBBBAccredited', 'contains_zipCode', 'IsCharity', 'contains_social_media_links']",127
+128,,0.6866666666666666,"['contains_contacts_page', 'url_contains_email', 'contains_business_name_in_copyright', 'contains_zipCode', 'IsHQ']",128
+129,,0.685,"['contains_business_name', 'contains_social_media_links', 'BBBRatingScore', 'url_contains_email', 'IsBBBAccredited', 'contains_zipCode', 'url_contains_phone_number', 'IsCharity']",129
+130,,0.65,"['IsBBBAccredited', 'contains_social_media_links', 'BBBRatingScore', 'IsHQ', 'contains_contacts_page', 'url_contains_phone_number']",130
+131,,0.6783333333333333,"['contains_reviews_page', 'IsHQ', 'contains_business_name_in_copyright', 'contains_social_media_links', 'contains_contacts_page', 'contains_business_name', 'contains_zipCode', 'IsBBBAccredited']",131
+132,,0.6833333333333333,"['url_contains_email', 'contains_business_name_in_copyright', 'contains_contacts_page', 'url_contains_phone_number', 'IsBBBAccredited', 'BBBRatingScore', 'contains_reviews_page', 'IsHQ', 'contains_business_name', 'IsCharity', 'contains_social_media_links']",132
+133,,0.6766666666666666,"['url_contains_email', 'IsCharity', 'IsBBBAccredited', 'contains_contacts_page', 'IsHQ', 'BBBRatingScore', 'url_contains_phone_number', 'contains_zipCode', 'contains_reviews_page', 'contains_business_name_in_copyright', 'contains_business_name']",133
+134,,0.6583333333333333,"['contains_business_name', 'contains_zipCode', 'IsBBBAccredited', 'BBBRatingScore', 'contains_reviews_page']",134
+135,,0.675,"['contains_contacts_page', 'IsHQ', 'url_contains_phone_number', 'contains_business_name', 'contains_zipCode', 'IsCharity']",135
+136,,0.6966666666666667,"['contains_business_name', 'contains_social_media_links', 'url_contains_email', 'IsHQ', 'contains_contacts_page', 'IsBBBAccredited', 'contains_zipCode']",136
+137,,0.6933333333333334,"['url_contains_email', 'contains_business_name_in_copyright', 'contains_zipCode']",137
+138,,0.6733333333333333,"['contains_contacts_page', 'IsCharity', 'IsHQ', 'url_contains_phone_number', 'BBBRatingScore', 'contains_reviews_page', 'contains_zipCode', 'contains_business_name', 'contains_business_name_in_copyright', 'contains_social_media_links', 'IsBBBAccredited', 'url_contains_email']",138
+139,,0.6716666666666666,"['contains_social_media_links', 'IsBBBAccredited', 'url_contains_email']",139
+140,,0.65,"['contains_contacts_page', 'BBBRatingScore']",140
+141,,0.6783333333333333,"['url_contains_email', 'contains_social_media_links', 'contains_business_name_in_copyright', 'BBBRatingScore', 'IsBBBAccredited', 'contains_contacts_page', 'IsHQ', 'url_contains_phone_number', 'contains_zipCode', 'contains_business_name']",141
+142,,0.68,"['contains_contacts_page', 'contains_business_name', 'IsBBBAccredited', 'contains_social_media_links', 'contains_reviews_page', 'IsHQ', 'IsCharity', 'url_contains_phone_number']",142
+143,,0.655,"['contains_business_name_in_copyright', 'IsHQ', 'url_contains_email', 'contains_reviews_page', 'contains_business_name', 'contains_zipCode']",143
+144,,0.7016666666666667,"['contains_zipCode', 'IsHQ', 'IsCharity', 'url_contains_phone_number', 'IsBBBAccredited', 'url_contains_email']",144
+145,,0.665,"['contains_zipCode', 'contains_business_name', 'IsBBBAccredited', 'contains_contacts_page']",145
+146,,0.6916666666666667,"['contains_business_name_in_copyright', 'url_contains_phone_number', 'contains_reviews_page', 'BBBRatingScore', 'url_contains_email', 'IsHQ', 'IsCharity', 'contains_business_name', 'IsBBBAccredited', 'contains_zipCode', 'contains_social_media_links', 'contains_contacts_page']",146
+147,,0.7,"['contains_business_name', 'contains_reviews_page', 'BBBRatingScore']",147
+148,,0.66,"['BBBRatingScore', 'url_contains_phone_number', 'contains_business_name', 'IsBBBAccredited', 'contains_reviews_page', 'contains_zipCode', 'contains_contacts_page']",148
+149,,0.675,"['url_contains_email', 'contains_business_name_in_copyright', 'url_contains_phone_number', 'contains_zipCode', 'IsHQ', 'IsBBBAccredited', 'contains_reviews_page', 'BBBRatingScore', 'contains_social_media_links', 'IsCharity']",149
