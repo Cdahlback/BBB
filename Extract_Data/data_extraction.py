@@ -185,7 +185,7 @@ def contains_phone_number(html, phone_number):
 
     Returns: bool
     """
-    if html is not None:
+    if html is not None and phone_number is not None:
         # remove all non-digit characters from the phone number
         phone_number_digits = re.sub(r'\D', '', phone_number)
         try:
@@ -199,6 +199,16 @@ def contains_phone_number(html, phone_number):
                 if found_phone_number == phone_number_digits:
                     return True
 
+
+            # If the phone number is not found with the above pattern, try a different pattern
+            phone_numbers = re.findall(r'\+?\d{1,2}[-\.\(\)]*\d{3}[-\.\(\)]*\d{3}[-\.\(\)]*\d{4}', html.text)
+
+            for match in phone_numbers:
+                # remove all non-digit characters from the found phone number
+                found_phone_number = re.sub(r'\D', '', match)
+
+                if found_phone_number == phone_number_digits:
+                    return True
 
             return False
 
