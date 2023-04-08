@@ -298,8 +298,10 @@ def extract_phone_data(business_id, url):
         counter += 1
         phone_numbers["Phone#{0}:".format(counter)] = tag.string
 
-    if len(phone_numbers) >= 1:
+    if len(phone_numbers) > 1:
         return phone_numbers
+    else:
+        return None
 
 
 def extract_email_data(business_id, url):
@@ -325,5 +327,7 @@ def extract_email_data(business_id, url):
                 continue
             email_number += 1
             email_addresses['Email' + str(email_number)] = email
-    if len(email_addresses) >= 1:
+    if len(email_addresses) > 1:
         return email_addresses
+    else:
+        return None
