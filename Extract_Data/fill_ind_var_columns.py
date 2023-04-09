@@ -87,7 +87,7 @@ def get_html(website):
 
 
 if __name__ == '__main__':
-    input = pd.read_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var.csv')
+    input = pd.read_csv('../data/combined_data.csv')
     revised = add_ind_var_columns(input)
     final = fill_columns(revised)
-    revised.to_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var2.csv')
+    revised.to_csv('../data/filled_ind_var2.csv')
