@@ -4,3 +4,8 @@ Required packages to run main:
 - sklearn           (pip install scikit-learn)
 - numpy             (pip install numpy)
 - re
+
+
+How to run code:
+- Install required packages
+- Run main.py
