@@ -3,7 +3,7 @@ from Not_Our_Code.get_status_codes import *
 import pandas as pd
 import re
 
-def main(df):
+def main_scrape_urls(df):
     """
     Given a dataframe, add any missing URLs found via email or web search and check their status codes.
     If the status code is 200, add the row to the output dataframe, otherwise skip it.
@@ -69,7 +69,7 @@ def main(df):
 df = pd.read_csv('original_dataframe.csv')
 
 # Call main function
-result_df = main(df)
+result_df = main_scrape_urls(df)
 
 # New DataFrame here
 result_df.to_csv('result_dataframe.csv', index=False)
