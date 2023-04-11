@@ -47,7 +47,7 @@ def main_scrape_urls(df):
         else:
             bbb_df = bbb_df.drop(index)
 
-    return df #modified DataFrame
+    return bbb_df
 
 
 def check_website_column(row):
