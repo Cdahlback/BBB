@@ -56,8 +56,8 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
             data_copy.loc[row_idx[0], "contains_social_media_links"] = contains_social_media_links(html)
             data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
-            data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, zip)
-            data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, phone_number)
+            data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, str(zip))
+            data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
             try:
                 data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
             except:
@@ -87,7 +87,7 @@ def get_html(website):
 
 
 if __name__ == '__main__':
-    input = pd.read_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var.csv')
+    input = pd.read_csv('/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv')
     revised = add_ind_var_columns(input)
     final = fill_columns(revised)
-    revised.to_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var2.csv')
+    revised.to_csv('filled_ind_vars.csv')
