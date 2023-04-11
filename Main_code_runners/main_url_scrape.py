@@ -83,7 +83,7 @@ def url_from_business_name(row):
     business_name = row['BusinessName']
     rating_sites = row['RatingSites']
     business_id = row['BusinessId']
-    company_city_state = row['City']
+    company_city_state = row['PostalCode']
     if isinstance(business_name, str):
         website = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
         if website:
