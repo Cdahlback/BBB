@@ -4,72 +4,87 @@ import pandas as pd
 import re
 
 def main_scrape_urls(df):
+
     """
-    Given a dataframe, add any missing URLs found via email or web search and check their status codes.
-    If the status code is 200, add the row to the output dataframe, otherwise skip it.
+    Given a dataframe, adds any missing URLs found via email or web search and checks their status codes.
+    If the status code is 200, updates the 'Website' column of the input dataframe with the valid URL.
     :param df: a pandas dataframe containing business information
-    :return: a new pandas dataframe containing only the rows with valid URLs
+    :return: the modified pandas dataframe
     """
 
-    bbb_df = pd.DataFrame(columns=df.columns)
     email_df = pd.DataFrame(columns=df.columns)
     search_df = pd.DataFrame(columns=df.columns)
 
     for index, row in df.iterrows():
-        website = row['Website']
-        email = row['Email']
-        business_name = row['BusinessName']
+        # Check if the row already has a valid URL
+        bbb_df = check_website_column(row)
+        # If it does, skip to the next row
+        if index in bbb_df.index:
+            continue
 
-        # Check if the Website column contains a URL
-        if isinstance(website, str) and re.match(r'^https?://', website):
-            df.loc[index, 'Website'] = website
-            bbb_df = bbb_df.append(df.iloc[index], ignore_index=True)
+        website = url_from_email(row)
 
-        # If not, find a URL in the Email column
-        elif isinstance(email, str):
-            website = build_url_from_email(email)
-            if website:
-                status_code = status_code_forPandas(website)
-                if status_code == 200:
-                    df.loc[index, 'Website'] = website
-                    email_df = email_df.append(row, ignore_index=True)
-                else:
-                    pass
-            else:
-                pass
-
-        # If not, use the BusinessName column to find a URL
+        # If a valid URL is found, add the row to the email results dataframe
+        if website:
+            row['Website'] = website
+            email_df = email_df.append(row, ignore_index=True)
+            # Otherwise, try to get a URL from the business name column using web search
         else:
-            website = search_urls(df)
+            website = url_from_business_name(row)
             if website:
-                status_code = status_code_forPandas(website)
-                if status_code == 200:
-                    df.loc[index, 'Website'] = website
-                    search_df = search_df.append(row, ignore_index=True)
-                else:
-                    pass
-            else:
-                pass
+                row['Website'] = website
+                search_df = search_df.append(row, ignore_index=True)
 
-    # return bbb_df, email_df, search_df
+    bbb_df = pd.concat([email_df, search_df], ignore_index=True)   # Combine the email and search results into a single dataframe
+    bbb_df = get_statuscode_forPandas(bbb_df)  # Check the status codes of the URLs
 
-    print(f"Found {len(bbb_df)} rows with URLs in the Website column:")
-    print(bbb_df)
-    print(f"Found {len(email_df)} rows without URLs in the Website column:")
-    print(email_df)
-    print(f"Found {len(search_df)} rows without URLs in the Website column:")
-    print(search_df)
+    # If the status code is 200, update the 'Website' column of the input dataframe with the valid URL
+    for index, row in bbb_df.iterrows():
+        status_code = row['Status Code']
+        if status_code == 200:
+            df.loc[index, 'Website'] = row['Website']
+            # Otherwise, drop the row from the result dataframe
+        else:
+            bbb_df = bbb_df.drop(index)
 
-# Concatenate the three result DataFrames with the original DataFrame
-    result_df = pd.concat([bbb_df, email_df, search_df], ignore_index=True)
-    return result_df
+    return df #modified DataFrame
 
 
-#  original DataFrame here
-df = pd.read_csv('original_dataframe.csv')
+def check_website_column(row):
+    """
+    Given a row, checks if the 'Website' column contains a URL.
+    Returns the URL if it is valid, otherwise returns None.
+    """
 
-# Call main function
-result_df = main_scrape_urls(df)
+    website = row['Website']
+    if isinstance(website, str) and re.match(r'^https?://', website):
+        return website
+    return None
 
-# New DataFrame here
-result_df.to_csv('result_dataframe.csv', index=False)
+def url_from_email(row):
+    """
+    Given a row, attempts to build a URL from the email column.
+    Returns the URL if it is valid, otherwise returns None.
+    """
+
+    email = row['Email']
+    if isinstance(email, str):
+        website = build_url_from_email(email)
+        if website:
+            return website
+        return None
+
+def url_from_business_name(row):
+    """
+        Given a row, attempts to find a URL from the BusinessName column.
+        Returns the URL if it is valid, otherwise returns None.
+        """
+
+    business_name = row['BusinessName']
+    #add more
+    if isinstance(business_name, str):
+        website = search_urls(business_name)#get_url_from_search function
+        if website:
+            return website
+    return None
+
