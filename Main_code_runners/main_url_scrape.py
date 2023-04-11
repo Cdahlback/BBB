@@ -81,9 +81,11 @@ def url_from_business_name(row):
         """
 
     business_name = row['BusinessName']
-    #add more
+    rating_sites = row['RatingSites']
+    business_id = row['BusinessId']
+    company_city_state = row['City']
     if isinstance(business_name, str):
-        website = search_urls(business_name)#get_url_from_search function
+        website = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
         if website:
             return website
     return None
