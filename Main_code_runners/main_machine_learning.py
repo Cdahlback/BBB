@@ -14,7 +14,7 @@ It must:
 # ###############################################--Global vars--#######################################################
 
 data = pd.read_csv(
-    "/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
+    "../data/filled_ind_var.csv")
 
 # Once feature selection is done we can change these to the strongest predictors
 variables = [
