@@ -41,6 +41,8 @@ def fill_columns(data):
             print("no website")
             continue
         html = get_html(website)
+        print(index)
+        print(time.time() - t2)
         if html is None:
             print("not found")
             continue
@@ -61,6 +63,7 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "url_is_review_page"] = url_is_review_page(website, html)
 
     t1 = time.time() - t0
+    print("time taken to scrape ind vars for index: {0}".format(index))
     print(t1)
     return data_copy
 
@@ -84,8 +87,6 @@ def get_html(website):
 
 if __name__ == '__main__':
     df = pd.read_csv('/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv')
-    new_df = df.iloc[400:]
     revised = add_ind_var_columns(new_df)
     final = fill_columns(revised)
     revised.to_csv('filled_ind_vars.csv')
-
