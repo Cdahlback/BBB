@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 
 # Load the iris dataset
 
-data = pd.read_csv("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
+data = pd.read_csv("../data/filled_ind_var2.csv")
 
 variables = [
     "contains_contacts_page",
@@ -20,7 +20,8 @@ variables = [
     "BBBRatingScore",
     "IsHQ",
     "IsCharity",
-    "IsBBBAccredited"
+    "IsBBBAccredited",
+    "url_is_review_page"
 ]
 
 # Create features and output

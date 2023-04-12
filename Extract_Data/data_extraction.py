@@ -169,8 +169,9 @@ def contains_zipCode(html, zip_code):
                     footer_matches = zip_regex.findall(footer_text)
                     body_matches += footer_matches
 
-            # Check if the zip code is in the list of matches
-            return str(zip_code) in body_matches
+            # Check if the zip code is in the list of matches or present in the HTML using regex
+            regex = r'.*' + str(zip_code) + '.*'
+            return str(zip_code) in body_matches or re.search(regex, html)
         except Exception as e:
             return False
     else:
@@ -186,38 +187,15 @@ def contains_phone_number(html, phone_number):
 
     Returns: bool
     """
-    if html is not None and phone_number is not None:
-        phone_number = phone_number[:-2]
-        # remove all non-digit characters from the phone number
-        phone_number_digits = re.sub(r'\D', '', phone_number)
-        try:
-            # find all phone numbers in the HTML, regardless of formatting
-            phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', html.text)
 
-            for match in phone_numbers:
-                # concatenate the digits of the found phone number
-                found_phone_number = ''.join(match)
+    phone_number_digits = re.sub(r'\D', '', str(phone_number))
+    phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', str(html))
+    for match in phone_numbers:
+        found_phone_number = ''.join(match)
+        if found_phone_number == phone_number_digits:
+            return True
+    return False
 
-                if found_phone_number == phone_number_digits:
-                    return True
-
-
-            # If the phone number is not found with the above pattern, try a different pattern
-            phone_numbers = re.findall(r'\+?\d{1,2}[-\.\(\)]*\d{3}[-\.\(\)]*\d{3}[-\.\(\)]*\d{4}', html.text)
-
-            for match in phone_numbers:
-                # remove all non-digit characters from the found phone number
-                found_phone_number = re.sub(r'\D', '', match)
-
-                if found_phone_number == phone_number_digits:
-                    return True
-
-            return False
-
-        except Exception as e:
-            return False
-    else:
-        return False
 
 
 def contains_email(html, email):
@@ -231,7 +209,7 @@ def contains_email(html, email):
         return False
     for tag in html.find_all('a'):
         href = tag.get('href')
-        if email in href:
+        if href is not None and email in href:
             return True
     return False
 
@@ -263,7 +241,7 @@ def url_is_review_page(url, html):
                     'bizapedia']
     # list of phrases that would indicate if the url is a review page.
     indicator_list = ['/businessdirectory/', '/pages/', '/restaurants/', '/companies/', '/businesses/',
-                      '/contractor/', '/profile/', '/company-information/', '/directory/']
+                      '/contractor/', '/profile/', '/company-information/', '/directory/', '/listing/']
     # Case 1: looping through the rating sites we already excluded from our search, making sure none slipped through.
     for site in rating_sites:
         if site in url.lower():
@@ -271,10 +249,6 @@ def url_is_review_page(url, html):
     # Case 2: if the url contains an indicator in the list, it will return true.
     for indicator in indicator_list:
         if indicator in url.lower():
-            return True
-    # Case 3: if the word 'review' appears in the html text, return true.
-    for text in html.find_all(text=True):
-        if 'review' in text.lower():
             return True
     # if no cases apply, return false
     return False
@@ -300,8 +274,10 @@ def extract_phone_data(business_id, url):
         counter += 1
         phone_numbers["Phone#{0}:".format(counter)] = tag.string
 
-    if len(phone_numbers) >= 1:
+    if len(phone_numbers) > 1:
         return phone_numbers
+    else:
+        return None
 
 
 def extract_email_data(business_id, url):
@@ -327,5 +303,7 @@ def extract_email_data(business_id, url):
                 continue
             email_number += 1
             email_addresses['Email' + str(email_number)] = email
-    if len(email_addresses) >= 1:
+    if len(email_addresses) > 1:
         return email_addresses
+    else:
+        return None
