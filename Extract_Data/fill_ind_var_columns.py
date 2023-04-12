@@ -51,11 +51,13 @@ def fill_columns(data):
             zip = row["PostalCode"]
             phone_number = row["Phone"]
             email = row["Email"]
+
             data_copy.loc[index, "contains_contacts_page"] = contains_contacts_page(html)
             data_copy.loc[index, "contains_business_name"] = contains_business_name(html, business_name)
             data_copy.loc[index, "contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
             data_copy.loc[index, "contains_social_media_links"] = contains_social_media_links(html)
             data_copy.loc[index, "contains_reviews_page"] = contains_reviews_page(html)
+
             try:
                 data_copy.loc[index, "contains_zipCode"] = contains_zipCode(html, zip)
             except:

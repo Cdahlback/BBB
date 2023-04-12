@@ -154,6 +154,7 @@ def contains_zipCode(html, zip_code):
         :return: True if the zip code is found in the html, False if not
         """
     if html is not None and zip_code is not None:
+        zip_code = zip_code[:-2]
         try:
             # Look for zip code in the body of the HTML
             body_text = html.text.lower()
@@ -186,6 +187,7 @@ def contains_phone_number(html, phone_number):
 
     Returns: bool
     """
+
     phone_number_digits = re.sub(r'\D', '', str(phone_number))
     phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', str(html))
     for match in phone_numbers:
@@ -193,6 +195,7 @@ def contains_phone_number(html, phone_number):
         if found_phone_number == phone_number_digits:
             return True
     return False
+
 
 
 def contains_email(html, email):
