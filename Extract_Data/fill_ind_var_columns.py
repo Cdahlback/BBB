@@ -38,10 +38,9 @@ def fill_columns(data):
     for index, row in data_copy.iterrows():
         website = row["Website"] if row["Website"] else None
         if pd.isnull(website):
+            print("no website")
             continue
-        t2 = time.time()
         html = get_html(website)
-        print(time.time() - t2)
         if html is None:
             print("not found")
             continue
@@ -58,10 +57,7 @@ def fill_columns(data):
             data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
             data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, str(zip))
             data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
-            try:
-                data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
-            except:
-                data_copy.loc[row_idx[0], "url_contains_email"] = False
+            data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
             data_copy.loc[row_idx[0], "url_is_review_page"] = url_is_review_page(website, html)
 
     t1 = time.time() - t0
@@ -87,7 +83,9 @@ def get_html(website):
 
 
 if __name__ == '__main__':
-    input = pd.read_csv('/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv')
-    revised = add_ind_var_columns(input)
+    df = pd.read_csv('/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv')
+    new_df = df.iloc[400:]
+    revised = add_ind_var_columns(new_df)
     final = fill_columns(revised)
     revised.to_csv('filled_ind_vars.csv')
+

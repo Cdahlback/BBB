@@ -179,45 +179,28 @@ def contains_zipCode(html, zip_code):
 
 def contains_phone_number(html, phone_number):
     """
-    Function to check if a phone number is present in the HTML content of a webpage.
-
-    Param html: The BeautifulSoup object containing the HTML content of the webpage.
-    Param phone_number: The phone number to be checked.
-
-    Returns: bool
-    """
+        Check if the html contains the given phone number
+        :param html: html extracted from url
+        :param phone_number: business phone number to find
+        :return: True if the phone num is found in the html, False if not
+        """
     if html is not None and phone_number is not None:
+        phone_numbers = []
         phone_number = phone_number[:-2]
-        # remove all non-digit characters from the phone number
-        phone_number_digits = re.sub(r'\D', '', phone_number)
-        try:
-            # find all phone numbers in the HTML, regardless of formatting
-            phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', html.text)
-
-            for match in phone_numbers:
-                # concatenate the digits of the found phone number
-                found_phone_number = ''.join(match)
-
-                if found_phone_number == phone_number_digits:
-                    return True
+        counter = 0
+        for tag in html.find_all(text=re.compile(r"(\d{3})\D*(\d{3})\D*(\d{4})")):
+            if len(tag.string) < 15:
+                tag = _strip_non_integers(tag.string)
+                phone_numbers.append(tag)
+                counter += 1
+        if phone_number in phone_numbers:
+            return True
+    return False
 
 
-            # If the phone number is not found with the above pattern, try a different pattern
-            phone_numbers = re.findall(r'\+?\d{1,2}[-\.\(\)]*\d{3}[-\.\(\)]*\d{3}[-\.\(\)]*\d{4}', html.text)
-
-            for match in phone_numbers:
-                # remove all non-digit characters from the found phone number
-                found_phone_number = re.sub(r'\D', '', match)
-
-                if found_phone_number == phone_number_digits:
-                    return True
-
-            return False
-
-        except Exception as e:
-            return False
-    else:
-        return False
+def _strip_non_integers(string):
+    pattern = r"\D+" # Matches one or more non-digit characters
+    return re.sub(pattern, "", string)
 
 
 def contains_email(html, email):
@@ -229,10 +212,14 @@ def contains_email(html, email):
     """
     if pd.isnull(email) or html is None:
         return False
+    emails = []
     for tag in html.find_all('a'):
         href = tag.get('href')
-        if email in href:
-            return True
+        if href:
+            if "@" in href:
+                emails.append(href)
+    if email in emails:
+        return True
     return False
 
 
