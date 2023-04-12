@@ -6,7 +6,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
 # Read dataset
-data = pd.read_csv("../data/filled_ind_var2.csv", low_memory=False)
+data = pd.read_csv("../data/filled_ind_var.csv", low_memory=False)
 
 model_data = data[:1600]
 

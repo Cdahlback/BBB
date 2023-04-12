@@ -221,8 +221,8 @@ def contains_email(html, email):
                 emails.append(href)
     if email in emails:
         return True
-        if href is not None and email in href:
-            return True
+    if href is not None and email in href:
+        return True
     return False
 
 
@@ -241,7 +241,7 @@ def get_domain_owner(url):
         return w.registrar
 
 
-def url_is_review_page(url, html):
+def url_is_review_page(url):
     """
     checks if url is a review page by looking at url strong contents
     :param url: input url
