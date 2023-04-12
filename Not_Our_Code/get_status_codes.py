@@ -48,7 +48,7 @@ def get_statuscode_forPandas(df):
     It sends a maximum of 70 (requests) threads at a time to maximize speed.
 
     :param df: dataframe
-    :return: a list of status codes
+    :return: updated dataframe with status codes
     """
     urls = df['Website'].values[:]
     ids = df['BusinessID'].values[:]
@@ -61,8 +61,8 @@ def get_statuscode_forPandas(df):
     results = []
     for result in executor.map(status_code_forPandas, urls, ids, repeat(headers), repeat(timeout)):
         results.append(result)
-    return pd.DataFrame(results, columns=['BusinessID', 'StatusCode'])
-
+    df['status_code'] = results
+    return df
 
 def status_code_forPandas(url, id, headers, timeout):
     """
@@ -76,6 +76,6 @@ def status_code_forPandas(url, id, headers, timeout):
     """
     try:
         r = requests.get(url, verify=True, timeout=timeout, headers=headers)
-        return id, r.status_code
+        return r.status_code
     except:
-        return id, -1
+        return -1

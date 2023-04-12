@@ -18,7 +18,7 @@ def test_different_inputs(df, feature):
     :return:
     """
     for i in range(50):
-        X = df[[feature]].values
+        X = df[feature].values
         y = df['manually_checked'].values
 
         # train/split data
@@ -46,14 +46,8 @@ def test_different_inputs(df, feature):
         mse = mean_squared_error(y, y_pred)
 
         # Call visualization and load them into save_image()
-        plt1 = vizualize_compare_true_and_pred(y_test, y_pred_test)
-        plt2 = visualize_line_of_best_fit(X_test, y_test, y_pred_test, model, feature)
-        plt3 = visualize_feature_vs_dep_var(df, feature)
-        plt4 = plot_logistic_regression_bar(model, feature)
-        plt5 = plot_logistic_regression_plot(model, X, y)
-
-        # Save plots
-        save_image("multi_plot_image.pdf")
+        visualize_line_of_best_fit(X_test, y_test, y_pred_test, model, feature)
+        plot_logistic_regression_plot(model, X, y)
 
         # print data (change to update a df)
         print("Model tested with feature {0} random_state: {1}".format(feature, i))
@@ -81,7 +75,6 @@ if __name__ == "__main__":
         "IsBBBAccredited"
     ]
 
-    for variable in variables:
-        test_different_inputs(df, variable)
+    test_different_inputs(df, variables)
 
 
