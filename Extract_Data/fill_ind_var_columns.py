@@ -22,6 +22,7 @@ def add_ind_var_columns(data):
     data['contains_zipCode'] = np.nan
     data['url_contains_phone_number'] = np.nan
     data['url_contains_email'] = np.nan
+    data['url_is_review_page'] = np.nan
     return data
 
 
@@ -32,7 +33,6 @@ def fill_columns(data):
     :return: cope of the data with new columns added.
     """
     data_copy = data.copy(deep=True)
-    data_copy = data_copy.iloc[:500,:]
     t0 = time.time()
 
     for index, row in data_copy.iterrows():
@@ -41,26 +41,36 @@ def fill_columns(data):
             continue
         t2 = time.time()
         html = get_html(website)
+        print(index)
         print(time.time() - t2)
         if html is None:
             print("not found")
-            continue
-        elif pd.isnull(row["Email"]):
             continue
         else:
             business_name = row["BusinessName"]
             zip = row["PostalCode"]
             phone_number = row["Phone"]
             email = row["Email"]
-            row_idx = data.index[data['BusinessName'] == business_name].tolist()
-            data_copy.loc[row_idx[0], "contains_contacts_page"] = contains_contacts_page(html)
-            data_copy.loc[row_idx[0], "contains_business_name"] = contains_business_name(html, business_name)
-            data_copy.loc[row_idx[0], "contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
-            data_copy.loc[row_idx[0], "contains_social_media_links"] = contains_social_media_links(html)
-            data_copy.loc[row_idx[0], "contains_reviews_page"] = contains_reviews_page(html)
-            data_copy.loc[row_idx[0], "contains_zipCode"] = contains_zipCode(html, zip)
-            data_copy.loc[row_idx[0], "url_contains_phone_number"] = contains_phone_number(html, phone_number)
-            data_copy.loc[row_idx[0], "url_contains_email"] = contains_email(html, email)
+
+            data_copy.loc[index, "contains_contacts_page"] = contains_contacts_page(html)
+            data_copy.loc[index, "contains_business_name"] = contains_business_name(html, business_name)
+            data_copy.loc[index, "contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
+            data_copy.loc[index, "contains_social_media_links"] = contains_social_media_links(html)
+            data_copy.loc[index, "contains_reviews_page"] = contains_reviews_page(html)
+
+            try:
+                data_copy.loc[index, "contains_zipCode"] = contains_zipCode(html, zip)
+            except:
+                data_copy.loc[index, "contains_zipCode"] = False
+            try:
+                data_copy.loc[index, "url_contains_phone_number"] = contains_phone_number(html, phone_number)
+            except:
+                data_copy.loc[index, "url_contains_phone_number"] = False
+            try:
+                data_copy.loc[index, "url_contains_email"] = contains_email(html, email)
+            except:
+                data_copy.loc[index, "url_contains_email"] = False
+            data_copy.loc[index, "url_is_review_page"] = url_is_review_page(website, html)
 
     t1 = time.time() - t0
     print(t1)
@@ -83,3 +93,9 @@ def get_html(website):
     except Exception as e:
         return None
 
+
+if __name__ == '__main__':
+    input = pd.read_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/combined_data.csv')
+    revised = add_ind_var_columns(input)
+    final = fill_columns(revised)
+    final.to_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var2.csv')

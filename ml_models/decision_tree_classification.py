@@ -90,7 +90,6 @@ def test_diff_inputs(model, n, vars):
         test_eval(model, vars, i)
     ml_stats_df.to_csv("../data/ml_stats.csv")
 
-
 if __name__ == "__main__":
     models = [DecisionTreeClassifier(max_depth=3),
               DecisionTreeClassifier(max_depth=6),

@@ -41,20 +41,37 @@ def contains_contacts_page(html):
 
 def contains_business_name(html, business_name):
     """
-    Check if the html contains the given business name.
-    :param html: html extracted from url
-    :param business_name: the name of the business to look for
-    :return: True if the business name is found in the html, False if not
+    check if the business name is in the url/html
+    :param html: html input from website
+    :param business_name: name of business we want to find
+    :return: bool True of False
     """
-    if html is None:
+    if business_name == '':
         return False
-    # Find all text nodes in the html
-    for text in html.find_all(text=True):
-        # Check if the business name appears in the text
-        if business_name.lower() in text.lower():
-            return True
-    # The business name was not found in the html
-    return False
+    if html is not None:
+        # remove '&#39;' from string and replace with '
+        if re.search(r'&#39;', business_name):
+            business_name = re.sub('&#39;', '\'', business_name)
+        # remove any floating non-letter characters
+        if re.search(r'\s\W\s', business_name):
+            business_name = re.sub(r'\s\W\s', ' ', business_name)
+        # remove any non-letter/digit characters
+        business_name = re.sub(r'[^A-Za-z0-9\'\s]*', '', business_name)
+        name_lst = business_name.split()        # split business_name into list of words
+        found_name = 0                  # counter for every word in the list found on the html
+        for name in name_lst:           # loop through word in list
+            found = False
+            for text in html.find_all(text=True):
+                if name.lower() in text.lower():
+                    found = True        # found is mark true if word was found in html
+            if found:
+                found_name += 1         # add to counter
+        if found_name / len(name_lst) >= 0.5:     # if more than half of the words in the list were found in the html
+            return True                          # then return True
+        else:
+            return False
+    else:
+        return None
 
 
 def contains_business_name_in_copyright(html, business_name):
@@ -66,21 +83,32 @@ def contains_business_name_in_copyright(html, business_name):
     :param business_name: (str): The name of the business to search for
     :return: True if the business name is found in the footer of the website, False otherwise
     """
-    if html is None:
-        return False
-    try:
-        footer = html.find('footer')
-        if footer is None:
+    if html is not None:
+        try:
+            # Find the footer element in the HTML
+            footer = html.find('footer')
+
+            # If footer is found, extract the text and count the number of matching words
+            if footer is not None:
+                footer_text = footer.text
+                # extract all words from the footer text
+                footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+                # extract all words from the business name
+                business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+                matches = set(footer_text_words) & set(business_name_words)
+                num_matches = len(matches)
+
+                # Check if the number of matching words is at least 50% of the words in the business name
+                if num_matches >= len(business_name_words) / 2:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+
+        except Exception as e:
             return False
-        footer_text = footer.text
-        # Extract all words from the footer text
-        footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
-        business_name_words = re.findall(r'\b\w+\b', business_name.lower())
-        # Get the set of words that appear in both footer and business name
-        matches = set(footer_text_words) & set(business_name_words)
-        num_matches = len(matches)
-        return num_matches >= len(business_name_words) / 2
-    except Exception:
+    else:
         return False
 
 
@@ -120,31 +148,54 @@ def contains_reviews_page(html):
 
 def contains_zipCode(html, zip_code):
     """
-    Check if the html contains the given zip code.
-    :param html: html extracted from url
-    :param zip_code: business zip code to find
-    :return: True if the zip code is found in the html, False if not
-    """
-    if pd.isnull(zip_code) or html is None:
+        Check if the html contains the given zip code.
+        :param html: html extracted from url
+        :param zip_code: business zip code to find
+        :return: True if the zip code is found in the html, False if not
+        """
+    if html is not None and zip_code is not None:
+        zip_code = zip_code[:-2]
+        try:
+            # Look for zip code in the body of the HTML
+            body_text = html.text.lower()
+            zip_regex = re.compile(r'\b\d{5}\b')
+            body_matches = zip_regex.findall(body_text)
+
+            # If zip code not found in body, look in footer of the HTML
+            if not body_matches:
+                footer = html.find('footer')
+                if footer is not None:
+                    footer_text = footer.text.lower()
+                    footer_matches = zip_regex.findall(footer_text)
+                    body_matches += footer_matches
+
+            # Check if the zip code is in the list of matches or present in the HTML using regex
+            regex = r'.*' + str(zip_code) + '.*'
+            return str(zip_code) in body_matches or re.search(regex, html)
+        except Exception as e:
+            return False
+    else:
         return False
-    for text in html.find_all(text=re.compile(r'\d{5}')):
-        if re.search(str(zip_code), text):
-            return True
 
 
 def contains_phone_number(html, phone_number):
     """
-    Check if the html contains the given phone number
-    :param html: html extracted from url
-    :param phone_number: business phone number to find
-    :return: True if the phone number is found in the html, False if not
+    Function to check if a phone number is present in the HTML content of a webpage.
+
+    Param html: The BeautifulSoup object containing the HTML content of the webpage.
+    Param phone_number: The phone number to be checked.
+
+    Returns: bool
     """
-    if pd.isnull(phone_number) or html is None:
-        return False
-    for text in html.find_all(text=True):
-        if str(phone_number) in text.replace("-", ""):
+
+    phone_number_digits = re.sub(r'\D', '', str(phone_number))
+    phone_numbers = re.findall(r'(\d{3})\D*(\d{3})\D*(\d{4})', str(html))
+    for match in phone_numbers:
+        found_phone_number = ''.join(match)
+        if found_phone_number == phone_number_digits:
             return True
     return False
+
 
 
 def contains_email(html, email):
@@ -158,7 +209,7 @@ def contains_email(html, email):
         return False
     for tag in html.find_all('a'):
         href = tag.get('href')
-        if email in href:
+        if href is not None and email in href:
             return True
     return False
 
@@ -176,6 +227,31 @@ def get_domain_owner(url):
         return ""
     else:
         return w.registrar
+
+
+def url_is_review_page(url, html):
+    """
+    checks if url is a review page by looking at url strong contents
+    :param url: input url
+    :param html: the html of the url parameter
+    :return: True if url is a review page, false if not
+    """
+    # list of rating sites we have already excluded from search.
+    rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi', 'yellowpages',
+                    'bizapedia']
+    # list of phrases that would indicate if the url is a review page.
+    indicator_list = ['/businessdirectory/', '/pages/', '/restaurants/', '/companies/', '/businesses/',
+                      '/contractor/', '/profile/', '/company-information/', '/directory/', '/listing/']
+    # Case 1: looping through the rating sites we already excluded from our search, making sure none slipped through.
+    for site in rating_sites:
+        if site in url.lower():
+            return True
+    # Case 2: if the url contains an indicator in the list, it will return true.
+    for indicator in indicator_list:
+        if indicator in url.lower():
+            return True
+    # if no cases apply, return false
+    return False
 
 
 def extract_phone_data(business_id, url):
@@ -198,8 +274,10 @@ def extract_phone_data(business_id, url):
         counter += 1
         phone_numbers["Phone#{0}:".format(counter)] = tag.string
 
-    if len(phone_numbers) >= 1:
+    if len(phone_numbers) > 1:
         return phone_numbers
+    else:
+        return None
 
 
 def extract_email_data(business_id, url):
@@ -225,5 +303,7 @@ def extract_email_data(business_id, url):
                 continue
             email_number += 1
             email_addresses['Email' + str(email_number)] = email
-    if len(email_addresses) >= 1:
+    if len(email_addresses) > 1:
         return email_addresses
+    else:
+        return None

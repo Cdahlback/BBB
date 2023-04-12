@@ -1,5 +1,6 @@
 import unittest
 from Extract_Data.data_extraction import *
+import numpy as np
 
 """File used to test our independent variable scrapers for our machine learning model"""
 
@@ -9,28 +10,28 @@ class TestIndVarScrapers(unittest.TestCase):
                                       'html.parser')
         email = 'test@example.com'
 
-        result = url_contains_email(html, email)
+        result = contains_email(html, email)
         self.assertTrue(result)
 
-        result = url_contains_email(html, 'notfound@example.com')
+        result = contains_email(html, 'notfound@example.com')
         self.assertFalse(result)
 
-        result = url_contains_email(html, None)
+        result = contains_email(html, None)
         self.assertFalse(result)
 
-        result = url_contains_email(None, email)
+        result = contains_email(None, email)
         self.assertIsNone(result)
 
     def test_url_contains_phone_number(self):
         html = BeautifulSoup('<html><body><a href="tel:555-1234">555-1234</a></body></html>', 'html.parser')
 
-        self.assertTrue(url_contains_phone_number(html, '555-1234'))
+        self.assertTrue(contains_phone_number(html, '555-1234'))
 
-        self.assertFalse(url_contains_phone_number(html, '555-5678'))
+        self.assertFalse(contains_phone_number(html, '555-5678'))
 
-        self.assertFalse(url_contains_phone_number(html, None))
+        self.assertFalse(contains_phone_number(html, None))
 
-        self.assertEqual(url_contains_phone_number(None, '555-1234'), np.nan)
+        self.assertEqual(contains_phone_number(None, '555-1234'), np.nan)
 
     def test_contains_zipCode(self):
         html = BeautifulSoup("""
@@ -129,9 +130,9 @@ class TestIndVarScrapers(unittest.TestCase):
         self.assertFalse(contains_business_name_in_copyright(html, business_name))
 
     def test_contains_business_name(self):
-        html = BeautifulSoup("<html><body><h1>Welcome to ABC Company</h1></body></html>", 'html.parser')
+        html = BeautifulSoup("<html><body><h1>Welcome to ABC's Company</h1></body></html>", 'html.parser')
 
-        self.assertTrue(contains_business_name(html, 'ABC Company'))
+        self.assertTrue(contains_business_name(html, 'ABC\'s Company'))
         self.assertFalse(contains_business_name(html, 'XYZ Inc.'))
 
         self.assertIsNone(contains_business_name(None, 'ABC Company'))
@@ -151,6 +152,23 @@ class TestIndVarScrapers(unittest.TestCase):
 
         # test if the function returns np.nan for None html
         self.assertIsNone(contains_contacts_page(None))
+
+    def test_url_is_review_page(self):
+        # create review page url for case 1
+        c1_url = 'https://www.yellowpages.com/mn/example-business/'
+        # create review page url for case 2
+        c2_url = 'https://www.reviewpage.com/mn/companies/example-business/'
+        # create review page html for case 3
+        c3_html = BeautifulSoup('<html><body><a href="review">Reviews</a></body></html>', 'html.parser')
+        # create false test
+        false_url = 'https://www.examplebusiness.com/mankato/homepage/'
+        false_html = BeautifulSoup('<html><body><a href="contact">Contact Us</a></body></html>', 'html.parser')
+        # run true/false tests
+        self.assertTrue(url_is_review_page(c1_url, false_html))
+        self.assertTrue(url_is_review_page(c2_url, false_html))
+        self.assertTrue(url_is_review_page(false_url, c3_html))
+        self.assertFalse(url_is_review_page(false_url, false_html))
+
 
 class TestExtractData(unittest.TestCase):
     pass
