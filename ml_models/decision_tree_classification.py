@@ -4,11 +4,10 @@ import random
 import pandas as pd
 from sklearn import tree
 from sklearn.datasets import load_iris
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from ml_models.Vizualization.ClassificationVisualization import *
-
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.linear_model import LogisticRegression
@@ -17,6 +16,13 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neural_network import MLPClassifier
 from xgboost import XGBClassifier
 from time import time
+import graphviz
+import os
+
+
+# Load the iris dataset
+data = pd.read_csv("../data/filled_ind_var.csv")
+
 
 
 def test_eval(model, variables, r_s):
@@ -115,3 +121,14 @@ if __name__ == "__main__":
 
     test_eval(models[1], variables, 0)
 
+# Measure the accuracy of the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy}")
+
+dot_data = export_graphviz(clf, out_file=None,
+                           feature_names=variables,
+                           class_names=['0', '1'],
+                           filled=True, rounded=True,
+                           special_characters=True, max_depth=3)#will show only 3 depth
+graph = graphviz.Source(dot_data)
+graph.render('decision_tree', format='png', view=True)
