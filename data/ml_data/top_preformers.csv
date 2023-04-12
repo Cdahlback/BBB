@@ -1,0 +1,14 @@
+,Unnamed: 0.1,Unnamed: 0,Accuracy,VariablesUsed,RandomStateUsed
+1,1,1.0,0.7083333333333334,"['contains_business_name', 'contains_contacts_page', 'IsCharity']",1
+5,5,5.0,0.7116666666666667,"['BBBRatingScore', 'url_contains_phone_number', 'contains_reviews_page', 'IsBBBAccredited', 'url_contains_email']",5
+17,17,17.0,0.7,"['IsBBBAccredited', 'url_contains_phone_number', 'contains_business_name_in_copyright', 'contains_zipCode', 'contains_reviews_page', 'contains_business_name', 'BBBRatingScore', 'url_contains_email', 'IsHQ', 'contains_contacts_page', 'contains_social_media_links']",17
+36,36,36.0,0.7033333333333334,"['contains_business_name_in_copyright', 'IsCharity', 'url_contains_email', 'IsBBBAccredited', 'IsHQ', 'contains_business_name', 'contains_social_media_links']",36
+43,43,43.0,0.725,"['contains_contacts_page', 'contains_business_name_in_copyright']",43
+60,60,,0.7033333333333334,"['contains_reviews_page', 'contains_social_media_links', 'contains_business_name_in_copyright', 'IsBBBAccredited', 'contains_zipCode']",60
+70,70,,0.705,"['IsCharity', 'contains_business_name_in_copyright', 'contains_business_name', 'contains_contacts_page', 'IsHQ', 'contains_zipCode', 'BBBRatingScore']",70
+74,74,,0.7016666666666667,"['contains_business_name_in_copyright', 'contains_business_name', 'contains_social_media_links', 'IsHQ', 'IsBBBAccredited', 'contains_contacts_page', 'IsCharity']",74
+108,108,,0.7,"['contains_reviews_page', 'IsBBBAccredited', 'url_contains_email']",108
+114,114,,0.7016666666666667,"['contains_business_name_in_copyright', 'BBBRatingScore', 'IsBBBAccredited', 'contains_social_media_links', 'contains_contacts_page', 'contains_zipCode', 'contains_reviews_page', 'IsCharity']",114
+125,125,,0.7,"['contains_reviews_page', 'IsCharity', 'url_contains_phone_number', 'contains_contacts_page', 'contains_business_name_in_copyright', 'contains_zipCode']",125
+144,144,,0.7016666666666667,"['contains_zipCode', 'IsHQ', 'IsCharity', 'url_contains_phone_number', 'IsBBBAccredited', 'url_contains_email']",144
+147,147,,0.7,"['contains_business_name', 'contains_reviews_page', 'BBBRatingScore']",147
