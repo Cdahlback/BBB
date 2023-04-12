@@ -238,7 +238,7 @@ def url_is_review_page(url, html):
                     'bizapedia']
     # list of phrases that would indicate if the url is a review page.
     indicator_list = ['/businessdirectory/', '/pages/', '/restaurants/', '/companies/', '/businesses/',
-                      '/contractor/', '/profile/', '/company-information/', '/directory/']
+                      '/contractor/', '/profile/', '/company-information/', '/directory/', '/listing/']
     # Case 1: looping through the rating sites we already excluded from our search, making sure none slipped through.
     for site in rating_sites:
         if site in url.lower():
@@ -246,10 +246,6 @@ def url_is_review_page(url, html):
     # Case 2: if the url contains an indicator in the list, it will return true.
     for indicator in indicator_list:
         if indicator in url.lower():
-            return True
-    # Case 3: if the word 'review' appears in the html text, return true.
-    for text in html.find_all(text=True):
-        if 'review' in text.lower():
             return True
     # if no cases apply, return false
     return False
