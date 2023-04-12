@@ -46,8 +46,8 @@ def test_different_inputs(df, feature):
         mse = mean_squared_error(y, y_pred)
 
         # Call visualization and load them into save_image()
-        visualize_line_of_best_fit(X_test, y_test, y_pred_test, model, feature)
-        plot_logistic_regression_plot(model, X, y)
+        # visualize_line_of_best_fit(X_test, y_test, y_pred_test, model, feature)
+        # plot_logistic_regression_plot(model, X, y)
 
         # print data (change to update a df)
         print("Model tested with feature {0} random_state: {1}".format(feature, i))
@@ -58,7 +58,7 @@ def test_different_inputs(df, feature):
 
 if __name__ == "__main__":
 
-    df = pd.read_csv('/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv')
+    df = pd.read_csv("../data/filled_ind_var.csv", low_memory=False)
 
     variables = [
         "contains_contacts_page",
@@ -67,7 +67,6 @@ if __name__ == "__main__":
         "contains_social_media_links",
         "contains_reviews_page",
         "contains_zipCode",
-        "url_contains_email",
         "url_contains_phone_number",
         "BBBRatingScore",
         "IsHQ",

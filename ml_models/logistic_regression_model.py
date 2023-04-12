@@ -19,7 +19,6 @@ variables = [
              "contains_social_media_links",
              "contains_reviews_page",
              "contains_zipCode",
-             "url_contains_email",
              "url_contains_phone_number",
              "BBBRatingScore",
              "IsHQ",
@@ -32,7 +31,7 @@ variables = [
 corr_data = data.loc[:, variables + ["manually_checked"]]
 
 pd.set_option('display.max_columns', None)
-print(corr_data.corr()[-1:])
+print(corr_data.corr())
 # Create Independent and Dependent variable sets
 Y = model_data["manually_checked"].values
 print(Y)
