@@ -48,26 +48,91 @@ clf.fit(X_train, y_train)
 
 # ###############################################--FUNCTIONS--##########################################################
 
-def main_ml(data):
+def main_ml(data, data_copy, stream):
     # READ THE CSV THAT HAD JUST RAN THROUGH THE IND VAR SCRAPERS
     # NOTE: This data should have the following properties
     # 1. As many rows as the original dataframe
     # 2. All ind var columns filled out
-    data = data.head(5)
-    data['Accuracy'] = None
     for index, row in data.iterrows():
+        businessID = row['BusinessID']
         if can_predict(row):
             selected_columns = np.array(row[variables]).reshape(1,-1)
             # Use the trained classifier to make predictions on the test data
             # in this case its just predicting one row
             y_pred = clf.predict(selected_columns)
 
-            row['Predicted'] = y_pred
-        else:
-            row['Predicted'] = -1
-        data.loc[index] = row
+            # here we need to add the data to a stream, since we now have everything aquired.
+            row_copy = data_copy.loc[data_copy['BusinessID'] == businessID]
+            add_to_stream(row, row_copy, stream, y_pred)
     # should have a dataset with no missing values for "Accuracy"
     return data
+
+
+def add_to_stream(row, row_copy, stream, predictive_percentage):
+    """
+    This function assumes the url exists, it will never be called when a url doesn't exist, so therefor, this function
+    will always add data to the stream.
+    The idea of this function is to compare our updated dataframe to our copy, adding all new data we found to this stream
+    :param row: row of the dataframe that has been updated
+    :param row_copy: row of the dataframe that has not been updated
+    :param stream: dataframe we need to update
+    :return:
+    """
+    businessID = row["BusinessID"]
+    dict = {"BusinessID": businessID, "Url": None, "Emails": None, "PhoneNums": None, "Addresses": None,
+            "PredictivePercentage": predictive_percentage}
+    url = row['Website']
+    dict["Url"] = url
+
+    # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
+    # being returned. possibly)
+    if _new_email_found(row, row_copy):
+        emails = row['Email']
+        dict['Emails'] = emails
+
+    # check if we found a new phone number, if we did add it to the stream. (it is plural ATM due to a list of
+    # emails being returned. possibly)
+    if _new_phone_found(row, row_copy):
+        phone = row['Phone']
+        dict['Phone'] = phone
+
+    # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
+    # being returned. possibly)
+    if _new_address_found(row, row_copy):
+        address = row['Address']
+        dict['Addresses'] = address
+
+    stream.append(dict)
+
+
+def _new_email_found(row, row_copy):
+    # if there wasn't an email there already
+    if pd.isnull(row_copy['Email']):
+        if pd.notnull(row['Email']):
+            return True
+    # if there already was an email there, don't add it to the stream
+    else:
+        return False
+
+
+def _new_phone_found(row, row_copy):
+    # if there wasn't an email there already
+    if pd.isnull(row_copy['Phone']):
+        if pd.notnull(row['Phone']):
+            return True
+    # if there already was an email there, don't add it to the stream
+    else:
+        return False
+
+
+def _new_address_found(row, row_copy):
+    # if there wasn't an email there already
+    if pd.isnull(row_copy['Address']):
+        if pd.notnull(row['Address']):
+            return True
+    # if there already was an email there, don't add it to the stream
+    else:
+        return False
 
 
 def can_predict(row):
@@ -75,7 +140,7 @@ def can_predict(row):
     We can predict a row if the following hold
     1. the url exists
     2. the url was found via search or email"""
-    if _url_exists(row['Website']) and _not_found_via_bbb(row):
+    if _url_exists(row['Website']):
         return True
     # if the url doesn't exist or it was found via bbb, return false
     return False
@@ -87,13 +152,6 @@ def _url_exists(url):
         return True
     else:
         return False
-
-
-def _not_found_via_bbb(row):
-    """Helper function for can_predict"""
-    if row['FoundVia'] == "BBB":
-        return False
-    return True
 
 
 if __name__ == "__main__":
