@@ -49,23 +49,27 @@ clf.fit(X_train, y_train)
 # ###############################################--FUNCTIONS--##########################################################
 
 def main_ml(data, data_copy, stream):
-    # READ THE CSV THAT HAD JUST RAN THROUGH THE IND VAR SCRAPERS
-    # NOTE: This data should have the following properties
-    # 1. As many rows as the original dataframe
-    # 2. All ind var columns filled out
+    """
+    Used for two major functionallity.
+    1. Knowing if we should add a row of data to a stream
+    2. Predicting the likely-hood of the website being associated with its business
+    :param data: updated data, this should have new data scraped from the web
+    :param data_copy: copy of original data, this should have NONE of the data we found
+    :param stream: used to hold data we have added to BBBs dataframe, we expect this to be used for determining if a
+                   row needs to be manually checked.
+    :return: stream of data
+    """
     for index, row in data.iterrows():
         businessID = row['BusinessID']
         if can_predict(row):
             selected_columns = np.array(row[variables]).reshape(1,-1)
-            # Use the trained classifier to make predictions on the test data
             # in this case its just predicting one row
             y_pred = clf.predict(selected_columns)
 
             # here we need to add the data to a stream, since we now have everything aquired.
             row_copy = data_copy.loc[data_copy['BusinessID'] == businessID]
             add_to_stream(row, row_copy, stream, y_pred)
-    # should have a dataset with no missing values for "Accuracy"
-    return data
+    return stream
 
 
 def add_to_stream(row, row_copy, stream, predictive_percentage):
@@ -116,21 +120,21 @@ def _new_email_found(row, row_copy):
 
 
 def _new_phone_found(row, row_copy):
-    # if there wasn't an email there already
+    # if there wasn't a phone there already
     if pd.isnull(row_copy['Phone']):
         if pd.notnull(row['Phone']):
             return True
-    # if there already was an email there, don't add it to the stream
+    # if there already was a phone there, don't add it to the stream
     else:
         return False
 
 
 def _new_address_found(row, row_copy):
-    # if there wasn't an email there already
+    # if there wasn't an address there already
     if pd.isnull(row_copy['Address']):
         if pd.notnull(row['Address']):
             return True
-    # if there already was an email there, don't add it to the stream
+    # if there already was an address there, don't add it to the stream
     else:
         return False
 
@@ -142,7 +146,7 @@ def can_predict(row):
     2. the url was found via search or email"""
     if _url_exists(row['Website']):
         return True
-    # if the url doesn't exist or it was found via bbb, return false
+    # if the url doesn't exist, return false, since we cannot predict anything
     return False
 
 
