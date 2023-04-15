@@ -53,46 +53,52 @@ def main_scrape_urls(df):
 def check_website_column(row):
     """
     Given a row, checks if the 'Website' column contains a URL.
-    Returns the URL if it is valid, otherwise returns None.
+    Returns the URL and the BusinessID if it is valid, otherwise returns None.
     """
 
     website = row['Website']
+    business_id = row['BusinessID']
     if isinstance(website, str) and re.match(r'^https?://', website):
-        return website
-    return None
+        return website, business_id
+    return None, business_id
+
 
 def url_from_email(row):
     """
     Given a row, attempts to build a URL from the email column.
-    Returns the URL if it is valid, otherwise returns None.
+    Returns the URL and BusinessID if it is valid, otherwise returns None.
     """
 
     email = row['Email']
+    business_id = row['BusinessID']
     if isinstance(email, str):
         website = build_url_from_email(email)
         if website:
-            return website
-        return None
+            return website, business_id
+    return None, business_id
+
 
 def url_from_business_name(row):
     """
-        Given a row, attempts to find a URL from the BusinessName column.
-        Returns the URL if it is valid, otherwise returns None.
-        """
+    Given a row, attempts to find a URL from the BusinessName column.
+    Returns the URL if it is valid, otherwise returns None.
+    """
 
     business_name = row['BusinessName']
     rating_sites = row['RatingSites']
     business_id = row['BusinessId']
     company_city_state = row['PostalCode']
     if isinstance(business_name, str):
-        website = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
+        website, business_id = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
         if website:
-            return website
-    return None
+            return website, business_id
+    return None, business_id
+
 
 
 if __name__ == '__main__':
 
     df = pd.read_csv('mn_bbb_businesses.csv')
-    df = main_scrape_urls(df)
+    df, original_df = main_scrape_urls(df)  # unpack the tuple
     df.to_csv('mn_bbb_businesses_with_urls.csv', index=False)
+    original_df.to_csv('mn_bbb_businesses_original.csv', index=False)
