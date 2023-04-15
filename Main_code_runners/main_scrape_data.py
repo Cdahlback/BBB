@@ -4,6 +4,7 @@ import pandas as pd
 
 def scrape_data_main(df):
     """
+    Iterates over rows and adds any newly scraped data to the Dataframe.
     :param df: dataframe that will be searched for data
     :return: updated dataframe with updated data
     """
@@ -19,6 +20,8 @@ def scrape_data_main(df):
 
 def check_email_helper(row):
     """
+    Takes in a row from the Dataframe and scrapes for any new emails found on the row's URL
+    if no email exists for that row.
     :param row: indexed row from dataframe
     :return: dictionary of possible emails if needed, otherwise None
     """
@@ -36,6 +39,8 @@ def check_email_helper(row):
 
 def check_phone_number_helper(row):
     """
+    Takes in a row from the Dataframe and scrapes for any new phone numbers found on the row's URL
+    if no phone number exists for that row.
     :param row: indexed row from dataframe
     :return: dictionary of all possible phone numbers if needed, otherwise none
     """

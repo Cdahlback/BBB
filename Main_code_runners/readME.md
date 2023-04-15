@@ -14,9 +14,33 @@ How to run code:
 - Install required packages
 - Run main.py
 
-# SCRAPE DATA
-
 # SCRAPE URLs
+
+# SCRAPE Data
+(main_scrape_data.py)
+
+This file takes a Pandas Dataframe and uses all URLs listed under each
+business to scrape every possible piece of information needed. This includes
+emails, and phone numbers.
+
+### FUNCTIONS:
+
+- scrape_data_main:
+  - main function for this file. It will iterate over each row of the input Dataframe, making a call to each helper function that will scrape for the appropriate data.
+  - If any of the helper functions returns any data, it will be added to the Dataframe in the correct column. If helper functions return 'None', nothing is added.
+- check_email_helper:
+  - Takes email, businessID, and URL of given row as variables. Extracts new emails using extract_email_data function in data_extract.py file with URL and businessID as inputs.
+  - if there's no URL in the row, or an email already exists for a row, or no new emails were found, function returns 'None'.
+- check_phone_helper:
+  - Takes phone number, businessID, and URL of given row as variables. Extracts new emails using extract_phone_data function in data_extract.py file with URL and businessID as inputs.
+  - if there's no URL in the row, or a phone number already exists for a row, or no new phone numbers were found, function returns 'None'.
+
+### ADDRESS EXTENSION POSSIBILITY
+
+There is a possibility to add an extension to this file that also scrapes for new addresses as well. As of now there is no function to scrape for address. If such function
+is created in the future, the following adjustments would need to be made to this file in order to do so:
+- Address helper function would need to be coded that calls the address scraper function.
+- Main function would also need to add any newly found address into the 'StreetAddress' column of the Dataframe.
 
 
 # MACHINE LEARNING - ML 
