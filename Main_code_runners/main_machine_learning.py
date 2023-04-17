@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
+from Extract_Data.fill_ind_var_columns import fill_single_row
 
 """
 In the readME for this directory, find the section labeled MACHINE LEARNING for steps and suggestions for global
@@ -68,6 +69,7 @@ def main_ml(data, data_copy, stream, model):
     for index, row in data.iterrows():
         businessID = row['BusinessID']
         if can_predict(row):
+            row = fill_single_row(row)
             selected_columns = np.array(row[features]).reshape(1, -1)
             # in this case its just predicting one row
             y_pred = model.predict(selected_columns)

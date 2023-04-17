@@ -21,10 +21,40 @@ def add_ind_var_columns(data):
     data['contains_reviews_page'] = np.nan
     data['contains_zipCode'] = np.nan
     data['url_contains_phone_number'] = np.nan
-    # data['url_contains_email'] = np.nan
     data['url_is_review_page'] = np.nan
     return data
 
+
+def fill_single_row(row):
+    """
+    A function to fill in a single row with information scraped from the Business URL.
+    :param row: a row from a dataframe
+    :return: updated row will proper information filled out
+    """
+    row = add_ind_var_columns(row)
+    html = get_html(row['Website'])
+    if html is None:
+        print("not found")
+        row["contains_contacts_page"] = False
+        row["contains_business_name"] = False
+        row["contains_business_name_in_copyright"] = False
+        row["contains_social_media_links"] = False
+        row["contains_reviews_page"] = False
+        row["contains_zipCode"] = False
+        row["url_contains_phone_number"] = False
+        row["url_is_review_page"] = False
+    else:
+        business_name = row["BusinessName"]
+        zip = row["PostalCode"]
+        phone_number = row["Phone"]
+        row["contains_contacts_page"] = contains_contacts_page(html)
+        row["contains_business_name"] = contains_business_name(html, business_name)
+        row["contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
+        row["contains_social_media_links"] = contains_social_media_links(html)
+        row["contains_reviews_page"] = contains_reviews_page(html)
+        row["contains_zipCode"] = contains_zipCode(html, str(zip))
+        row["url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
+        row["url_is_review_page"] = url_is_review_page(row['Website'])
 
 def fill_columns(data):
     """
