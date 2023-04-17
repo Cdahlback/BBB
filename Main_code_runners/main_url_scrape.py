@@ -51,11 +51,10 @@ def _url_exists(url):
     else:
         return False
 
-
 def url_from_email(row):
     """
     Given a row, attempts to build a URL from the email column.
-    Returns the URL if it is valid, otherwise returns None.
+    Returns the URL and BusinessID if it is valid, otherwise returns None.
     """
     if pd.isnull(row['Email']):
         return None
@@ -78,7 +77,16 @@ def url_from_business_name(row):
     business_id = row['BusinessId']
     company_city_state = row['PostalCode']
     if isinstance(business_name, str):
-        website = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
+        website, business_id = get_url_from_search(business_name, rating_sites, business_id, company_city_state)
         if website:
             return website
     return None
+
+
+
+if __name__ == '__main__':
+
+    df = pd.read_csv('mn_bbb_businesses.csv')
+    df, original_df = main_scrape_urls(df)  # unpack the tuple
+    df.to_csv('mn_bbb_businesses_with_urls.csv', index=False)
+    original_df.to_csv('mn_bbb_businesses_original.csv', index=False)
