@@ -280,13 +280,12 @@ def extract_phone_data(business_id, url):
         return None
 
     # Extract phone numbers from soup using regex for phone numbers
-    phone_numbers = {'BusinessID': business_id}
+    phone_numbers = []
     counter = 0
     for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
         counter += 1
-        phone_numbers["Phone#{0}:".format(counter)] = tag.string
-
-    if len(phone_numbers) > 1:
+        phone_numbers.append(tag.string)
+    if len(phone_numbers) >= 1:
         return phone_numbers
     else:
         return None
@@ -306,7 +305,7 @@ def extract_email_data(business_id, url):
         return None
 
     # Extract email addresses
-    email_addresses = {'BusinessID': business_id}
+    email_addresses = []
     email_number = 0
     for tag in soup.find_all('a'):
         email = tag.get('href')
@@ -314,8 +313,8 @@ def extract_email_data(business_id, url):
             if email in email_addresses:
                 continue
             email_number += 1
-            email_addresses['Email' + str(email_number)] = email
-    if len(email_addresses) > 1:
+            email_addresses.append(email)
+    if len(email_addresses) >= 1:
         return email_addresses
     else:
         return None

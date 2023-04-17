@@ -4,6 +4,7 @@ import pandas as pd
 
 def scrape_data_main(df):
     """
+    Iterates over rows and adds any newly scraped data to the Dataframe.
     :param df: dataframe that will be searched for data
     :return: updated dataframe with updated data
     """
@@ -15,10 +16,13 @@ def scrape_data_main(df):
         if new_phones is not None:
             df.at[index, 'Phone'] = new_phones          # if checker came back non None, set new phone numbers
         # Can do the same for addresses later on when function is created
+    return df
 
 
 def check_email_helper(row):
     """
+    Takes in a row from the Dataframe and scrapes for any new emails found on the row's URL
+    if no email exists for that row.
     :param row: indexed row from dataframe
     :return: dictionary of possible emails if needed, otherwise None
     """
@@ -28,14 +32,16 @@ def check_email_helper(row):
     if pd.isnull(url):                  # if url doesn't exist, return None because we can't run anything without it
         return None
     if pd.isnull(email):                # if email is missing, extract list of emails, and return dict
-        dict_email = extract_email_data(business_id, url)
-        return dict_email
+        lst_email = extract_email_data(business_id, url)
+        return lst_email
     else:
         return None                     # if email already exists, return None
 
 
 def check_phone_number_helper(row):
     """
+    Takes in a row from the Dataframe and scrapes for any new phone numbers found on the row's URL
+    if no phone number exists for that row.
     :param row: indexed row from dataframe
     :return: dictionary of all possible phone numbers if needed, otherwise none
     """
@@ -45,12 +51,8 @@ def check_phone_number_helper(row):
     if pd.isnull(url):                   # if url doesn't exist, return None because we can't run anything without it
         return None
     if pd.isnull(phone):                 # if phone is missing, extract list of phones, and return dict
-        dict_phone = extract_phone_data(business_id, url)
-        return dict_phone
+        lst_phone = extract_phone_data(business_id, url)
+        return lst_phone
     else:
         return None                      # if phone already exists, return None
 
-
-if __name__ == '__main__':
-    input_df = pd.read_csv('input_csv')
-    scrape_data_main(input_df)
