@@ -12,50 +12,50 @@ variable values.
 
 # ###############################################--Global vars--#######################################################
 
-# Enter model data here:
-max_depth = 4
-ccp_alpha = 0
-
-# Can be deleted (since we will be passing in a updated dataframe from the main_scrape_data
-data = pd.read_csv(
-    "../data/filled_ind_var.csv")
-
 # Here you can comment out features and try different permutations
 features = [
-    "contains_contacts_page",
-    "contains_business_name",
-    "contains_business_name_in_copyright",
-    "contains_social_media_links",
-    "contains_reviews_page",
-    "contains_zipCode",
-    "url_contains_phone_number",
-    "BBBRatingScore",
-    "IsHQ",
-    "IsCharity",
-    "IsBBBAccredited"
-]
+        "contains_contacts_page",
+        "contains_business_name",
+        "contains_business_name_in_copyright",
+        "contains_social_media_links",
+        "contains_reviews_page",
+        "contains_zipCode",
+        "url_contains_phone_number",
+        "BBBRatingScore",
+        "IsHQ",
+        "IsCharity",
+        "IsBBBAccredited"
+    ]
 
-# Create features and output (these should be created from the passed in dataframe, not the one stored locally here)
-X = data[features].values
-y = data['manually_checked'].values
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+def main(df, df_copy):
+    # Enter model data here:
+    max_depth = 4
+    ccp_alpha = 0
 
-# Create a decision tree classifier
-model = DecisionTreeClassifier(max_depth=max_depth, ccp_alpha=ccp_alpha)
+    # Create features and output (these should be created from the passed in dataframe, not the one stored locally here)
+    X = df[features].values
+    y = df['manually_checked'].values
 
-# Train the classifier on the training data
-model.fit(X_train, y_train)
+    # Split the dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+    # Create a decision tree classifier
+    model = DecisionTreeClassifier(max_depth=max_depth, ccp_alpha=ccp_alpha)
+
+    # Train the classifier on the training data
+    model.fit(X_train, y_train)
+    stream = {'BusinessID': None, 'Email': None, 'Phone': None, 'Website': None, "Addresses": None, 'predictive%': None}
+    return main_ml(df, df_copy, stream, model)
 
 
 # ###############################################--FUNCTIONS--##########################################################
 
-def main_ml(data, data_copy, stream):
+def main_ml(data, data_copy, stream, model):
     """
     MORE INFO IN readME for this directory.
 
-    Used for two major functionallity.
+    Used for two major functionality.
     1. Knowing if we should add a row of data to a stream
     2. Predicting the percentage of the website being associated with its business
 
@@ -91,28 +91,25 @@ def add_to_stream(row, row_copy, stream, predictive_percentage):
     :return: None
     """
     businessID = row["BusinessID"]
-    dict = {"BusinessID": businessID, "Url": None, "Emails": None, "PhoneNums": None, "Addresses": None,
+    dict = {"BusinessID": businessID, "Website": None, "Emails": None, "PhoneNums": None, "Addresses": None,
             "PredictivePercentage": predictive_percentage}
     url = row['Website']
-    dict["Url"] = url
+    dict["Website"] = url
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
     if _new_email_found(row, row_copy):
-        emails = row['Email']
-        dict['Emails'] = emails
+        dict['Emails'] = row['Email']
 
     # check if we found a new phone number, if we did add it to the stream. (it is plural ATM due to a list of
     # emails being returned. possibly)
     if _new_phone_found(row, row_copy):
-        phone = row['Phone']
-        dict['Phone'] = phone
+        dict['Phone'] = row['Phone']
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
     if _new_address_found(row, row_copy):
-        address = row['Address']
-        dict['Addresses'] = address
+        dict['Addresses'] = row['Address']
 
     stream.append(dict)
 
@@ -189,8 +186,3 @@ def _url_exists(url):
         return True
     else:
         return False
-
-
-if __name__ == "__main__":
-    new_df = main_ml(data)
-    print(new_df)
