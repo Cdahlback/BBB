@@ -15,6 +15,59 @@ How to run code:
 - Run main.py
 
 # SCRAPE URLs
+(main_url_scrape.py)
+
+The main_scrape_urls function takes a pandas dataframe df as an input and returns the modified dataframe with added URLs and their status codes.
+
+## Parameters
+
+- __df__: pandas dataframe containing business information.
+
+## Return value
+
+- Modified pandas dataframe with added URLs and their status codes.
+
+## Functionality
+
+- The function loops through each row of the input dataframe and checks if a valid URL exists in the 'Website' column.
+
+- If it does, the function continues to the next row.
+
+- If not, the function first tries to build a URL from the email column using the url_from_email function from create_urls.py and adds it to the 'Website' column.
+
+- If no valid URL is found from the email column, the function then tries to find a URL from the 'BusinessName' column using the url_from_business_name function from create_urls.py and adds it to the 'Website' column.
+
+- After adding the URLs to the 'Website' column, the function checks their status codes using the get_statuscode_forPandas function from get_status_codes.py.
+
+- If the status code is 200, the function updates the 'Website' column with the valid URL.
+
+- Finally, the function returns the modified dataframe.
+
+## Functions:
+
+- url_exists:
+  - The url_exists function is a helper function for main_scrape_urls. It checks if a URL exists for the given row.
+
+- url_from_email: 
+  - The url_from_email function attempts to build a URL from the email column of a given row.
+
+- url_from_business_name: 
+  - The url_from_business_name function attempts to find a URL from the BusinessName column of a given row.
+
+
+## Limitations
+This script has some limitations:
+
+- It only searches for URLs based on the business name and email.
+- It only checks the status code of the URL, not the content of the website.
+- It uses a fixed list of rating sites to search for URLs.
+
+## Future Improvements
+Here are some ideas for further improvements:
+
+- Add more methods to search for URLs (e.g. by phone number or address).
+- Check the content of the website to ensure it is a valid business website.
+- Allow the user to specify which rating sites to search for URLs.
 
 # SCRAPE Data
 (main_scrape_data.py)
