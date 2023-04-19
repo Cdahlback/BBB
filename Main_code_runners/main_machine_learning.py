@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from Extract_Data.fill_ind_var_columns import fill_single_row
+from Extract_Data.fill_ind_var_columns import fill_columns
 
 """
 In the readME for this directory, find the section labeled MACHINE LEARNING for steps and suggestions for global
@@ -14,6 +14,8 @@ variable values.
 # ###############################################--Global vars--#######################################################
 
 # Here you can comment out features and try different permutations
+model_data = pd.read_csv("../data/filled_ind_var.csv")
+
 features = [
         "contains_contacts_page",
         "contains_business_name",
@@ -35,8 +37,8 @@ def main(df, df_copy):
     ccp_alpha = 0
 
     # Create features and output (these should be created from the passed in dataframe, not the one stored locally here)
-    X = df[features].values
-    y = df['manually_checked'].values
+    X = model_data[features].values
+    y = model_data['manually_checked'].values
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -47,6 +49,7 @@ def main(df, df_copy):
     # Train the classifier on the training data
     model.fit(X_train, y_train)
     stream = {'BusinessID': None, 'Email': None, 'Phone': None, 'Website': None, "Addresses": None, 'predictive%': None}
+    stream = pd.DataFrame.from_dict(stream, orient='index')
     return main_ml(df, df_copy, stream, model)
 
 
@@ -69,10 +72,13 @@ def main_ml(data, data_copy, stream, model):
     for index, row in data.iterrows():
         businessID = row['BusinessID']
         if can_predict(row):
-            row = fill_single_row(row)
+            row = fill_columns(row)
             selected_columns = np.array(row[features]).reshape(1, -1)
             # in this case its just predicting one row
-            y_pred = model.predict(selected_columns)
+            y_pred = model.predict_proba(selected_columns)
+
+            print("Predictions: ", y_pred)
+            y_pred = y_pred[0][1]
 
             # here we need to add the data to a stream, since we now have everything aquired.
             row_copy = data_copy.loc[data_copy['BusinessID'] == businessID]
@@ -110,10 +116,10 @@ def add_to_stream(row, row_copy, stream, predictive_percentage):
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
-    if _new_address_found(row, row_copy):
-        dict['Addresses'] = row['Address']
+    # if _new_address_found(row, row_copy):
+    #     dict['Addresses'] = row['Address']
 
-    stream.append(dict)
+    stream.append(dict, ignore_index=True)
 
 
 def _new_email_found(row, row_copy):
@@ -125,8 +131,8 @@ def _new_email_found(row, row_copy):
     :return:
     """
     # if there wasn't an email there already
-    if pd.isnull(row_copy['Email']):
-        if pd.notnull(row['Email']):
+    if row_copy['Email'].empty:
+        if row['Email'].empty:
             return True
     # if there already was an email there, don't add it to the stream
     else:
@@ -142,8 +148,8 @@ def _new_phone_found(row, row_copy):
     :return:
     """
     # if there wasn't a phone there already
-    if pd.isnull(row_copy['Phone']):
-        if pd.notnull(row['Phone']):
+    if row_copy['Phone'].empty:
+        if row['Phone'].empty:
             return True
     # if there already was a phone there, don't add it to the stream
     else:
@@ -159,8 +165,8 @@ def _new_address_found(row, row_copy):
     :return:
     """
     # if there wasn't an address there already
-    if pd.isnull(row_copy['Address']):
-        if pd.notnull(row['Address']):
+    if row_copy['Address'].empty:
+        if row['Address'].empty:
             return True
     # if there already was an address there, don't add it to the stream
     else:

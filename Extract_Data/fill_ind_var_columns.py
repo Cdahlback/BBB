@@ -1,5 +1,5 @@
 import time
-from data_extraction import *
+from Extract_Data.data_extraction import *
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
@@ -63,45 +63,45 @@ def fill_columns(data):
     :return: cope of the data with new columns added.
     """
     data_copy = data.copy(deep=True)
-    t0 = time.time()
+    # t0 = time.time()
 
-    for index, row in data_copy.iterrows():
-        website = row["Website"] if row["Website"] else None
-        if pd.isnull(website):
-            print("no website")
-            continue
-        html = get_html(website)
-        print(index)
-        if html is None:
-            print("not found")
-            data_copy.loc[index, "contains_contacts_page"] = False
-            data_copy.loc[index, "contains_business_name"] = False
-            data_copy.loc[index, "contains_business_name_in_copyright"] = False
-            data_copy.loc[index, "contains_social_media_links"] = False
-            data_copy.loc[index, "contains_reviews_page"] = False
-            data_copy.loc[index, "contains_zipCode"] = False
-            data_copy.loc[index, "url_contains_phone_number"] = False
-            # data_copy.loc[index, "url_contains_email"] = False
-            data_copy.loc[index, "url_is_review_page"] = False
-            continue
-        else:
-            business_name = row["BusinessName"]
-            zip = row["PostalCode"]
-            phone_number = row["Phone"]
-            email = row["Email"]
-            data_copy.loc[index, "contains_contacts_page"] = contains_contacts_page(html)
-            data_copy.loc[index, "contains_business_name"] = contains_business_name(html, business_name)
-            data_copy.loc[index, "contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
-            data_copy.loc[index, "contains_social_media_links"] = contains_social_media_links(html)
-            data_copy.loc[index, "contains_reviews_page"] = contains_reviews_page(html)
-            data_copy.loc[index, "contains_zipCode"] = contains_zipCode(html, str(zip))
-            data_copy.loc[index, "url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
-            # data_copy.loc[index, "url_contains_email"] = contains_email(html, email)
-            data_copy.loc[index, "url_is_review_page"] = url_is_review_page(website)
-            print("time taken to scrape ind vars for index: {0}".format(index))
+    # for index, row in data_copy.iterrows():
+    website = data["Website"] if data["Website"] else None
+    if pd.isnull(website):
+        print("no website")
+        return data_copy
+    html = get_html(website)
+    # print(index)
+    if html is None:
+        print("not found")
+        data_copy.loc["contains_contacts_page"] = False
+        data_copy.loc["contains_business_name"] = False
+        data_copy.loc["contains_business_name_in_copyright"] = False
+        data_copy.loc["contains_social_media_links"] = False
+        data_copy.loc["contains_reviews_page"] = False
+        data_copy.loc["contains_zipCode"] = False
+        data_copy.loc["url_contains_phone_number"] = False
+        # data_copy.loc[index, "url_contains_email"] = False
+        data_copy.loc["url_is_review_page"] = False
+        return data_copy
+    else:
+        business_name = data["BusinessName"]
+        zip = data["PostalCode"]
+        phone_number = data["Phone"]
+        email = data["Email"]
+        data_copy.loc["contains_contacts_page"] = contains_contacts_page(html)
+        data_copy.loc["contains_business_name"] = contains_business_name(html, business_name)
+        data_copy.loc["contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
+        data_copy.loc["contains_social_media_links"] = contains_social_media_links(html)
+        data_copy.loc["contains_reviews_page"] = contains_reviews_page(html)
+        data_copy.loc["contains_zipCode"] = contains_zipCode(html, str(zip))
+        data_copy.loc["url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
+        # data_copy.loc[index, "url_contains_email"] = contains_email(html, email)
+        data_copy.loc["url_is_review_page"] = url_is_review_page(website)
+        # print("time taken to scrape ind vars for index: {0}".format(index))
 
-    t1 = time.time() - t0
-    print(t1)
+    # t1 = time.time() - t0
+    # print(t1)
     return data_copy
 
 
