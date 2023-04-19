@@ -116,7 +116,8 @@ if __name__ == "__main__":
         "BBBRatingScore",
         "IsHQ",
         "IsCharity",
-        "IsBBBAccredited"
+        "IsBBBAccredited",
+        "url_is_review_page"
     ]
 
     test_eval(models[1], variables, 0)

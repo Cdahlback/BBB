@@ -2,11 +2,15 @@ import pandas as pd
 from selenium import webdriver
 
 df = pd.read_csv("../data/manually_verify_scrapers.csv")
-manually_verify = df.sample(50)
-browser = webdriver.Chrome()
+manually_verify = df.sample(50)                 # input csv with sample data to test.
+browser = webdriver.Chrome()                    # open chromedriver.
 
 
 def print_info(row):
+    """
+    helper function that prints all the information from the independent variables we want to manually check.
+    :param row: row in sample dataframe
+    """
     print("BusinessName: {0}".format(row['BusinessName']))
     print("url_contains_email: {0}".format(row["url_contains_phone_number"]))
     print("contains_contacts_page: {0}".format(row["contains_contacts_page"]))
@@ -19,12 +23,11 @@ def print_info(row):
     print("")
 
 
-for index, row in manually_verify.iterrows():
+for index, row in manually_verify.iterrows():       # iterate over all manually_verify rows.
     try:
-        browser.get(row['Website'])
+        browser.get(row['Website'])                 # try loading the url into the chromedriver.
     except:
-        print("Website failed to load")
+        print("Website failed to load")             # if url doesn't exist, except error and print statement.
     finally:
-        print_info(row)
-        ipt = input("Press any key to continue")
-
+        print_info(row)                             # print row information to use for manually verifying.
+        ipt = input("Press any key to continue")    # takes in any input to move on to next url.

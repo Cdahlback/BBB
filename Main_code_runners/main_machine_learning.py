@@ -27,7 +27,8 @@ features = [
         "BBBRatingScore",
         "IsHQ",
         "IsCharity",
-        "IsBBBAccredited"
+        "IsBBBAccredited",
+        "url_is_review_page"
     ]
 
 

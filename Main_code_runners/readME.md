@@ -35,7 +35,7 @@ emails, and phone numbers.
   - Takes phone number, businessID, and URL of given row as variables. Extracts new emails using extract_phone_data function in data_extract.py file with URL and businessID as inputs.
   - if there's no URL in the row, or a phone number already exists for a row, or no new phone numbers were found, function returns 'None'.
 
-### ADDRESS EXTENSION POSSIBILITY
+### ADDRESS SCRAPER EXTENSION POSSIBILITY
 
 There is a possibility to add an extension to this file that also scrapes for new addresses as well. As of now there is no function to scrape for address. If such function
 is created in the future, the following adjustments would need to be made to this file in order to do so:
