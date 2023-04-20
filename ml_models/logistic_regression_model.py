@@ -1,57 +1,74 @@
-import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
-
-# Read dataset
-data = pd.read_csv("../data/filled_ind_var.csv", low_memory=False)
-
-model_data = data[:1600]
-
-holdout_data = data[1600:]
-
-variables = [
-             "contains_contacts_page",
-             "contains_business_name",
-             "contains_business_name_in_copyright",
-             "contains_social_media_links",
-             "contains_reviews_page",
-             "contains_zipCode",
-             "url_contains_phone_number",
-             "BBBRatingScore",
-             "IsHQ",
-             "IsCharity",
-             "IsBBBAccredited",
-             "url_is_review_page"
-             ]
-
-# Show correlation between variables
-corr_data = data.loc[:, variables + ["manually_checked"]]
-
-pd.set_option('display.max_columns', None)
-print(corr_data.corr())
-# Create Independent and Dependent variable sets
-Y = model_data["manually_checked"].values
-print(Y)
+from Vizualization.RegressionVizualization import *
+import pickle
 
 
-X = model_data.loc[:, variables].values
+def test_different_inputs(df, feature):
+    """
+    Given a dataframe and a feature, evaluate the model with different random_state values
+    :param df:
+    :param feature:
+    :return:
+    """
 
-# Split data into testing and training sets
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
+    X = df[feature].values
+    y = df['manually_checked'].values
 
-# Building the model and fitting the data to it
-website_relation_model = LogisticRegression()
-# Train the model
-website_relation_model.fit(x_train, y_train)
+    # train/split data
+    X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.3, random_state=21)
 
-# Checking the predictive power of the model using the testing sets
-y_prediction = website_relation_model.predict(x_test)
+    # create model
+    model = LogisticRegression()
 
-print("\nCoefficients: \n", website_relation_model.coef_)
+    # fit model to train data
+    model.fit(X_train, y_train)
 
-print("Root mean squared error: %.2f" % mean_squared_error(y_test, y_prediction, squared=False))
+    # predict test/train
+    y_pred_test = model.predict(X_test)
+    y_pred_train = model.predict(X_train)
 
-print("Coefficient of determination: %.2f" % r2_score(y_test, y_prediction))
+    # get r^2 score for train/test
+    train_score = r2_score(y_train, y_pred_train)
+    test_score = r2_score(y_test, y_pred_test)
+
+    # predict the output given the features
+    y_pred = model.predict(X)
+    # calc Mean Average Error and Mean Squared Error
+    mae = mean_absolute_error(y, y_pred)
+    mse = mean_squared_error(y, y_pred)
+
+    # print data (change to update a df)
+    print("Model tested with feature {0} random_state: {1}".format(feature, 21))
+    print("R_2 (train): {0} | R_2 (test): {1}".format(train_score, test_score))
+    print("MSE: {0} | MAE {1}".format(mse, mae))
+    print("")
+
+    # store model into a pickle file
+    with open('../ml_models/model.pkl', 'wb') as f:
+        pickle.dump(model, f)
+        f.close()
+
+
+if __name__ == "__main__":
+
+    df = pd.read_csv("../Extract_Data/best_ind_vars.csv", low_memory=False)
+
+    variables = [
+        "contains_contacts_page",
+        "contains_business_name",
+        "contains_business_name_in_copyright",
+        "contains_social_media_links",
+        "contains_reviews_page",
+        "contains_zipCode",
+        "url_contains_phone_number",
+        "BBBRatingScore",
+        "IsHQ",
+        "IsCharity",
+        "IsBBBAccredited",
+        "url_is_review_page"
+    ]
+
+    test_different_inputs(df, variables)

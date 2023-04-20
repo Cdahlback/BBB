@@ -19,14 +19,11 @@ from time import time
 import graphviz
 import os
 
-
 # Load the iris dataset
 data = pd.read_csv("../data/filled_ind_var.csv")
 
 
-
 def test_eval(model, variables, r_s):
-
     # Create features and output
     X = data[variables].values
     y = data['manually_checked'].values
@@ -53,7 +50,7 @@ def test_eval(model, variables, r_s):
 
     # save results
     print(f"Accuracy: {accuracy}")
-    dict_to_append = {"Accuracy" : accuracy, "VariablesUsed" : variables[:], "RandomStateUsed" : r_s}
+    dict_to_append = {"Accuracy": accuracy, "VariablesUsed": variables[:], "RandomStateUsed": r_s}
     add_to_csv(dict_to_append)
 
     # show and save decision tree
@@ -85,7 +82,7 @@ def get_feature_importance(clf, variables):
     # Compute feature importance
     importances = clf.feature_importances_
 
-    # Print the feature importances
+    # Print the feature importance
     for feature, importance in zip(variables, importances):
         print(f"{feature}: {importance:.3f}")
 
@@ -96,12 +93,14 @@ def test_diff_inputs(model, n, vars):
         test_eval(model, vars, i)
     ml_stats_df.to_csv("../data/ml_stats.csv")
 
+
 if __name__ == "__main__":
     models = [DecisionTreeClassifier(max_depth=3),
               DecisionTreeClassifier(max_depth=6),
               ]
 
-    data = pd.read_csv("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
+    data = pd.read_csv(
+        "/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
     ml_stats_df = pd.read_csv("../data/ml_data/ml_stats.csv")
 
     variables = [
@@ -130,6 +129,6 @@ dot_data = export_graphviz(clf, out_file=None,
                            feature_names=variables,
                            class_names=['0', '1'],
                            filled=True, rounded=True,
-                           special_characters=True, max_depth=3)#will show only 3 depth
+                           special_characters=True, max_depth=3)  # will show only 3 depth
 graph = graphviz.Source(dot_data)
 graph.render('decision_tree', format='png', view=True)
