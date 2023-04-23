@@ -8,9 +8,7 @@ The purpose of this folder is to contain main.py and all of the other main files
 + main.py
 
 # Installation and Instructions
-git clone the [repo](https://github.com/Cdahlback/BBB.git) into your local folder of choice
-
-https://github.com/Cdahlback/BBB.git
+git clone the [repo](https://github.com/Cdahlback/BBB.git) (right click + copy link) into your local folder of choice
 
 Required packages to run main:
 - Pandas            (pip install pandas)
