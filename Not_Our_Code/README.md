@@ -1,5 +1,5 @@
 # Not_Our_Code folder
-The purpose of this folder is to contain scripts that were not created by us that we have incorporated into our scripts.
+The purpose of this folder is to contain scripts that were not created by us that we have incorporated into our project.
 
 ## Files
 + elis_functions.py
