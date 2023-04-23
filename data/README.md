@@ -1,5 +1,5 @@
 # Data folder
-The purpose of this folder is to act as the primary place of storage for most of the csv files we work with. It contains all of the initial csv files we got from BBB's database, and some csv files that our scripts work, including a ml_data subfolder which contains important data collected from our machine learning models.
+The purpose of this folder is to act as the primary place of storage for most of the csv files we work with. It contains all of the initial csv files we got from BBB's database, and some csv files that our scripts work with, including a ml_data subfolder which contains important data collected from our machine learning models.
 
 ## Files
 + Script Files
