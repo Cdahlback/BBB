@@ -282,9 +282,12 @@ def extract_phone_data(business_id, url):
     # Extract phone numbers from soup using regex for phone numbers
     phone_numbers = []
     counter = 0
-    for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
-        counter += 1
-        phone_numbers.append(tag.string)
+    try:
+        for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
+            counter += 1
+            phone_numbers.append(tag.string)
+    except:
+        return None
     if len(phone_numbers) >= 1:
         return phone_numbers
     else:
