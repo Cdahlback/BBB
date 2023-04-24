@@ -47,7 +47,7 @@ def test_different_inputs(df, feature):
     print("")
 
     # store model into a pickle file
-    with open('../ml_models/model.pkl', 'wb') as f:
+    with open('../ml_models/lr_model.pkl', 'wb') as f:
         pickle.dump(model, f)
         f.close()
 
