@@ -19,10 +19,10 @@ The main client for this project is Ryan Sharp of the BBB Twin Cities, and the t
 # Team Members
 - Dylan Moore - Team Lead: dylan.moore@mnsu.edu
 - Collin Dahlback - Test Lead: collin.dahlback@mnsu.edu
-- Jackson Thoe - DB Lead: jackson.thoe@mnsu.edu
-- Justin Engels - Algo Lead: justin.engels@mnsu.edu
+- Jackson Thoe - Algo Lead: jackson.thoe@mnsu.edu
+- Justin Engels - DB Lead: justin.engels@mnsu.edu
 - Biruk Anley - Scrape Lead: biruk.anley@mnsu.edu
-# Client
+# Primary Client
 - Ryan Sharp, BBB Twin Cities
 # Technical and Organizational Specialists
 - Eli Johnson, IABBB
@@ -30,3 +30,6 @@ The main client for this project is Ryan Sharp of the BBB Twin Cities, and the t
 # Resources
 - BBB website: http://www.bbb.org/
 - IABBB website: https://www.bbb.org/local-bbb/international-association-of-better-business-bureaus
+
+# Getting Started
+To start using this product, refer to the [Main_code_runner's README](https://github.com/Cdahlback/BBB/tree/main/Main_code_runners) on what you need to install and what you need to do to run it. It also contains in-depth technical details on what this product does.

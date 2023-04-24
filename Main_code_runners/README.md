@@ -1,17 +1,24 @@
-Required packages to run main:
-- Pandas            (pip install pandas)
-- BeautifulSoup     (pip install bs4)
-- sklearn           (pip install scikit-learn)
-- numpy             (pip install numpy)
-- re
+# Main_code_runners folder
+The purpose of this folder is to contain main.py and all of the other main files. This is the primary folder where execution of our main script is ran. 
 
+# Files
++ main_machine_learning.py
++ main_scrape_data.py
++ main_url_scrape.py
++ main.py
 
-How to run code:
-- Set necessary global variables in following files
+# Installation and Instructions
++ git clone the [repo](https://github.com/Cdahlback/BBB.git) (right click + copy link) into your local folder of choice
++ Install the following python packages:
+  - Pandas            (pip install pandas)
+  - BeautifulSoup     (pip install bs4)
+  - sklearn           (pip install scikit-learn)
+  - numpy             (pip install numpy)
+  - re
+- Set necessary global variables in the following files:
   - main_machine_learning.py
   - main_scrape_data.py
   - main_url_scrape.py
-- Install required packages
 - Run main.py
 
 # SCRAPE URLs
