@@ -49,8 +49,7 @@ def main(df, df_copy):
 
     # Train the classifier on the training data
     model.fit(X_train, y_train)
-    stream = {'BusinessID': None, 'Email': None, 'Phone': None, 'Website': None, "Addresses": None, 'predictive%': None}
-    stream = pd.DataFrame.from_dict(stream, orient='index')
+    stream = pd.DataFrame(columns=['BusinessID', 'Email', 'Phone', 'Website', "Addresses", 'predictive%'])
     return main_ml(df, df_copy, stream, model)
 
 
@@ -82,7 +81,7 @@ def main_ml(data, data_copy, stream, model):
             y_pred = y_pred[0][1]
 
             # here we need to add the data to a stream, since we now have everything aquired.
-            row_copy = data_copy.loc[data_copy['BusinessID'] == businessID]
+            row_copy = data_copy[data_copy['BusinessID'] == businessID]
             add_to_stream(row, row_copy, stream, y_pred)
     return stream
 
@@ -100,30 +99,31 @@ def add_to_stream(row, row_copy, stream, predictive_percentage):
     :return: None
     """
     businessID = row["BusinessID"]
-    dict = {"BusinessID": businessID, "Website": None, "Emails": None, "PhoneNums": None, "Addresses": None,
-            "PredictivePercentage": predictive_percentage}
+    dict = {"BusinessID": businessID,"Email": None, "Phone": None, "Website": None, "Addresses": None,
+            "predictive%": predictive_percentage}
     url = row['Website']
     dict["Website"] = url
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
-    if _new_email_found(row, row_copy):
-        dict['Emails'] = row['Email']
+    if _new_email_found(row, row_copy, businessID):
+        dict['Email'] = row['Email']
 
     # check if we found a new phone number, if we did add it to the stream. (it is plural ATM due to a list of
     # emails being returned. possibly)
-    if _new_phone_found(row, row_copy):
+    if _new_phone_found(row, row_copy, businessID):
         dict['Phone'] = row['Phone']
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
-    # if _new_address_found(row, row_copy):
+    # if _new_address_found(row, row_copy, businessID):
     #     dict['Addresses'] = row['Address']
 
-    stream.append(dict, ignore_index=True)
+    series_dict = pd.Series(dict)
+    stream.loc[len(stream)] = series_dict
 
 
-def _new_email_found(row, row_copy):
+def _new_email_found(row, row_copy, businessId):
     """
     If there is no data in our original dataframe, and data in our updated dataframe, we have successfully found an email
 
@@ -131,16 +131,17 @@ def _new_email_found(row, row_copy):
     :param row_copy: original dataframe with no updated values
     :return:
     """
-    # if there wasn't an email there already
-    if row_copy['Email'].empty:
-        if row['Email'].empty:
-            return True
-    # if there already was an email there, don't add it to the stream
+    possible_new_email = row['Email']
+    old_value = row_copy.loc[row_copy['BusinessID'] == businessId, 'Email'].iloc[0]
+    if isinstance(possible_new_email, list) and pd.isna(old_value):
+        return True
+    if pd.notna(possible_new_email) and pd.isna(old_value):
+        return True
     else:
         return False
 
 
-def _new_phone_found(row, row_copy):
+def _new_phone_found(row, row_copy, businessId):
     """
     If there is no data in our original dataframe, and data in our updated dataframe, we have successfully found a phone
 
@@ -148,11 +149,12 @@ def _new_phone_found(row, row_copy):
     :param row_copy: original dataframe with no updated values
     :return:
     """
-    # if there wasn't a phone there already
-    if row_copy['Phone'].empty:
-        if row['Phone'].empty:
-            return True
-    # if there already was a phone there, don't add it to the stream
+    possible_new_phone = row['Phone']
+    old_value = row_copy.loc[row_copy['BusinessID'] == businessId, 'Email'].iloc[0]
+    if isinstance(possible_new_phone, list) and pd.isna(old_value):
+        return True
+    if pd.notna(possible_new_phone) and pd.isna(old_value):
+        return True
     else:
         return False
 
