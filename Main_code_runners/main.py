@@ -6,7 +6,7 @@ import pandas as pd
 
 if __name__ == "__main__":
     df = pd.read_csv("../data/mn_bbb_businesses.csv", low_memory=False)
-    df = df.sample(100)
+    df = df.sample(10)
     df_copy = df.copy(deep=True)
     df = main_scrape_urls(df)
     df = scrape_data_main(df)
