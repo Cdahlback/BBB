@@ -1,32 +1,58 @@
-import csv
-import random
-
-import pandas as pd
 from sklearn import tree
-from sklearn.datasets import load_iris
-from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from ml_models.Vizualization.ClassificationVisualization import *
 from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neural_network import MLPClassifier
-from xgboost import XGBClassifier
-from time import time
-import graphviz
-import os
+import pickle
 
 # Load the iris dataset
-data = pd.read_csv("../data/filled_ind_var.csv")
+model_data = pd.read_csv("../data/filled_ind_var.csv")
+ml_stats_df = pd.read_csv("../data/ml_data/ml_stats.csv")
 
 
-def test_eval(model, variables, r_s):
+def build_tree(input_data):
+    """
+    build decision tree based on data given
+    :return trained model
+    """
+    features = [
+        "contains_contacts_page",
+        "contains_business_name",
+        "contains_business_name_in_copyright",
+        "contains_social_media_links",
+        "contains_reviews_page",
+        "contains_zipCode",
+        "url_contains_phone_number",
+        "BBBRatingScore",
+        "IsHQ",
+        "IsCharity",
+        "IsBBBAccredited",
+        "url_is_review_page"
+    ]
+
+    # Enter model data here:
+    max_depth = 4
+    ccp_alpha = 0
+
+    # Create features and output (these should be created from the passed in dataframe, not the one stored locally here)
+    X = input_data[features].values
+    y = input_data['manually_checked'].values
+
+    # Split the dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+    # Create a decision tree classifier
+    model = DecisionTreeClassifier(max_depth=max_depth, ccp_alpha=ccp_alpha)
+
+    # Train the classifier on the training data
+    model.fit(X_train, y_train)
+
+    return model
+
+
+def model_eval(model, variables, r_s):
     # Create features and output
-    X = data[variables].values
-    y = data['manually_checked'].values
+    X = model_data[variables].values
+    y = model_data['manually_checked'].values
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=r_s)
@@ -53,11 +79,6 @@ def test_eval(model, variables, r_s):
     dict_to_append = {"Accuracy": accuracy, "VariablesUsed": variables[:], "RandomStateUsed": r_s}
     add_to_csv(dict_to_append)
 
-    # show and save decision tree
-    # fig, ax = plt.subplots(figsize=(15, 15))
-    # tree.plot_tree(clf, ax=ax)
-    # plt.show()
-
     fig = plt.figure(figsize=(25, 20))
     _ = tree.plot_tree(clf,
                        feature_names=variables,
@@ -80,55 +101,23 @@ def get_highest_accuracy():
 def get_feature_importance(clf, variables):
     """Code block used to compute feature importance"""
     # Compute feature importance
-    importances = clf.feature_importances_
+    importance = clf.feature_importances_
 
     # Print the feature importance
-    for feature, importance in zip(variables, importances):
+    for feature, importance in zip(variables, importance):
         print(f"{feature}: {importance:.3f}")
 
 
-def test_diff_inputs(model, n, vars):
+def model_test_diff_inputs(model, n, vars):
     """Code block to test different random_states and save results to a csv"""
     for i in range(0, n):
-        test_eval(model, vars, i)
+        model_eval(model, vars, i)
     ml_stats_df.to_csv("../data/ml_stats.csv")
 
 
 if __name__ == "__main__":
-    models = [DecisionTreeClassifier(max_depth=3),
-              DecisionTreeClassifier(max_depth=6),
-              ]
-
-    data = pd.read_csv(
-        "/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSPROJECT1/BBB/data/filled_ind_var.csv")
-    ml_stats_df = pd.read_csv("../data/ml_data/ml_stats.csv")
-
-    variables = [
-        "contains_contacts_page",
-        "contains_business_name",
-        "contains_business_name_in_copyright",
-        "contains_social_media_links",
-        "contains_reviews_page",
-        "contains_zipCode",
-        "url_contains_email",
-        "url_contains_phone_number",
-        "BBBRatingScore",
-        "IsHQ",
-        "IsCharity",
-        "IsBBBAccredited",
-        "url_is_review_page"
-    ]
-
-    test_eval(models[1], variables, 0)
-
-# Measure the accuracy of the classifier
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {accuracy}")
-
-dot_data = export_graphviz(clf, out_file=None,
-                           feature_names=variables,
-                           class_names=['0', '1'],
-                           filled=True, rounded=True,
-                           special_characters=True, max_depth=3)  # will show only 3 depth
-graph = graphviz.Source(dot_data)
-graph.render('decision_tree', format='png', view=True)
+    model = build_tree(model_data)
+    # store model into a pickle file
+    with open('../ml_models/dt_model.pkl', 'wb') as f:
+        pickle.dump(model, f)
+        f.close()
