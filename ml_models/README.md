@@ -15,3 +15,20 @@ is a valuable resource for individuals and organizations that are interested in 
 + Visualization sub-folder
     + ClassificationVisualization.py
     + RegressionVisualization.py
+
+## Using the machine learning models
+Running decision_tree_classification.py will produce a decision tree model while running logistic_regression_model.py will produce a linear regression model. Both models come with these standard features/variables:
++ contains_contacts_page
++ contains_business_name
++ contains_business_name_in_copyright
++ contains_social_media_links
++ contains_reviews_page
++ contains_zipCode
++ url_contains_phone_number
++ BBBRatingScore
++ IsHQ
++ IsCharity
++ IsBBBAccredited
++ url_is_review_page
+
+Features can be manually added or removed by going into the file of choice and finding the big list called features in decision_tree_classification.py or variables in logistic_regression_model.py, and adding/removing lines from the list. You can refer to the docstrings in the files for further modifications and documentation for help.

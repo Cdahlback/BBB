@@ -55,7 +55,7 @@ def test_different_inputs(df, feature):
 if __name__ == "__main__":
 
     df = pd.read_csv("../Extract_Data/best_ind_vars.csv", low_memory=False)
-
+    #EDIT VARIABLES HERE
     variables = [
         "contains_contacts_page",
         "contains_business_name",

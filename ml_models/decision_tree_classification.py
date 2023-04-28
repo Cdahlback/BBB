@@ -14,6 +14,7 @@ def build_tree(input_data):
     build decision tree based on data given
     :return trained model
     """
+    #EDIT FEATURES HERE
     features = [
         "contains_contacts_page",
         "contains_business_name",
