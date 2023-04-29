@@ -15,6 +15,7 @@ The purpose of this folder is to contain main.py and all of the other main files
   - sklearn           (pip install scikit-learn)
   - numpy             (pip install numpy)
   - re
+  - whois
 - Set necessary global variables in the following files:
   - main_machine_learning.py
   - main_scrape_data.py

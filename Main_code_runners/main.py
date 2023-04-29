@@ -8,7 +8,6 @@ import pandas as pd
 
 if __name__ == "__main__":
     df = pd.read_csv("../data/mn_bbb_businesses.csv", low_memory=False)
-    df = df.sample(1000)
     # get the index of the last saved CSV file, or set to 0 if no files have been saved yet
     last_index = int(
         pd.Series(glob.glob('stream_*.csv')).apply(lambda x: x.split('_')[1].split('.')[0]).max()) + 1 if glob.glob(
@@ -24,4 +23,3 @@ if __name__ == "__main__":
         stream = main(batch, batch_copy)
         # save the current state of the dataframe to a csv file
         stream.to_csv(f'stream_{i // 500}.csv')
-    print(stream.head())
