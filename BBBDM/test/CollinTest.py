@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 from BBBDM.data_processing.Collin import compare_dataframes  # Import your actual function here
 
 
@@ -7,7 +6,7 @@ from BBBDM.data_processing.Collin import compare_dataframes  # Import your actua
 def test_find_matches_pass():
     # Create a sample historicalData dataframe
     historicalData = pd.DataFrame({
-        'PrimaryKey': [None, 2, 3],
+        'PrimaryKey': [1, 2, 3],
         'BusinessName': [None, 'XYZ Corp', 'LMN Ltd'],
         'Email': ['abc@example.com', 'xyz@example.com', 'lmn@example.com'],
         'Phone': ['123-456-7890', '987-654-3210', '555-555-5555'],
@@ -17,7 +16,7 @@ def test_find_matches_pass():
 
     # Create a sample newData dataframe with some matching and non-matching rows
     newData = pd.DataFrame({
-        'PrimaryKey': [None, 5, 6],
+        'PrimaryKey': [1, 2, 6],
         'BusinessName': [None, 'XYZ Corporation', 'PQR Corp'],
         'Email': ['abc@example.com', 'newxyz@example.com', 'pqr@example.com'],
         'Phone': ['123-456-7890', '987-654-3210', '111-222-3333'],
@@ -32,7 +31,8 @@ def test_find_matches_pass():
     assert isinstance(result_df, pd.DataFrame)
 
     # Check if the result has the expected columns
-    expected_columns = ['PrimaryKey', 'BusinessNameMatch', 'EmailMatch', 'PhoneMatch', 'AddressMatch', 'WebsiteMatch']
+    expected_columns = ['PrimaryKey', 'BusinessNameMatch', 'BusinessName', 'EmailMatch', 'Email', 'PhoneMatch', 'Phone',
+        'AddressMatch', 'Address', 'WebsiteMatch', 'Website']
     assert result_df.columns.tolist() == expected_columns
 
 
