@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def compare_dataframes(historicalData, newData):
+def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
     # Initialize an empty result dataframe
     result_df = pd.DataFrame(columns=[
         'PrimaryKey', 'BusinessNameMatch', 'BusinessName', 'EmailMatch', 'Email', 'PhoneMatch', 'Phone',
