@@ -1,4 +1,11 @@
 import sys
+
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).parent))
+data_processing_path = str(Path(__file__).resolve().parent.parent / 'data_processing')
+
+# Append the 'data_processing' directory to sys.path
+sys.path.append(data_processing_path)
+
+
+#sys.path.append(str(Path(__file__).parent.parent / "runtime"))
