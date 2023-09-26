@@ -16,4 +16,4 @@ file_name = r'C:\Users\Rania\Documents\GitHub\BBB\BBBDM\Data\mn_business.csv'
 
 # Call the function with the relative file path
 active_businesses_info = get_valid_businesses_info(file_name)
-print(active_businesses_info)
+
