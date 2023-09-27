@@ -1,28 +1,49 @@
 import pandas as pd
 from BBBDM.data_processing.Tebibu import filter_dataframes
 
-# Test filtering of valid DataFrames
-def test_filter_valid_dataframes():
-    df = pd.DataFrame({'name': ['Company A', None, 'Company C'],
-                       'address': ['123 Main St', None, None],
-                       'phone': ['555-123-4567', None, '555-789-1234'],
-                       'website': ['www.companya.com', None, 'www.companyc.com']})
+# test filtering of valid DataFrams
+def test_filter_success():
+    df = pd.DataFrame({
+        'name': ['Company A', 'Company C'],
+        'address': ['123 Main St', '456 Oak St'],
+        'phone': ['5551234567', '5557891234'],
+        'website': ['www.companya.com', 'www.companyc.com'],
+        'email': ['email@companya.com', 'email@companyc.com']
+    })
     
-    filtered_df = filter_dataframes(df, valid_flag=True)
+    valid_df, invalid_df = filter_dataframes(df)
     
-    assert len(filtered_df) == 2
-    assert all(col in filtered_df.columns for col in ['name', 'address', 'phone', 'website'])
+   
+    assert len(valid_df) == 2
+    assert len(invalid_df) == 0
+    
+    
+    assert all(col in valid_df.columns for col in ['name', 'address', 'phone', 'website', 'email'])
+    
+    assert 'Company A' in valid_df['name'].values
+    assert 'Company C' in valid_df['name'].values
+    
 
-# Test filtering of invalid DataFrames
-def test_filter_invalid_dataframes():
-    df = pd.DataFrame({'name': [None, None, None],
-                       'address': [None, None, None],
-                       'phone': [None, None, None],
-                       'website': [None, None, None]})
+# tst filtering of invalid DataFrames
+def test_filter_failure():
+    df = pd.DataFrame({
+        'name': ['', None],
+        'address': ['', None],
+        'phone': ['12345678901234567890', None],
+        'website': ['', None],
+        'email': ['', None]
+    })
     
-    filtered_df = filter_dataframes(df, valid_flag=False)
+    valid_df, invalid_df = filter_dataframes(df)
     
-    assert len(filtered_df) == 3
+   
+    assert len(valid_df) == 0
+    assert len(invalid_df) == 2
+    
+   
+    assert all(col in invalid_df.columns for col in ['name', 'address', 'phone', 'website', 'email'])
+    
 
-test_filter_valid_dataframes()
-test_filter_invalid_dataframes()
+
+test_filter_success()
+test_filter_failure()
