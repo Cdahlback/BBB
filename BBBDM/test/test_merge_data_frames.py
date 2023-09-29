@@ -1,9 +1,15 @@
 """
 Test merging dataframes based on firmid"""
 
-from data_processing import chris_function
+#from main import chris_function
 import pandas as pd
+import importlib.util
+from pathlib import Path
 
+modular = importlib.util.spec_from_file_location("chris_function", str(Path(__file__).parent.parent / 'main/chris_function.py'))
+
+chris_function = importlib.util.module_from_spec(modular)
+modular.loader.exec_module(chris_function)
 
 def test_join_dataframe_firmid_multiple_success():
     """
@@ -31,7 +37,7 @@ def test_join_dataframe_firmid_failed():
     df3 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Location': ['USA', 'USA', 'USA']})
 
     #Expected output
-    expected = "Expection 'FirmID' occurred, did the dataframes have FirmID?"
+    expected = False
 
     # Actual output
     actual = chris_function.join_dataframe_firmid(df1, df2, df3)
