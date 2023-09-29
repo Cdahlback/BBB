@@ -57,7 +57,7 @@ def test_compare_dataframes_fail():
     newData = pd.DataFrame({})
 
     # Call your function to find matching datapoints
-    result_df = compare_dataframes(historicalData, newData)
+    error_message = compare_dataframes(historicalData, newData)
 
     # Check if the result is an empty DataFrame
-    assert result_df.empty
+    assert error_message == False
