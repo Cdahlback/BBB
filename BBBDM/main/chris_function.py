@@ -18,9 +18,10 @@ def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
         logging.exception(e)
         logging.exception("Did the dataframes have FirmID?")
         return False
-    logging.debug("Merging dataframes - Success")
+    logging.debug("Dataframe contains FirmID - Success")
     #Merges multiple dataframes on FirmID via the amazing reduce function and the merge with the lambda to iterate over it
     df_merged = reduce(lambda  left,right: pd.merge(left,right,on=['FirmID'], how='outer'), data_frames)
 
     df = df_merged.loc[:,~df_merged.columns.duplicated()]
+    logging.info("Merging dataframes - Success")
     return df
