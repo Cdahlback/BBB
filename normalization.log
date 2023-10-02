@@ -1,0 +1,28 @@
+INFO:root:Normalized Business Name: example and co
+INFO:root:Normalized Address: 123 Main St Apt 456
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized Address: 123 Main St Apt 456
+ERROR:root:Invalid Address: Invalid Address
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://www.example.com
+INFO:root:Normalized URL: http://www.example.com/path
+INFO:root:Normalized Business Name: example and co
+INFO:root:Normalized Address: 123 Main St Apt 456
+ERROR:root:Invalid Address: Invalid Address
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://www.example.com
+INFO:root:Normalized URL: http://www.example.com/path
+INFO:root:Normalized Business Name: example and co
+INFO:root:Normalized Business Name: companyname
+INFO:root:Normalized Address: 123 Main St Apt 456
+ERROR:root:Invalid Address: Invalid Address
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://www.example.com
+INFO:root:Normalized URL: http://www.example.com/path
+INFO:root:Normalized Address: 123 Main St Apt 456
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized Address: 123 Main St Apt 456
+ERROR:root:Invalid Address: Invalid Address
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://www.example.com
+INFO:root:Normalized URL: http://www.example.com/path
