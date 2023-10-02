@@ -11,6 +11,12 @@ def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     """
     Pass in dataframes and merge them on the FirmID column
     Remove any duplicate columns also
+
+    Parameters:
+    data_frames: Dataframes to merge
+
+    Returns:
+    df: Merged dataframe
     """
     try:
         x = data_frames[0]['FirmID']
