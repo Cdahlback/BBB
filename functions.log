@@ -1,14 +1,1 @@
-INFO:root:Successfully read and filtered data from file: C:\Users\Rania\Documents\GitHub\BBB\BBBDM\Data\mn_business.csv
-INFO:root:Successfully read and filtered data from file: C:\Users\Rania\Documents\GitHub\BBB\BBBDM\Data\mn_business.csv
-INFO:root:Successfully read and filtered data from file: sample_all_inactive.csv
-ERROR:root:Error reading or filtering data from file: non_existent_file.csv. Error: [Errno 2] No such file or directory: 'non_existent_file.csv'
-INFO:root:Successfully read and filtered data from file: sample_businesses.csv
-WARNING:root:Invalid email: invalidemail
-WARNING:root:Invalid phone number: invalid phone
-WARNING:root:Invalid zipcode: 
-WARNING:root:Invalid email: invalidemail
-WARNING:root:Invalid phone number: invalid phone
-WARNING:root:Invalid zipcode: 
-WARNING:root:Invalid email: invalidemail
-WARNING:root:Invalid phone number: invalid phone
-WARNING:root:Invalid zipcode: 
+
