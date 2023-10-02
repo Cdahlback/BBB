@@ -1,7 +1,11 @@
 import pandas as pd
+import sys
+sys.path.append(r'C:\Users\tebib\OneDrive\Desktop\Project 1\BBB')
+
 from BBBDM.data_processing.Tebibu import filter_dataframes
 
-# test filtering of valid DataFrams
+
+# Test filtering of valid DataFrames
 def test_filter_success():
     df = pd.DataFrame({
         'name': ['Company A', 'Company C'],
@@ -10,21 +14,18 @@ def test_filter_success():
         'website': ['www.companya.com', 'www.companyc.com'],
         'email': ['email@companya.com', 'email@companyc.com']
     })
-    
+
     valid_df, invalid_df = filter_dataframes(df)
-    
-   
+
     assert len(valid_df) == 2
     assert len(invalid_df) == 0
-    
-    
+
     assert all(col in valid_df.columns for col in ['name', 'address', 'phone', 'website', 'email'])
-    
+
     assert 'Company A' in valid_df['name'].values
     assert 'Company C' in valid_df['name'].values
-    
 
-# tst filtering of invalid DataFrames
+# Test filtering of invalid DataFrames
 def test_filter_failure():
     df = pd.DataFrame({
         'name': ['', None],
@@ -33,17 +34,14 @@ def test_filter_failure():
         'website': ['', None],
         'email': ['', None]
     })
-    
+
     valid_df, invalid_df = filter_dataframes(df)
-    
-   
+
     assert len(valid_df) == 0
     assert len(invalid_df) == 2
-    
-   
+
     assert all(col in invalid_df.columns for col in ['name', 'address', 'phone', 'website', 'email'])
-    
 
-
-test_filter_success()
-test_filter_failure()
+if __name__ == "__main__":
+    test_filter_success()
+    test_filter_failure()
