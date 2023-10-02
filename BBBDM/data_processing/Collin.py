@@ -1,47 +1,38 @@
 import pandas as pd
+import logging
+
+pd.options.mode.chained_assignment = None  # Disable the warning
+logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 
 def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
-    # Initialize an empty result dataframe
-    result_df = pd.DataFrame(columns=[
-        'PrimaryKey', 'BusinessNameMatch', 'BusinessName', 'EmailMatch', 'Email', 'PhoneMatch', 'Phone',
-        'AddressMatch', 'Address', 'WebsiteMatch', 'Website'
-    ])
 
-    if len(historicalData) < 1 or len(newData) < 1:
-        return result_df
+    left_on = "BusinessName"
+    right_on = "Business Name"
+    try:
+        # Merge historicalData and newData on the 'BusinessName' column
+        merged_data = historicalData.merge(newData, left_on=left_on, right_on=right_on, how='inner')
+    except KeyError as e:
+        logging.debug("Exception: KeyError {0} occurred when merging historicalData with secretary of state".format(e))
+        logging.debug("Length historical data: {0}".format(len(historicalData)))
+        logging.debug("Length new data: {0}".format(len(newData)))
+        return False
 
-    # Iterate through rows of historicalData
-    for index, row in historicalData.iterrows():
-        primary_key = row['PrimaryKey']
-        business_name = row['BusinessName']
-        email = row['Email']
-        phone = row['Phone']
-        address = row['Address']
-        website = row['Website']
+    try:
+        # Calculate MatchesAddress and MatchesZip
+        merged_data['MatchesAddress'] = merged_data['Address'] == merged_data['Address 1']
+        merged_data['MatchesZip'] = merged_data['Zip Code_x'] == merged_data['Zip Code_y']
+    except KeyError as e:
+        logging.debug("Exception: KeyError {0} occurred when accessing merged_data (historical/secretary)".format(e))
+        return False
 
-        # Check if the PrimaryKey exists in newData
-        if primary_key in newData['PrimaryKey'].values:
-            new_row = {'PrimaryKey': primary_key,
-                        # Check if BusinessName matches
-                       'BusinessNameMatch': business_name == newData.loc[newData['PrimaryKey'] == primary_key, 'BusinessName'].values[0],
-                       'BusinessName': newData.loc[newData['PrimaryKey'] == primary_key, 'BusinessName'].values[0],
-                        # Check if Email matches
-                       'EmailMatch': email == newData.loc[newData['PrimaryKey'] == primary_key, 'Email'].values[0],
-                       'Email': newData.loc[newData['PrimaryKey'] == primary_key, 'Email'].values[0],
-                        # Check if Phone matches
-                       'PhoneMatch': phone == newData.loc[newData['PrimaryKey'] == primary_key, 'Phone'].values[0],
-                       'Phone': newData.loc[newData['PrimaryKey'] == primary_key, 'Phone'].values[0],
-                        # Check if Address matches
-                       'AddressMatch': address == newData.loc[newData['PrimaryKey'] == primary_key, 'Address'].values[
-                           0],
-                       'Address': newData.loc[newData['PrimaryKey'] == primary_key, 'Address'].values[0],
-                        # Check if Website matches
-                       'WebsiteMatch': website == newData.loc[newData['PrimaryKey'] == primary_key, 'Website'].values[
-                           0],
-                       'Website': newData.loc[newData['PrimaryKey'] == primary_key, 'Website'].values[0]}
+    # Select the desired columns
+    result_df = merged_data[['Firm_id', 'BusinessName', 'MatchesAddress', 'Address 1', 'MatchesZip', 'Zip Code_y',
+                            'Business Filing Type', 'Filing Date', 'Status', 'Address 2', 'City', 'Region Code',
+                            'Party Full Name', 'Next Renewal Due Date']]
 
-            # Append the row to the result dataframe
-            result_df = result_df.append(new_row, ignore_index=True)
+    # Rename columns for clarity
+    result_df.rename(columns={'Address 1': 'Address_new', 'Zip Code_y': 'Zip Code_new'}, inplace=True)
+    logging.info("historicalData has been merged with Secretary Of State data Successfully")
 
     return result_df
