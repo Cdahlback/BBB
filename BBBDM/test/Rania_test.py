@@ -1,36 +1,57 @@
+import unittest
 import pandas as pd
-import unittest 
-from  BBBDM.data_processing.Rania import get_valid_businesses_info
+
+import sys
+sys.path.append(r'C:\Users\Rania\Documents\GitHub\BBB')
+
+# Import your function to be tested
+from BBBDM.data_processing.Rania import get_valid_businesses_info  
 
 class TestGetValidBusinessesInfo(unittest.TestCase):
 
-    def setUp(self):
-        self.file_name = r'C:\Users\Rania\Documents\GitHub\BBB\BBBDM\Data\mn_business.csv'
-    
-    def test_valid_businesses(self):
-        # Test when there are valid businesses
-        active_businesses_info = get_valid_businesses_info(self.file_name)
-        self.assertIsInstance(active_businesses_info, pd.DataFrame)
-        self.assertTrue(all(active_businesses_info['active'].str.strip().str.upper() == 'TRUE'))
-    
-    def test_invalid_file(self):
-        # Test when the file does not exist or is invalid
-        invalid_file_name = 'invalid_file.csv'
-        with self.assertRaises(FileNotFoundError):
-            get_valid_businesses_info(invalid_file_name)
+    # Test case for a successful scenario
+    def test_successful_scenario(self):
+        # Create a sample CSV file with active and inactive businesses
+        sample_data = {'business_name': ['Business A', 'Business B'],
+                       'active': ['TRUE', 'FALSE']}
+        # Create a pandas DataFrame from the sample data
+        sample_df = pd.DataFrame(sample_data)
+         # Define the filename for the sample CSV file
+        sample_csv = 'sample_businesses.csv'
+        # Save the DataFrame as a CSV file 
+        sample_df.to_csv(sample_csv, index=False)
 
-    def test_inactive_businesses(self):
-        # Test when there are no active businesses
-        # Create a sample DataFrame with 'active' values as 'FALSE'
-        data = {'name': ['Business1', 'Business2'], 'active': ['FALSE', 'FALSE']}
-        df = pd.DataFrame(data)
-        df.to_csv('inactive_businesses.csv', index=False)
-        inactive_businesses_info = get_valid_businesses_info('inactive_businesses.csv')
-        self.assertIsInstance(inactive_businesses_info, pd.DataFrame)
-        self.assertTrue(inactive_businesses_info.empty)
+        # Call the function with the sample CSV file
+        result = get_valid_businesses_info(sample_csv)
 
-    
-    
-   
+        # Assert that the result is not None and contains expected data
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 1)  # Only 'Business A' is active in the sample data
+
+    # Test case for a failure scenario
+    def test_failure_scenario(self):
+        # Call the function with a non-existent file
+        non_existent_file = 'non_existent_file.csv'
+        result = get_valid_businesses_info(non_existent_file)
+
+        # Assert that the result is None (indicating an error occurred)
+        self.assertIsNone(result)
+
+    # Test case for all "active" values as 'FALSE'
+    def test_all_inactive(self):
+        # Create a sample CSV file with all inactive businesses
+        sample_data = {'business_name': ['Business C', 'Business D'],
+                       'active': ['FALSE', 'FALSE']}
+        sample_df = pd.DataFrame(sample_data)
+        sample_csv = 'sample_all_inactive.csv'
+        sample_df.to_csv(sample_csv, index=False)
+
+        # Call the function with the sample CSV file
+        result = get_valid_businesses_info(sample_csv)
+
+        # Assert that the result is not None and contains expected data
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result), 0)  # All businesses are inactive in this scenario
+
 if __name__ == '__main__':
     unittest.main()
