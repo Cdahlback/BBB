@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from BBBDM.data_processing.Collin import compare_dataframes  # Import your actual function here
+from BBBDM.historical_functions.Collin import compare_dataframes  # Import your actual function here
 
 
 # Define a test case for a passing case in compare_dataframes

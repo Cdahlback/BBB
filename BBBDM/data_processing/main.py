@@ -6,7 +6,7 @@ from functools import reduce
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-
+#Merges dataframes based on their business name - Used for merging BBB and Secretary of State data
 def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
     """
     Merge historicalData and newData on the 'BusinessName' column
@@ -197,7 +197,7 @@ def normalize_url(url:str) -> str | None:
     
     return url
 
-
+# Filter out invalid data based on the criteria
 def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
     Filter the DataFrame to only keep rows where at least one of the following conditions is true:
@@ -231,7 +231,7 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     return valid_df, invalid_df
 
-
+#Join multiple dataframes on FirmID
 def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     """
     Pass in dataframes and merge them on the FirmID column
@@ -257,7 +257,7 @@ def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     logging.info("Merging dataframes - Success")
     return df
 
-
+# Read data from the specified file and return a DataFrame containing information for the active businesses
 def get_valid_businesses_info(file_path:str) -> pd.DataFrame | None:
     """
     Read the data from the specified file into a DataFrame and filter the DataFrame to only keep rows where

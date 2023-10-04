@@ -4,7 +4,7 @@ import sys
 sys.path.append(r'C:\Users\tebib\OneDrive\Desktop\Project 1\BBB')
 
 
-from BBBDM.data_processing.Tebibu_Normalization import standardizeName, normalize_address, normalize_url
+from BBBDM.historical_functions.Tebibu_Normalization import standardizeName, normalize_address, normalize_url
 
 class TestNormalization(unittest.TestCase):
     def test_standardizeName(self):

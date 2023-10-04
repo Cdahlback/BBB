@@ -10,7 +10,7 @@ from BBBDM.data_processing.Rania import get_valid_businesses_info
 class TestGetValidBusinessesInfo(unittest.TestCase):
 
     # Test case for a successful scenario
-    def test_successful_scenario(self):
+    def test_successful_scenario():
         # Create a sample CSV file with active and inactive businesses
         sample_data = {'business_name': ['Business A', 'Business B'],
                        'active': ['TRUE', 'FALSE']}
@@ -25,8 +25,8 @@ class TestGetValidBusinessesInfo(unittest.TestCase):
         result = get_valid_businesses_info(sample_csv)
 
         # Assert that the result is not None and contains expected data
-        self.assertIsNotNone(result)
-        self.assertEqual(len(result), 1)  # Only 'Business A' is active in the sample data
+        assert result is not None
+        assert len(result) == 1 # Only 'Business A' is active in the sample data
 
     # Test case for a failure scenario
     def test_failure_scenario(self):
