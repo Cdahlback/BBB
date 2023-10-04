@@ -4,7 +4,7 @@ import re
 import sys
 sys.path.append(r'C:\Users\Rania\Documents\GitHub\BBB')
 
-from BBBDM.data_processing.Normalize import normalize_dataframe
+from BBBDM.historical_functions.Normalize import normalize_dataframe
 
 
 
