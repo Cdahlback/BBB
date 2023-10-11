@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from BBBDM.historical_functions.Collin import compare_dataframes  # Import your actual function here
+from BBBDM.historical_functions.Collin import compare_dataframes_sos  # Import your actual function here
 
 
 # Define a test case for a passing case in compare_dataframes
@@ -18,7 +18,7 @@ def test_compare_dataframes_pass():
     newData = pd.DataFrame({
         'Business Name': ['XYZ Corp', 'PQR Corp', 'ABC Inc'],
         'Address 1': ['123 Main St', '777 Maple St', '456 Elm St'],
-        'Zip Code': ['12345', '99999', '54321'],
+        'Zip Code New': ['12345', '99999', '54321'],
         'Business Filing Type': ['Type A', 'Type B', 'Type C'],
         'Filing Date': ['2022-01-01', '2022-02-02', '2022-03-03'],
         'Status': ['Active', 'Inactive', 'Active'],
@@ -30,15 +30,18 @@ def test_compare_dataframes_pass():
     })
 
     # Call your function to find matching datapoints
-    result_df = compare_dataframes(historicalData, newData)
+    result_df = compare_dataframes_sos(historicalData, newData)
 
     # Check if the result is a DataFrame
     assert isinstance(result_df, pd.DataFrame)
 
     # Check if the result has the expected columns
-    expected_columns = ['Firm_id', 'BusinessName', 'MatchesAddress', 'Address_new', 'MatchesZip', 'Zip Code_new',
-                        'Business Filing Type', 'Filing Date', 'Status', 'Address 2', 'City', 'Region Code',
-                        'Party Full Name', 'Next Renewal Due Date']
+    expected_columns = [
+        'Firm_id', 'BusinessName', 'businessNameCorrectSOS', 'businessNameUpdate', "businessNameFound",
+        'Address', 'businessAddressCorrectSOS', 'businessAddressUpdate', 'businessAddressFound',
+        'Zip Code', 'businessZipCorrectSOS', 'businessZipUpdate', 'businessZipFound'
+    ]
+
     assert result_df.columns.tolist() == expected_columns
 
 
@@ -57,7 +60,7 @@ def test_compare_dataframes_fail():
     newData = pd.DataFrame({})
 
     # Call your function to find matching datapoints
-    error_message = compare_dataframes(historicalData, newData)
+    error_message = compare_dataframes_sos(historicalData, newData)
 
     # Check if the result is an empty DataFrame
     assert error_message == False
