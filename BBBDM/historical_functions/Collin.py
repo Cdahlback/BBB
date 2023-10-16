@@ -235,7 +235,6 @@ def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int,
 
     # Fetch and return Actor result where the name matches our name (if there are any)
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():
-        print(item)
         # In for now, will update with standardized function
         searchTerm = re.sub(r'[^A-Za-z0-9 ]', '', searchTerm)
         if item['name'] in searchTerm:
