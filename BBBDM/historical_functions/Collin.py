@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 import logging
@@ -8,7 +10,7 @@ pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 
-scraped_yellow_pages_data = pd.DataFrame(columns=["Business Name", "City", "URL", "Name", "Address", "Phone", "Categories"])
+scraped_yellow_pages_data = pd.DataFrame(columns=["Business Name", "City", "BusinessNameYP", "BusinessAddressYP", "BusinessPhoneYP", "BusinessWebsiteYP"])
 
 
 class AuthenticationError(Exception):
@@ -16,44 +18,44 @@ class AuthenticationError(Exception):
         super().__init__(message)
 
 
+def update_columns_sos(row):
+    if row["BusinessNameCorrect"] and row["BusinessAddressCorrect"]:
+        row["BusinessNameUpdate"] = row["Business Name"]
+        row["BusinessNameFound"] = "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
+
+        # Add address columns
+        row["BusinessAddressUpdate"] = row["Address 1"]
+        row["BusinessAddressFound"] = "SOS" if not pd.isna(row["BusinessAddressUpdate"]) else np.nan
+
+        # Add zip columns
+        row["BusinessZipUpdate"] = row["Zip Code New"]
+        row["BusinessZipFound"] = "SOS" if not pd.isna(row["BusinessZipUpdate"]) else np.nan
+
+        logging.info(f'Updated row with business name: {row["BusinessNameUpdate"]} from truth source: {row["BusinessNameFound"]}')
+
+    return row
+
+
 def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
-    # Add name columns
-    merged_data["businessNameCorrectSOS"] = merged_data["BusinessName"] == merged_data["Business Name"]
-    merged_data["businessNameUpdate"] = merged_data.apply(
-        lambda row: row["Business Name"] if not row["businessNameCorrectSOS"] else np.nan,
-        axis=1
-    )
-    merged_data["businessNameFound"] = merged_data.apply(
-        lambda row: "SOS" if not pd.isna(row["businessNameUpdate"]) else np.nan,
-        axis=1
-    )
+    # See if the business name and address match
+    merged_data["BusinessNameCorrect"] = merged_data["BusinessName"] == merged_data["Business Name"]
+    merged_data["BusinessAddressCorrect"] = merged_data["Address"] == merged_data["Address 1"]
+    merged_data["BusinessZipCorrect"] = merged_data["Zip Code"] == merged_data["Zip Code New"]
 
-    # Add address columns
-    merged_data["businessAddressCorrectSOS"] = merged_data["Address"] == merged_data["Address 1"]
-    merged_data["businessAddressUpdate"] = merged_data.apply(
-        lambda row: row["Address 1"] if not row["businessAddressCorrectSOS"] else np.nan,
-        axis=1
-    )
-    merged_data["businessAddressFound"] = merged_data.apply(
-        lambda row: "SOS" if not pd.isna(row["businessAddressUpdate"]) else np.nan,
-        axis=1
-    )
+    # Give null values for all columns, which we will fill out when needed
+    merged_data["BusinessNameUpdate"] = np.nan
+    merged_data["BusinessNameFound"] = np.nan
+    merged_data["BusinessAddressUpdate"] = np.nan
+    merged_data["BusinessAddressFound"] = np.nan
+    merged_data["BusinessZipUpdate"] = np.nan
+    merged_data["BusinessZipFound"] = np.nan
 
-    # Add address columns
-    merged_data["businessZipCorrectSOS"] = merged_data["Zip Code"] == merged_data["Zip Code New"]
-    merged_data["businessZipUpdate"] = merged_data.apply(
-        lambda row: row["Zip Code New"] if not row["businessZipCorrectSOS"] else np.nan,
-        axis=1
-    )
-    merged_data["businessZipFound"] = merged_data.apply(
-        lambda row: "SOS" if not pd.isna(row["businessZipUpdate"]) else np.nan,
-        axis=1
-    )
+    merged_data.apply(update_columns_sos, axis=1)
 
     return merged_data
 
 
-def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
+def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame | bool:
     left_on = "BusinessName"
     right_on = "Business Name"
 
@@ -80,9 +82,9 @@ def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) 
 
     # Select the desired columns
     result_df = merged_data[[
-        'Firm_id', 'BusinessName', 'businessNameCorrectSOS', 'businessNameUpdate', "businessNameFound",
-        'Address', 'businessAddressCorrectSOS', 'businessAddressUpdate', 'businessAddressFound',
-        'Zip Code', 'businessZipCorrectSOS', 'businessZipUpdate', 'businessZipFound',
+        'Firm_id', 'BusinessName', 'BusinessNameCorrect', 'BusinessNameUpdate', "BusinessNameFound",
+        'Address', 'BusinessAddressCorrect', 'BusinessAddressUpdate', 'BusinessAddressFound',
+        'Zip Code', 'BusinessZipCorrect', 'BusinessZipUpdate', 'BusinessZipFound'
         # Optional output columns
         # 'Business Filing Type', 'Filing Date', 'Status', 'Address 2', 'City', 'Region Code', 'Party Full Name',
         # 'Next Renewal Due Date'
@@ -92,7 +94,7 @@ def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) 
     return result_df
 
 
-def update_dataframe_with_yellow_pages_data(data):
+def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame | bool:
     """
         Update the 'data' DataFrame with information from 'yellow_pages_data' based on matching 'BusinessName'.
         If a match is found, update certain columns in 'data' with corresponding values from 'yellow_pages_data'.
@@ -106,27 +108,33 @@ def update_dataframe_with_yellow_pages_data(data):
     for index, row in data.iterrows():
         # IF we have updated data for all data types, we can continue for that row. Since this is the lowest on the
         # trust pyramid
-        if pd.notna(row["BusinessWebsiteUpdated"]) and pd.notna(
-                row["BusinessPhoneUpdated"]) and pd.notna(row["BusinessAddressUpdated"]):
+        if pd.notna(row["BusinessWebsiteUpdate"]) and pd.notna(
+                row["BusinessPhoneUpdate"]) and pd.notna(row["BusinessAddressUpdate"]):
             continue
 
         # Else, see which values we can update
         business_name = row["BusinessName"]
+        if pd.isna(business_name):
+            return False
         matching_row = scraped_yellow_pages_data[scraped_yellow_pages_data["Business Name"] == business_name]
 
         if not matching_row.empty:
             # Check and update columns if they are None
-            if pd.isna(row["BusinessNameUpdated"]):
-                data.at[index, "BusinessNameUpdated"] = matching_row.iloc[0]["Business Name"]
+            if pd.isna(row["BusinessNameUpdate"]):
+                data.at[index, "BusinessNameUpdate"] = matching_row.iloc[0]["BusinessNameYP"]
+                data.at[index, "BusinessNameFound"] = "YP"
 
-            if pd.isna(row["BusinessWebsiteUpdated"]):
-                data.at[index, "BusinessWebsiteUpdated"] = matching_row.iloc[0]["URL"]
+            if pd.isna(row["BusinessWebsiteUpdate"]):
+                data.at[index, "BusinessWebsiteUpdate"] = matching_row.iloc[0]["BusinessWebsiteYP"]
+                data.at[index, "BusinessWebsiteFound"] = "YP"
 
-            if pd.isna(row["BusinessPhoneUpdated"]):
-                data.at[index, "BusinessPhoneUpdated"] = matching_row.iloc[0]["Phone"]
+            if pd.isna(row["BusinessPhoneUpdate"]):
+                data.at[index, "BusinessPhoneUpdate"] = matching_row.iloc[0]["BusinessPhoneYP"]
+                data.at[index, "BusinessPhoneFound"] = "YP"
 
-            if pd.isna(row["BusinessAddressUpdated"]):
-                data.at[index, "BusinessAddressUpdated"] = matching_row.iloc[0]["Address"]
+            if pd.isna(row["BusinessAddressUpdate"]):
+                data.at[index, "BusinessAddressUpdate"] = matching_row.iloc[0]["BusinessAddressYP"]
+                data.at[index, "BusinessAddressFound"] = "YP"
 
     # Clean up the scraped data dataframe for the next run
     scraped_yellow_pages_data.drop(columns=scraped_yellow_pages_data.columns, inplace=True)
@@ -152,7 +160,7 @@ def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
     # if len(data) == 0:
     #     return False
 
-    search_term = data["businessNameUpdate"] if not pd.isna(data["businessNameUpdate"]) else data["BusinessName"]
+    search_term = data["BusinessNameUpdate"] if not pd.isna(data["BusinessNameUpdate"]) else data["BusinessName"]
     location = data["City"] if not pd.isna(data["City"]) else "Minnesota"
     max_items = 1
 
@@ -161,7 +169,17 @@ def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
 
     # Add the result to the 'scraped_yellow_pages_data' DataFrame
     global scraped_yellow_pages_data
-    scraped_yellow_pages_data = scraped_yellow_pages_data.append({"Business Name": search_term, "City": location, "Result": result}, ignore_index=True)
+    scraped_yellow_pages_data = scraped_yellow_pages_data.append(
+        {
+            "Business Name": search_term,
+            "City": location,
+            "BusinessNameYP": result['name'],
+            "BusinessAddressYP": result['address'],
+            "BusinessPhoneYP": result['phone'],
+            "BusinessWebsiteYP": result['url']
+        },
+        ignore_index=True
+    )
 
 
 def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int,
@@ -213,11 +231,16 @@ def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int,
         logging.info("Actor petr_cermak/yellow-pages-scraper finished successfully")
     except Exception as e:
         logging.debug(f"Actor petr_cermak/yellow-pages-scraper failed, {e}")
+        return False
 
     # Fetch and return Actor result where the name matches our name (if there are any)
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():
         print(item)
-        if item['name'] == searchTerm:
+        # In for now, will update with standardized function
+        searchTerm = re.sub(r'[^A-Za-z0-9 ]', '', searchTerm)
+        if item['name'] in searchTerm:
+            logging.info(
+                f'Updated row with business name: {searchTerm} from truth source: YP')
             return item
 
     # If no result is found which matches, return False
@@ -236,9 +259,3 @@ def login_yellow_pages():
         return False
 
 
-st = "Able Fence, Inc."
-l = "Minnesota"
-mi = 1
-eof = """($, record) => {const website = $('a.business-website').attr('href');return { website };}"""
-
-scrape_yellow_page_data(st, l, mi, eof)
