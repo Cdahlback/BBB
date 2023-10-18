@@ -19,6 +19,14 @@ class AuthenticationError(Exception):
 
 
 def update_columns_sos(row):
+    """
+    Takes in a row of our dataframe with filled out values for row["BusinessNameCorrect"], row["BusinessAddressCorrect"],
+    and row["BusinessZipCorrect"]
+
+    Function makes sure we have matching name and address inorder to provide updated information
+
+    Returns: updated row in the dataframe
+    """
     if row["BusinessNameCorrect"] and row["BusinessAddressCorrect"]:
         row["BusinessNameUpdate"] = row["Business Name"]
         row["BusinessNameFound"] = "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
@@ -37,6 +45,10 @@ def update_columns_sos(row):
 
 
 def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculates if our data is correct or not when compared to SOS
+    sets null values for other columns
+    """
     # See if the business name and address match
     merged_data["BusinessNameCorrect"] = merged_data["BusinessName"] == merged_data["Business Name"]
     merged_data["BusinessAddressCorrect"] = merged_data["Address"] == merged_data["Address 1"]

@@ -8,7 +8,7 @@ logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 
 # Merges dataframes based on their business name - Used for merging BBB and Secretary of State data
-def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame | bool:
+def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
     """
     Merge historicalData and newData on the 'BusinessName' column
     Calculate MatchesAddress and MatchesZip
@@ -52,7 +52,6 @@ def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> p
 
     return result_df
 
-
 # Normalize Email
 def normalize_email(email:str) -> str | None:
     """
@@ -73,7 +72,6 @@ def normalize_email(email:str) -> str | None:
         return None  # Invalid email
     return email
 
-
 # Normalize Phone Number
 def normalize_phone_number(phone:str) -> str | None:
     """
@@ -91,7 +89,6 @@ def normalize_phone_number(phone:str) -> str | None:
         return None  # Invalid phone number
     phone = re.sub(r'\s|\D', '', phone)  # Remove whitespace and non-numeric characters
     return phone
-
 
 # Normalize Zipcode
 def normalize_zipcode(zipcode:str) -> str | None:
@@ -112,7 +109,6 @@ def normalize_zipcode(zipcode:str) -> str | None:
         logging.warning(f'Invalid zipcode: {zipcode}')
         return None  # Invalid zipcode
 
-
 # Define a function to normalize the entire DataFrame
 def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
     """
@@ -132,7 +128,6 @@ def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-
 # Normalize Business Names (using Eli's function)
 def standardizeName(name:str) -> str:
     """
@@ -151,7 +146,6 @@ def standardizeName(name:str) -> str:
     name = re.sub('[^a-z\s-]', '', name)   
     name = re.sub(' {2,}', ' ', name)     
     return name.strip()
-
 
 # Normalize Addresses using regex 
 def normalize_address(address:str) -> str | None:
@@ -178,7 +172,6 @@ def normalize_address(address:str) -> str | None:
         logging.error(f"Invalid Address: {address}")
         return None  
 
-
 # Normalize URL
 def normalize_url(url:str) -> str | None:
     """
@@ -203,7 +196,6 @@ def normalize_url(url:str) -> str | None:
     logging.info(f"Normalized URL: {url}")
     
     return url
-
 
 # Filter out invalid data based on the criteria
 def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
@@ -239,7 +231,6 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     return valid_df, invalid_df
 
-
 # Join multiple dataframes on FirmID
 def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     """
@@ -265,7 +256,6 @@ def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     df = df_merged.loc[:,~df_merged.columns.duplicated()]
     logging.info("Merging dataframes - Success")
     return df
-
 
 # Read data from the specified file and return a DataFrame containing information for the active businesses
 def get_valid_businesses_info(file_path:str) -> pd.DataFrame | None:
