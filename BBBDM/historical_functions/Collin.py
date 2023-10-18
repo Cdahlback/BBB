@@ -18,7 +18,7 @@ class AuthenticationError(Exception):
         super().__init__(message)
 
 
-def update_columns_sos(row):
+def update_columns_sos(row: pd.Series) -> pd.Series:
     """
     Takes in a row of our dataframe with filled out values for row["BusinessNameCorrect"], row["BusinessAddressCorrect"],
     and row["BusinessZipCorrect"]
@@ -67,7 +67,12 @@ def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     return merged_data
 
 
-def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame | bool:
+def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
+    """
+    Compares old data to new, deleting duplicate rows, and adding the necessary columns
+
+    Returns: Dataframe containing updated information from SOS
+    """
     left_on = "BusinessName"
     right_on = "Business Name"
 
@@ -106,7 +111,7 @@ def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) 
     return result_df
 
 
-def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame | bool:
+def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     """
         Update the 'data' DataFrame with information from 'yellow_pages_data' based on matching 'BusinessName'.
         If a match is found, update certain columns in 'data' with corresponding values from 'yellow_pages_data'.
