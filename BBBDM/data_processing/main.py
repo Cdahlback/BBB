@@ -6,8 +6,7 @@ from functools import reduce
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-
-# Merges dataframes based on their business name - Used for merging BBB and Secretary of State data
+#Merges dataframes based on their business name - Used for merging BBB and Secretary of State data
 def compare_dataframes(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
     """
     Merge historicalData and newData on the 'BusinessName' column
@@ -190,6 +189,7 @@ def normalize_url(url:str) -> str | None:
     
     url = url.replace(" ", "")
 
+
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
   
@@ -231,7 +231,7 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     return valid_df, invalid_df
 
-# Join multiple dataframes on FirmID
+#Join multiple dataframes on FirmID
 def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
     """
     Pass in dataframes and merge them on the FirmID column
