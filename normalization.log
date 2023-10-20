@@ -147,3 +147,23 @@ INFO:root:Normalized URL: http://www.example.com
 INFO:root:Normalized URL: http://www.example.com
 INFO:root:Normalized URL: https://example.com
 INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
