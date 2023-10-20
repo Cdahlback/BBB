@@ -4,3 +4,4 @@
 TEST.py
 .pytest_cache/
 venv/
+*./log
