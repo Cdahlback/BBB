@@ -4,7 +4,21 @@ import logging
 
 logging.basicConfig(filename='functions.log', encoding='utf-8', level=logging.DEBUG)
 
-def filter_dataframes(df):
+def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+    """
+    Filter the DataFrame to only keep rows where at least one of the following conditions is true:
+    - name is not null and not empty
+    - address is not null and not empty
+    - phone is not null and matches the pattern for a phone number
+    - website is not null and not empty
+    - email is not null and not empty
+
+    Parameters:
+    df: DataFrame to filter
+
+    Returns:
+    Tuple of DataFrames containing the valid and invalid rows respectively
+    """
     conditions = (
         ((df['name'].notna() & (df['name'] != '')) |
          (df['address'].notna() & (df['address'] != '')) |
