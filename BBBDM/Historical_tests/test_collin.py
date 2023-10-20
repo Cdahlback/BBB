@@ -6,7 +6,7 @@ from BBBDM.historical_functions.Collin import compare_dataframes_sos, \
 
 
 # Define a test case for a passing case in compare_dataframes
-def test_compare_dataframes_pass():
+def test_compare_dataframes_pass1():
     # Create a sample historicalData DataFrame
     historicalData = pd.DataFrame({
         'Firm_id': [1, 2, 3],
@@ -36,6 +36,34 @@ def test_compare_dataframes_pass():
 
     # Check if the result is a DataFrame
     assert isinstance(result_df, pd.DataFrame)
+
+def test_compare_dataframes_pass2():
+    # Create a sample historicalData DataFrame
+    historicalData = pd.DataFrame({
+        'Firm_id': [1, 2, 3],
+        'BusinessName': ['XYZ Corp', 'LMN Ltd', 'ABC Inc'],
+        'Active': [True, False, True],
+        'Address': ['123 Main St', '789 Oak St', '456 Elm St'],
+        'Zip Code': ['12345', '67890', '54321']
+    })
+
+    # Create a sample newData DataFrame with matching and non-matching rows
+    newData = pd.DataFrame({
+        'Business Name': ['XYZ Corp', 'PQR Corp', 'ABC Inc'],
+        'Address 1': ['123 Main St', '777 Maple St', '456 Elm St'],
+        'Zip Code New': ['12345', '99999', '54321'],
+        'Business Filing Type': ['Type A', 'Type B', 'Type C'],
+        'Filing Date': ['2022-01-01', '2022-02-02', '2022-03-03'],
+        'Status': ['Active', 'Inactive', 'Active'],
+        'Address 2': ['Suite 100', '', 'Apt 2B'],
+        'City': ['City1', 'City2', 'City3'],
+        'Region Code': ['NY', 'CA', 'TX'],
+        'Party Full Name': ['John Doe', 'Jane Smith', 'Bob Johnson'],
+        'Next Renewal Due Date': ['2023-01-01', '2023-02-02', '2023-03-03']
+    })
+
+    # Call your function to find matching datapoints
+    result_df = compare_dataframes_sos(historicalData, newData)
 
     # Check if the result has the expected columns
     expected_columns = [
@@ -104,7 +132,7 @@ def test_update_dataframe_with_yellow_pages_data_fail():
     assert not updated_data
 
 
-def test_update_dataframe_with_yellow_pages_data_pass():
+def test_update_dataframe_with_yellow_pages_data_pass1():
     # Create a sample 'data' DataFrame with no matching 'BusinessName' and the specified columns
     data = pd.DataFrame({
         'Firm_id': [2],
@@ -137,6 +165,36 @@ def test_update_dataframe_with_yellow_pages_data_pass():
     # Check that none of the rows in 'data' have been updated
     assert isinstance(updated_data, pd.DataFrame)
 
+def test_update_dataframe_with_yellow_pages_data_pass2():
+    # Create a sample 'data' DataFrame with no matching 'BusinessName' and the specified columns
+    data = pd.DataFrame({
+        'Firm_id': [2],
+        'BusinessName': ["Able Fence, Inc."],
+        'BusinessNameCorrect': [False],
+        'BusinessNameUpdate': [np.nan],
+        'BusinessNameFound': [np.nan],
+        'Address': ["blah"],
+        'BusinessAddressCorrect': [False],
+        'BusinessAddressUpdate': [np.nan],
+        'BusinessAddressFound': [np.nan],
+        'Zip Code': ["blah"],
+        'BusinessZipCorrect': [False],
+        'BusinessZipUpdate': [np.nan],
+        'BusinessZipFound': [np.nan],
+        'Website': ['blah'],
+        'BusinessWebsiteCorrect': [False],
+        'BusinessWebsiteUpdate': [np.nan],
+        'BusinessWebsiteFound': [np.nan],
+        'Phone': ['blah'],
+        'BusinessPhoneCorrect': [False],
+        'BusinessPhoneUpdate': [np.nan],
+        'BusinessPhoneFound': [np.nan],
+        'City': ["Saint Paul"]
+    })
+
+    # Apply the function to update 'data' with non-matching data
+    updated_data = update_dataframe_with_yellow_pages_data(data)
+
     expected_columns = [
         'Firm_id', 'BusinessName', 'BusinessNameCorrect', 'BusinessNameUpdate', "BusinessNameFound",
         'Address', 'BusinessAddressCorrect', 'BusinessAddressUpdate', 'BusinessAddressFound',
@@ -147,5 +205,36 @@ def test_update_dataframe_with_yellow_pages_data_pass():
     ]
     actual_columns = updated_data.columns.tolist()
     assert actual_columns == expected_columns
+
+
+def test_update_dataframe_with_yellow_pages_data_pass3():
+    # Create a sample 'data' DataFrame with no matching 'BusinessName' and the specified columns
+    data = pd.DataFrame({
+        'Firm_id': [2],
+        'BusinessName': ["Able Fence, Inc."],
+        'BusinessNameCorrect': [False],
+        'BusinessNameUpdate': [np.nan],
+        'BusinessNameFound': [np.nan],
+        'Address': ["blah"],
+        'BusinessAddressCorrect': [False],
+        'BusinessAddressUpdate': [np.nan],
+        'BusinessAddressFound': [np.nan],
+        'Zip Code': ["blah"],
+        'BusinessZipCorrect': [False],
+        'BusinessZipUpdate': [np.nan],
+        'BusinessZipFound': [np.nan],
+        'Website': ['blah'],
+        'BusinessWebsiteCorrect': [False],
+        'BusinessWebsiteUpdate': [np.nan],
+        'BusinessWebsiteFound': [np.nan],
+        'Phone': ['blah'],
+        'BusinessPhoneCorrect': [False],
+        'BusinessPhoneUpdate': [np.nan],
+        'BusinessPhoneFound': [np.nan],
+        'City': ["Saint Paul"]
+    })
+
+    # Apply the function to update 'data' with non-matching data
+    updated_data = update_dataframe_with_yellow_pages_data(data)
 
     assert not updated_data.empty
