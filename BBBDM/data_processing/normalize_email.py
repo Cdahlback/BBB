@@ -8,7 +8,14 @@ import pandas as pd
 logging.basicConfig(filename='normalize_email.log', level=logging.DEBUG)
 
 # Normalize email
-def normalize_email(email):
+def normalize_email(email:str) ->str:
+    """
+This is a helper function that normalizes the email to fit BBB expectations
+
+:param email: str of the emial
+
+:returns: email as a str that is normalized"""
+
     try:
         # Normalize and validate the email using email-validator library
         # 1. Strip leading and trailing spaces in the email
@@ -16,7 +23,7 @@ def normalize_email(email):
         # 3. Remove non-alphanumeric characters except for . _ - @
         normalized_email = ''.join(e.lower() for e in email.strip() if e.isalnum() or e in '._-@')
         #normalized the valid email
-        valid_email = validate_email(normalized_email).email
+        valid_email = validate_email(normalized_email).normalized
         logging.info("Valid email normalized")
         return valid_email
     except EmailNotValidError as e:
