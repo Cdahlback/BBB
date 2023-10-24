@@ -275,7 +275,7 @@ def login_yellow_pages():
         return False
 
 
-def extract_data(file_path: str):
+def extract_data(file_path: str) -> pd.DataFrame:
     """
     Read the data from the specified file into a DataFrame
 
@@ -292,3 +292,21 @@ def extract_data(file_path: str):
         logging.error(f"Error reading data from file: {file_path}. Error: {e}")
         return None
 
+
+# Define the function to concatenate Address 1 and City
+def concat_address(row: pd.Series) -> pd.Series:
+    """
+    Takes in a row and concats the address with the city. This allows our matching algo to work with addresses.
+
+    Parameters:
+    row: Row which we want to modify
+
+    Returns: concatination of address 1 and city OR np.nan if fail to concat (values are np.nan)
+
+    How to use:
+    df['Address'] = df.apply(concat_address, axis=1)
+    """
+    if pd.notna(row['Address 1']) and pd.notna(row['city']):
+        return row['Address 1'] + ', ' + row['city']
+    else:
+        return np.nan
