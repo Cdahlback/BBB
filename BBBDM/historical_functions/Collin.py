@@ -275,3 +275,20 @@ def login_yellow_pages():
         return False
 
 
+def extract_data(file_path: str):
+    """
+    Read the data from the specified file into a DataFrame
+
+    Parameters:
+    file_path: Relative path to the file to read
+
+    Returns:
+    DataFrame containing information for the businesses or None if an error occurs
+    """
+    try:
+        df = pd.read_csv(file_path)
+    except Exception as e:
+        # Log error message
+        logging.error(f"Error reading data from file: {file_path}. Error: {e}")
+        return None
+
