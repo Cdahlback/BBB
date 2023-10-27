@@ -32,9 +32,3 @@ def address_match_found(historical_addresses, found_addresses):
         logging.debug(f"Error occurred: {e}")
         return False
 
-# Example usage
-historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
-new_addresses = ['123 Main St, Springfield', '456 Maple St, California', '111 Oak St, Los Angeles']
-
-merged_df = address_match_found(historical_addresses, new_addresses)
-print(merged_df)
