@@ -188,8 +188,8 @@ def normalize_url(url:str) -> str | None:
     url = url.lower()
     
     url = url.replace(" ", "")
-    
-    
+
+
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
   
