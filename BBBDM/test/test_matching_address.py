@@ -1,56 +1,40 @@
 import pandas as pd
 import importlib.util
 from pathlib import Path
-
-# Import the matching_address module from your code
+import os
 modular = importlib.util.spec_from_file_location("matching_address", str(Path(__file__).parent.parent / 'data_processing/matching_address.py'))
+
 matching_address = importlib.util.module_from_spec(modular)
 modular.loader.exec_module(matching_address)
 
 def test_matching_address_with_same_address():
-    historical_addresses = ['123 Main St, Springfield, USA', '456 Pine St, Boston, USA', '789 Oak St, Los Angeles, USA']
-    new_addresses = ['123 Main St, Springfield, USA', '456 Pine St, Boston, USA', '789 Oak St, Los Angeles, USA']
-    expected_output = pd.DataFrame({
-        'historical_address': historical_addresses,
-        'found_address': new_addresses,
-        'match_found': [1, 1, 1],
-        'distance': ['N/A', 'N/A', 'N/A']
-    })
+    # Test case 1: Identical addresses, expecting match_found = 1
+    historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
+    new_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
+    expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [1, 1, 1],'city_match_name':['N/A','N/A','N/A']})
+    print(expected_output)
     actual_output = matching_address.address_match_found(historical_addresses, new_addresses)
+    print(actual_output)
     assert expected_output.equals(actual_output)
 
 def test_matching_address_with_different_address_same_cities():
-    historical_addresses = ['1340 Warren St, Mankato, USA', '80 S 9th St, Minneapolis, USA', '283 Oxford St, Rochester, USA']
-    new_addresses = ['200 Briargate Rd, Mankato, USA', '80 S 9th St, Minneapolis, USA', '99 Court St, Rochester, USA']
-    expected_output = pd.DataFrame({
-        'historical_address': historical_addresses,
-        'found_address': new_addresses,
-        'match_found': [2, 2, 2],
-        'distance': [0.465496, 0.220778, 1.107833]
-    })
+    # Test case 2: Addresses with matching cities, expecting match_found = 2
+    historical_addresses = ['124 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
+    new_addresses = ['123 Main St, Springfield', '456 Maple St, Boston', '111 Oak St, Los Angeles']
+    expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [2, 2, 2],'city_match_name':['Springfield','Boston','Los Angeles']})
     actual_output = matching_address.address_match_found(historical_addresses, new_addresses)
     assert expected_output.equals(actual_output)
-
 def test_matching_address_with_different_address_different_cities():
-    historical_addresses = ['123 Main St, Springfield, USA', '456 Pine St, Boston, USA', '789 Oak St, Los Angeles, USA']
-    new_addresses = ['456 Maple St, California, USA', '789 Oak St, California, USA', '555 Elm St, Chicago, USA']
-    expected_output = pd.DataFrame({
-        'historical_address': historical_addresses,
-        'found_address': new_addresses,
-        'match_found': [0, 0, 0],
-        'distance': ['N/A', 'N/A', 'N/A']
-    })
+    # Test case 3: No matching addresses, expecting match_found = 0
+    historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
+    new_addresses = ['456 Maple St, California', '789 Oak St, California', '555 Elm St, Chicago']
+    expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [0, 0, 0],'city_match_name':['N/A','N/A','N/A']})
     actual_output = matching_address.address_match_found(historical_addresses, new_addresses)
     assert expected_output.equals(actual_output)
 
 def test_matching_address_with_mixed_examples():
-    historical_addresses = ['123 Main St, Springfield, USA', '456 Pine St, Boston, USA', '283 Oxford St, Rochester, USA']
-    new_addresses = ['123 Main St, Springfield, USA', '789 Oak St, California, USA', '99 Court St, Rochester, USA']
-    expected_output = pd.DataFrame({
-        'historical_address': historical_addresses,
-        'found_address': new_addresses,
-        'match_found': [1, 0, 2],
-        'distance': ['N/A', 'N/A', 1.107833]  
-    })
+    historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '1340 Warren St, Mankato']
+    new_addresses = ['123 Main St, Springfield', '789 Oak St, California', '200 Briargate Rd, Mankato']
+    expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [1, 0, 2],'city_match_name':['N/A','N/A','Mankato']})
     actual_output = matching_address.address_match_found(historical_addresses, new_addresses)
-    assert expected_output.equals(actual_output)
+    assert expected_output.equals(actual_output)    
