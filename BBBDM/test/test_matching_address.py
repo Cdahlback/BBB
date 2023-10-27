@@ -12,9 +12,7 @@ def test_matching_address_with_same_address():
     historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
     new_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
     expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [1, 1, 1],'city_match_name':['N/A','N/A','N/A']})
-    print(expected_output)
     actual_output = matching_address.address_match_found(historical_addresses, new_addresses)
-    print(actual_output)
     assert expected_output.equals(actual_output)
 
 def test_matching_address_with_different_address_same_cities():
