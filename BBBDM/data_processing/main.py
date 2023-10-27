@@ -3,6 +3,8 @@ import re
 import logging
 from functools import reduce
 
+from BBBDM.historical_functions.Collin import extract_data
+
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
@@ -293,13 +295,13 @@ def get_valid_businesses_info(file_path:str) -> pd.DataFrame | None:
 def main():
     # Extract the data
     # Need to build a function which takes in a file path for a csv file, and outputs a dataframe
-    mn_business = get_valid_businesses_info("BBBDM/Data/mn_business.csv")
-    mn_business_address = extract_data("BBBDM/Data/mn_business_address.csv")
-    mn_business_contact = extract_data("BBBDM/Data/mn_business_contact.csv")
-    mn_business_email = extract_data("BBBDM/Data/mn_business_email.csv")
-    mn_business_name = extract_data("BBBDM/Data/mn_business_name.csv")
-    mn_business_phone = extract_data("BBBDM/Data/mn_business_phone.csv")
-    mn_business_url = extract_data("BBBDM/Data/mn_business_url.csv")
+    mn_business = get_valid_businesses_info("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business.csv")
+    mn_business_address = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_address.csv")
+    mn_business_contact = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_contact.csv")
+    mn_business_email = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_email.csv")
+    mn_business_name = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_name.csv")
+    mn_business_phone = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_phone.csv")
+    mn_business_url = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_url.csv")
 
     # Merge the data
     merged_data = join_dataframe_firmid(mn_business, mn_business_address, mn_business_contact, mn_business_email,

@@ -1,3 +1,4 @@
+import os
 import re
 
 import numpy as np
@@ -287,9 +288,10 @@ def extract_data(file_path: str) -> pd.DataFrame:
     """
     try:
         df = pd.read_csv(file_path)
+        return df
     except Exception as e:
         # Log error message
-        logging.error(f"Error reading data from file: {file_path}. Error: {e}")
+        print(f"Error reading data from file: {file_path}. Error: {e}")
         return None
 
 
