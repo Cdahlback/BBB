@@ -26,3 +26,144 @@ ERROR:root:Invalid Address: Invalid Address
 INFO:root:Normalized URL: http://www.example.com
 INFO:root:Normalized URL: https://www.example.com
 INFO:root:Normalized URL: http://www.example.com/path
+INFO:root:Normalized Address: 123 Main St
+INFO:root:Normalized Address: 123 Main St Apt 456
+ERROR:root:Invalid Address: NoDigitsHere St
+ERROR:root:Invalid Address: 123
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '1600 Amphitheatre Pkwy'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country': 'United States', 'region': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country': 'United States', 'region': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country': 'United States', 'region': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'locality': 'Mountain View', 'postal_code': '94041', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'country_code': 'US', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'postal_code': '94041', 'country_code': 'US', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'country_code': 'US', 'postal_code': '94041', 'street_address': 'NoDigitsHere St'} - normalize_address() takes 1 positional argument but 2 were given
+ERROR:root:Error normalizing address: {'country_area': 'CA', 'city': 'Mountain View', 'postal_code': '94041', 'country_code': 'US', 'street_address': '123'} - normalize_address() takes 1 positional argument but 2 were given
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': 'NoDigitsHere St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'postal_code': '94041', 'country_code': 'US', 'street_address': '123', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
+INFO:root:Normalized Address: {'country_area': 'CA', 'city': 'MOUNTAIN VIEW', 'country_code': 'US', 'postal_code': '94041', 'street_address': '123 Main St', 'city_area': '', 'sorting_code': ''}
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: http://www.example.com
+INFO:root:Normalized URL: https://example.com
+INFO:root:Normalized URL: http://noprotocol.com
