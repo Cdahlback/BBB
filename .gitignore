@@ -3,4 +3,5 @@
 .DS_Store
 TEST.py
 .pytest_cache/
-
+venv/
+*./log

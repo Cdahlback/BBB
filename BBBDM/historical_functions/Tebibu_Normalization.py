@@ -1,86 +1,68 @@
 import re
 import logging
+from i18naddress import normalize_address
 
+# Logging setup
 logging.basicConfig(filename='normalization.log', level=logging.INFO)
 
-# Normalize Business Names (using Eli's function)
-def standardizeName(name:str) -> str:
+def normalize_us_phone_number(phone_str: str) -> str:
     """
-    Normalize business names by converting to lowercase, replacing '&' with 'and', removing special characters,
-    and removing extra whitespace. If the business name is empty after normalization, it is considered invalid
-    and None is returned.
-
-    Parameters:
-    name: Business name to normalize
-
-    Returns:
-    Normalized business name or None if invalid
+    Normalizes U.S. phone numbers to a standard format.
     """
-    name = name.lower()                 
-    name = re.sub('&', ' and ', name)   
-    name = re.sub('[^a-z\s-]', '', name)   
-    name = re.sub(' {2,}', ' ', name)     
+    # Remove non-digit characters
+    digits = ''.join(filter(str.isdigit, phone_str))
+    
+    if len(digits) == 10:
+        return f"+1 {digits[:3]}-{digits[3:6]}-{digits[6:]}"
+    elif len(digits) == 11 and digits[0] == '1':
+        return f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}"
+    else:
+        raise ValueError(f"'{phone_str}' is not a valid U.S. phone number.")
+
+def standardizeName(name: str) -> str:
+    """
+    Standardizes business names by making various modifications.
+    """
+    name = name.lower()
+    name = re.sub('&', ' and ', name)
+    name = re.sub('[^a-z\s-]', '', name)
+    name = re.sub(' {2,}', ' ', name)
     return name.strip()
 
-# Normalize Addresses using regex 
-def normalize_address(address:str) -> str | None:
+def normalize_address_i18n(raw_address: dict) -> dict:
     """
-    Normalize addresses by converting to lowercase, removing whitespace, and removing special characters except
-    ., -, and #. If the address does not match the pattern of a valid address, it is considered invalid and
-    None is returned.
-
-    Parameters:
-    address: Address to normalize
-
-    Returns:
-    Normalized address or None if invalid
+    Normalizes address using the i18naddress library.
     """
-    
-    pattern = r'^\d+\s[A-Za-z0-9\s\.\-]+(?:\s(?:Apt|Suite|Ste)\s\d+)?$'
-    
-    if re.match(pattern, address):
-      
-        logging.info(f"Normalized Address: {address}")
-        return address
-    else:
-       
-        logging.error(f"Invalid Address: {address}")
-        return None  
+    try:
+        normalized_address = normalize_address(raw_address)
+        logging.info(f"Normalized Address: {normalized_address}")
+        return normalized_address
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")
+        return None
 
-
-def normalize_url(url:str) -> str | None:
+def normalize_url(url: str) -> str:
     """
-    Normalize URLs by converting to lowercase, removing whitespace, and removing special characters except
-    ., -, and #. If the URL does not match the pattern of a valid URL, it is considered invalid and
-    None is returned.
-
-    Parameters:
-    url: URL to normalize
-
-    Returns:
-    Normalized URL or None if invalid
+    Normalizes URLs by adding "http://" if not present.
     """
-   
-    url = url.lower()
-    
-    url = url.replace(" ", "")
-    
-    
-    if not url.startswith('http://') and not url.startswith('https://'):
+    url = url.lower().replace(" ", "")
+    if not url.startswith(('http://', 'https://')):
         url = 'http://' + url
-  
     logging.info(f"Normalized URL: {url}")
-    
     return url
 
-# Example usage
 if __name__ == "__main__":
-    
+    # Testing the normalization functions
     business_name = "Example & Co."
     print("Normalized Business Name:", standardizeName(business_name))
 
-    address = "123 Main St Apt 456"
-    print("Normalized Address:", normalize_address(address))
+    raw_address = {
+        'country_area': 'CA',
+        'locality': 'Mountain View',
+        'postal_code': '94041',
+        'street_address': '1600 Amphitheatre Pkwy'
+    }
+    print("Normalized Address:", normalize_address_i18n(raw_address))
 
     url = "www.Example.com"
     print("Normalized URL:", normalize_url(url))
