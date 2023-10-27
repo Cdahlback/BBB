@@ -7,15 +7,23 @@ sys.path.append(r'C:\Users\tebib\OneDrive\Desktop\Project 1\BBB')
 from BBBDM.data_processing.Business_Match import is_same_business
 
 def test_is_same_business():
-    # Test cases for our function.
-    # Cast strings and booleans as a demonstration of typecasting.
+    # Test cases for our function
     test_cases = [
-        (str("Bob's burgers"), str("Bob's burger and fries"), bool(True)),
-        (str("coffee shop"), str("tea shop"), bool(False)),
-        (str("MCDONALDS"), str("McDonald's"), bool(True)),
-        (str("Wendys"), str("Wendy's Hamburgers"), bool(True)),
-        (str("Dell Technologies"), str("Dell"), bool(True)),
-        (str("Apple Store"), str("Apple Orchard"), bool(False))
+        ("Bob's burgers", "Bob's burger and fries", True),          # Direct similarity
+        ("coffee shop", "tea shop", False),                          # Clearly different
+        ("MCDONALDS", "McDonald's", True),                           # Different case but same name
+        ("Wendys", "Wendy's Hamburgers", True),                      # One name is substring of the other
+        ("Dell Technologies", "Dell", True),                         # Partial match
+        ("Apple Store", "Apple Orchard", False),                     # Different despite common word "Apple"
+        ("Bobs Burgers and Fries", "Fries Bobs Burgers", True),      # Reordered tokens
+        ("Burger Palace", "Burger Place", False),                    # One word different
+        ("Best PC Ltd.", "Best PC", True),                           # Business suffix removed
+        ("Baker & Sons, Inc.", "Baker and Sons", True),              # Suffix and symbols removed, and expanded
+        ("Bob's Burgers", "Joe's Burgers", False),                   # Different business names
+        ("World Electronics Corp.", "World Electrics", False),       # Small but significant word change
+        ("Tech Gurus LLC", "Tech Guru", False),                      # Plurality difference
+        ("Sunshine Bakery", "Moonlight Bakery", False),              # Opposite prefixes
+        ("Shoe Factory", "Shoe Store", False)                        # Different business type despite same category
     ]
 
     # Iterating through each test case
@@ -24,9 +32,3 @@ def test_is_same_business():
         
         # Asserting that our function's result matches the expected result
         assert result == expected, f"Expected {expected} but got {result} for historical '{hist_name}' and new '{new_name}'"
-    
-    # If all assertions pass, this will print.
-    print("All tests passed!")
-
-# Run the test function
-test_is_same_business()
