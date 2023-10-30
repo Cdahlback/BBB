@@ -1,9 +1,11 @@
 import pandas as pd
 import re
 import logging
+from i18naddress import normalize_address
 from functools import reduce
 
 from BBBDM.historical_functions.Collin import extract_data
+from BBBDM.historical_functions.Normalize import normalize_phone_number
 
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
@@ -74,22 +76,19 @@ def normalize_email(email:str) -> str | None:
     return email
 
 # Normalize Phone Number
-def normalize_phone_number(phone:str) -> str | None:
+def normalize_us_phone_number(phone_str: str) -> str:
     """
-    Normalize phone numbers by removing whitespace and non-numeric characters. If the phone number does not
-    contain any numeric digits, it is considered invalid and None is returned.
-
-    Parameters:
-    phone: Phone number to normalize
-
-    Returns:
-    Normalized phone number or None if invalid
+    Normalizes U.S. phone numbers to a standard format.
     """
-    if not any(char.isdigit() for char in phone):  # Check if there are no numeric digits in the phone number
-        logging.warning(f'Invalid phone number: {phone}')
-        return None  # Invalid phone number
-    phone = re.sub(r'\s|\D', '', phone)  # Remove whitespace and non-numeric characters
-    return phone
+    # Remove non-digit characters
+    digits = ''.join(filter(str.isdigit, phone_str))
+    
+    if len(digits) == 10:
+        return f"+1 {digits[:3]}-{digits[3:6]}-{digits[6:]}"
+    elif len(digits) == 11 and digits[0] == '1':
+        return f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}"
+    else:
+        raise ValueError(f"'{phone_str}' is not a valid U.S. phone number.")
 
 # Normalize Zipcode
 def normalize_zipcode(zipcode:str) -> str | None:
@@ -149,29 +148,17 @@ def standardizeName(name:str) -> str:
     return name.strip()
 
 # Normalize Addresses using regex 
-def normalize_address(address:str) -> str | None:
+def normalize_address_i18n(raw_address: dict) -> dict:
     """
-    Normalize addresses by converting to lowercase, removing whitespace, and removing special characters except
-    ., -, and #. If the address does not match the pattern of a valid address, it is considered invalid and
-    None is returned.
-
-    Parameters:
-    address: Address to normalize
-
-    Returns:
-    Normalized address or None if invalid
+    Normalizes address using the i18naddress library.
     """
-    
-    pattern = r'^\d+\s[A-Za-z0-9\s\.\-]+(?:\s(?:Apt|Suite|Ste)\s\d+)?$'
-    
-    if re.match(pattern, address):
-      
-        logging.info(f"Normalized Address: {address}")
-        return address
-    else:
-       
-        logging.error(f"Invalid Address: {address}")
-        return None  
+    try:
+        normalized_address = normalize_address(raw_address)
+        logging.info(f"Normalized Address: {normalized_address}")
+        return normalized_address
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")
+        return None
 
 # Normalize URL
 def normalize_url(url:str) -> str | None:
