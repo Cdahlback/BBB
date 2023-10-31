@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import numpy as np
 
 
 def update_columns_sos(row: pd.Series) -> pd.Series:
@@ -30,9 +31,20 @@ def update_columns_sos(row: pd.Series) -> pd.Series:
 
 def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     """
-    Calculates if our data is correct or not when compared to SOS
-    sets null values for other columns
+    Calculates if our data is correct or not when compared to SOS (Secretary of State).
+    Sets null values for other columns and performs additional data processing.
+
+    This function takes a DataFrame containing business data and compares it to Secretary of State (SOS) records to assess the correctness of the data. It adds several columns to the DataFrame to indicate whether specific fields like Business Name, Address, and Zip Code match SOS records.
+
+    It also sets null values for additional columns, which are intended to be filled out during further processing.
+
+    Parameters:
+        merged_data (pd.DataFrame): The input DataFrame containing business data.
+
+    Returns:
+        pd.DataFrame: A modified DataFrame with added columns and null values, ready for further processing.
     """
+   
     # See if the business name and address match
     merged_data["BusinessNameCorrect"] = merged_data["BusinessName"] == merged_data["Business Name"]
     merged_data["BusinessAddressCorrect"] = merged_data["Address"] == merged_data["Address 1"]
@@ -47,13 +59,16 @@ def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     merged_data["BusinessZipFound"] = np.nan
 
     merged_data.apply(update_columns_sos, axis=1)
-
+    logging.info("add_sos_columns function executed successfully")
     return merged_data
 
 
 def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) -> pd.DataFrame:
     """
     Compares old data to new, deleting duplicate rows, and adding the necessary columns
+     Parameters:
+        historicalData (pd.DataFrame): The historical data DataFrame.
+        newData (pd.DataFrame): The new data DataFrame containing Secretary of State information.
 
     Returns: Dataframe containing updated information from SOS
     """

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from email_validator import validate_email, EmailNotValidError
 """
 Mine
 """
@@ -131,6 +132,11 @@ def address_match_found(historical_addresses, found_addresses):
     Function to compare historical and new addresses and determine if they match.
     Returns a new DataFrame with a 'match_found' column containing 1 for a match, 2 for matching cities, and 0 for no match.
     Also adds a 'city_match_name' column to show the city name when match_found is 2.
+
+    Parameters:
+    Lists we want to merge into a dataframe
+    Returns:
+    a dataframe containing the historical address, the found address,the match_found and the city columns
     """
     try:
         # Create a DataFrame with only the historical and new address columns
@@ -149,7 +155,7 @@ def address_match_found(historical_addresses, found_addresses):
 
         # Add 'city_match_name' column using list comprehension
         merged_df['city_match_name'] = ['N/A' if match != 2 else address.split(',')[-1].strip() for match, address in zip(merged_df['match_found'], merged_df['found_address'])]
-
+        logging.info("Successful merge ")
         return merged_df
     except Exception as e:
         logging.debug(f"Error occurred: {e}")
