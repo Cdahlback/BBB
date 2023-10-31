@@ -2,6 +2,8 @@ import logging
 import pandas as pd
 import numpy as np
 
+from BBBDM.lib.data_processing import address_match_found, is_same_business
+
 
 def update_columns_sos(row: pd.Series) -> pd.Series:
     """
@@ -46,8 +48,8 @@ def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     """
    
     # See if the business name and address match
-    merged_data["BusinessNameCorrect"] = merged_data["BusinessName"] == merged_data["Business Name"]
-    merged_data["BusinessAddressCorrect"] = merged_data["Address"] == merged_data["Address 1"]
+    merged_data["BusinessNameCorrect"] = is_same_business(merged_data["BusinessName"], merged_data["Business Name"], 80, None, None, True)
+    merged_data["BusinessAddressCorrect"] = address_match_found(merged_data["Address"], merged_data["Address 1"])
     merged_data["BusinessZipCorrect"] = merged_data["Zip Code"] == merged_data["Zip Code New"]
 
     # Give null values for all columns, which we will fill out when needed

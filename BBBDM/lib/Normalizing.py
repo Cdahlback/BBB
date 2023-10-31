@@ -1,11 +1,13 @@
 import re
 import logging
 import pandas as pd
+from i18naddress import normalize_address
+
 
 # Configure logging to capture warnings, errors, and other important information.
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-def normalize_email(email:str) -> str | None:
+def normalize_email(email:str) -> str:
     """
     Normalize email addresses by:
     - Converting to lowercase
@@ -27,7 +29,7 @@ def normalize_email(email:str) -> str | None:
         return None  
     return email
 
-def normalize_zipcode(zipcode:str) -> str | None:
+def normalize_zipcode(zipcode:str) -> str:
     """
     Normalize zipcodes by:
     - Removing whitespace

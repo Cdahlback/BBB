@@ -1,16 +1,16 @@
-import numpy as np
-import pandas as pd
-from email_validator import validate_email, EmailNotValidError
 """
 Mine
 """
+import numpy as np
 import pandas as pd
 import logging
 from functools import reduce
+from email_validator import validate_email, EmailNotValidError
+from fuzzywuzzy import fuzz
 
-logging.basicConfig(filename='functions.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame | bool:
+def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame:
     """
     Pass in dataframes and merge them on the FirmID column
     Remove any duplicate columns also
@@ -160,6 +160,50 @@ def address_match_found(historical_addresses, found_addresses):
     except Exception as e:
         logging.debug(f"Error occurred: {e}")
         return False
+
+
+def is_same_business(historical_name: str, new_name: str, threshold: int = 80,
+                     business_type_historical: str = None, business_type_new: str = None,
+                     is_SOS: bool = False) -> bool:
+    """
+    Check if the new business name is essentially the same as the historical one.
+    Uses fuzzy string matching to make this determination. If the names are not from SOS,
+    removes common business suffixes before comparing.
+    """
+
+    # Helper function to preprocess names
+    def preprocess_name(name: str) -> str:
+        # Convert to lowercase
+        name = name.lower()
+
+        # If not from SOS, remove common business suffixes
+        for suffix in ["inc", "llc", "ltd", "co", ".", ",", "&", "corp", "incorporation"]:
+            name = name.replace(suffix, "")
+
+        return name.strip()
+
+    # If not from SOS, preprocess the business names"
+    if not is_SOS:
+        historical_name = preprocess_name(historical_name)
+        new_name = preprocess_name(new_name)
+
+    # If business types are provided and they don't match, return False immediately
+    if business_type_historical and business_type_new and business_type_historical != business_type_new:
+        return False
+
+    # Token match ratio
+    token_ratio = fuzz.token_sort_ratio(historical_name, new_name)
+
+    # Regular fuzzy match ratio
+    fuzzy_ratio = fuzz.ratio(historical_name, new_name)
+
+    # Partial match ratio
+    partial_ratio = fuzz.partial_ratio(historical_name, new_name)
+
+    # Return True if any of the above ratios exceed the threshold
+    return any(ratio >= threshold for ratio in [token_ratio, fuzzy_ratio, partial_ratio])
+
+
 def normalize_email(email:str) ->str:
     """
 This is a helper function that normalizes the email to fit BBB expectations
@@ -189,7 +233,7 @@ def normalize_dataframe(df:pd.DataFrame) ->pd.DataFrame:
     df['email'] = df['email'].apply(normalize_email)
     return df # Return the modified DataFrame
 
-def get_valid_businesses_info(file_path:str) -> pd.DataFrame | None:
+def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
     """
     Read the data from the specified file into a DataFrame and filter the DataFrame to only keep rows where
     'active' == 'TRUE'. If an error occurs, None is returned.
@@ -219,9 +263,3 @@ def get_valid_businesses_info(file_path:str) -> pd.DataFrame | None:
         # Log error message
         logging.error(f"Error reading or filtering data from file: {file_path}. Error: {e}")
         return None
-
-# Specify the relative file path based on the script's location
-file_path = r'C:\Users\Rania\Documents\GitHub\BBB\BBBDM\Data\mn_business.csv'
-
-# Call the function with the relative file path
-active_businesses_info = get_valid_businesses_info(file_path)
