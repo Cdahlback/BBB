@@ -57,10 +57,11 @@ def extract_data(file_path: str) -> pd.DataFrame:
     """
     try:
         df = pd.read_csv(file_path)
+        logging.info("File successfuly read")
         return df
     except Exception as e:
         # Log error message
-        print(f"Error reading data from file: {file_path}. Error: {e}")
+        logging.debug(f"Error reading data from file: {file_path}. Error: {e}")
         return None
 
 
