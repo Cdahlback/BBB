@@ -3,63 +3,63 @@ import logging
 import pandas as pd
 from i18naddress import normalize_address
 
-
-# Configure logging to capture warnings, errors, and other important information.
+# Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 def normalize_email(email:str) -> str:
     """
-    Normalize email addresses by:
-    - Converting to lowercase
-    - Removing whitespace
-    - Removing special characters (except ., @, and -)
-    If the email address lacks an @ symbol, it is considered invalid and None is returned.
+    This function is designed to handle the normalization of email addresses. It carries out the following steps:
+    1. Converts the email address to lowercase.
+    2. Removes any whitespace.
+    3. Filters out any special characters with the exception of ".", "@", and "-".
+    
+    Should the processed email lack an "@" symbol, it will be deemed as invalid and will return None.
     
     Parameters:
-    - email (str): Email address to normalize.
+    - email (str): The raw email address that needs to be normalized.
     
     Returns:
-    - str | None: Normalized email address or None if invalid.
+    - str | None: Returns the normalized email if valid, otherwise None.
     """
-    email = email.lower()  
+    email = email.lower()
     email = re.sub(r'\s', '', email)  
     email = re.sub(r'[^a-z0-9.@-]', '', email)
     if '@' not in email:
-        logging.warning(f'Invalid email: {email}')
+        logging.warning(f'Encountered an invalid email format: {email}')
         return None  
     return email
 
 def normalize_zipcode(zipcode:str) -> str:
     """
-    Normalize zipcodes by:
-    - Removing whitespace
-    - Removing non-numeric characters
-    Zipcodes should contain exactly 5 numeric digits. If not, they are considered invalid.
+    This function processes and validates zip codes. Specifically, it:
+    1. Removes any whitespace.
+    2. Filters out any non-numeric characters.
+    
+    If the resultant zipcode does not comprise exactly 5 numeric digits, it's deemed as invalid.
     
     Parameters:
-    - zipcode (str): Zipcode to normalize.
+    - zipcode (str): The raw zipcode that needs to be normalized.
     
     Returns:
-    - str | None: Normalized zipcode or None if invalid.
+    - str | None: Returns the processed zipcode if valid, otherwise None.
     """
-    zipcode = re.sub(r'\s|\D', '', zipcode)  
-    if len(zipcode) == 5:
-        return zipcode
-    else:
-        logging.warning(f'Invalid zipcode: {zipcode}')
+    zipcode = re.sub(r'\s|\D', '', zipcode)
+    if len(zipcode) != 5:
+        logging.warning(f'Detected an invalid zipcode format: {zipcode}')
         return None
+    return zipcode
 
 def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
     """
-    Normalize DataFrame columns using appropriate functions. 
-    The Email, Phone Number, and Zipcode columns are processed by their respective normalization functions.
-    Invalid entries are replaced with None.
+    This function serves to normalize various columns within a given DataFrame. The columns targeted for normalization
+    include "Email", "Phone Number", and "Zipcode". Each of these columns are subjected to their designated normalization 
+    functions. Any invalid entries detected during this process are substituted with None.
     
     Parameters:
-    - df (pd.DataFrame): DataFrame to normalize.
+    - df (pd.DataFrame): The original DataFrame that needs normalization.
     
     Returns:
-    - pd.DataFrame: Normalized DataFrame.
+    - pd.DataFrame: Returns the DataFrame after normalization.
     """
     df['Email'] = df['Email'].apply(normalize_email)
     df['Phone Number'] = df['Phone Number'].apply(normalize_us_phone_number)
@@ -68,15 +68,17 @@ def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
 
 def normalize_us_phone_number(phone_str: str) -> str:
     """
-    Normalize U.S. phone numbers to a standard format by:
-    - Removing non-digit characters
-    - Formatting to standard U.S. phone number format
+    Designed to process U.S. phone numbers, this function:
+    1. Extracts all numeric digits.
+    2. Formats the digits according to the standard U.S. phone number format.
+    
+    If the input doesn't match expected lengths for U.S. phone numbers, a ValueError is raised.
     
     Parameters:
-    - phone_str (str): Phone number string to normalize.
+    - phone_str (str): The raw phone number string to be normalized.
     
     Returns:
-    - str: Normalized U.S. phone number.
+    - str: Returns the normalized U.S. phone number.
     """
     digits = ''.join(filter(str.isdigit, phone_str))
     if len(digits) == 10:
@@ -84,21 +86,21 @@ def normalize_us_phone_number(phone_str: str) -> str:
     elif len(digits) == 11 and digits[0] == '1':
         return f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}"
     else:
-        raise ValueError(f"'{phone_str}' is not a valid U.S. phone number.")
+        raise ValueError(f"'{phone_str}' does not match valid U.S. phone number formats.")
 
 def standardizeName(name: str) -> str:
     """
-    Standardize business names by:
-    - Converting to lowercase
-    - Replacing '&' with ' and '
-    - Removing characters not in the set [a-z, whitespace, -]
-    - Removing extra spaces
+    This function standardizes business names by:
+    1. Converting the entire name to lowercase.
+    2. Substituting '&' with ' and '.
+    3. Removing characters not found in the set [a-z, whitespace, -].
+    4. Trimming extra spaces.
     
     Parameters:
-    - name (str): Business name to standardize.
+    - name (str): The business name that requires standardization.
     
     Returns:
-    - str: Standardized business name.
+    - str: Returns the standardized business name.
     """
     name = name.lower()
     name = re.sub('&', ' and ', name)
@@ -108,45 +110,46 @@ def standardizeName(name: str) -> str:
 
 def normalize_address_i18n(raw_address: dict) -> dict:
     """
-    Normalize and structure address data using the i18naddress library.
+    Utilizes the i18naddress library to normalize and structure address data.
     
     Parameters:
-    - raw_address (dict): Raw address details in dictionary format.
+    - raw_address (dict): Dictionary containing raw address details.
     
     Returns:
-    - dict: Normalized address details.
+    - dict: A structured and normalized address dictionary.
     """
     try:
         normalized_address = normalize_address(raw_address)
-        logging.info(f"Normalized Address: {normalized_address}")
+        logging.info(f"Successfully normalized address: {normalized_address}")
         return normalized_address
     except Exception as e:
-        logging.error(f"Error: {str(e)}")
+        logging.error(f"Failed to normalize address due to error: {str(e)}")
         return None
 
 def normalize_url(url: str) -> str:
     """
-    Normalize URLs by:
-    - Converting to lowercase
-    - Removing spaces
-    - Prefixing with 'http://' if protocol is absent
+    This function normalizes URLs by:
+    1. Converting the entire URL to lowercase.
+    2. Eliminating spaces.
+    3. Appending 'http://' at the beginning if no protocol (http or https) is present.
     
     Parameters:
-    - url (str): URL to normalize.
+    - url (str): The URL that needs to be normalized.
     
     Returns:
-    - str: Normalized URL.
+    - str: Returns the normalized URL.
     """
     url = url.lower().replace(" ", "")
     if not url.startswith(('http://', 'https://')):
         url = 'http://' + url
-    logging.info(f"Normalized URL: {url}")
+    logging.info(f"Successfully normalized URL: {url}")
     return url
 
 if __name__ == "__main__":
-    # Test the normalization functions.
+    # Execute a series of tests to verify the functionality of the normalization functions.
     business_name = "Example & Co."
     print("Normalized Business Name:", standardizeName(business_name))
+    
     raw_address = {
         'country_area': 'CA',
         'locality': 'Mountain View',
@@ -154,5 +157,6 @@ if __name__ == "__main__":
         'street_address': '1600 Amphitheatre Pkwy'
     }
     print("Normalized Address:", normalize_address_i18n(raw_address))
+    
     url = "www.Example.com"
     print("Normalized URL:", normalize_url(url))
