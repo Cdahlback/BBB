@@ -351,46 +351,11 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
         }
     )
     # Remove duplicate columns in the dataframe
-    df = df_merged.loc[:, ~df_merged.columns.duplicated()]
+    df = df.loc[:, ~df.columns.duplicated()]
     logging.info("Merging dataframes - Success")
     return df
 
 
-df1 = pd.DataFrame(
-    {
-        "firm_id": [1, 2, 3],
-        "state_incorporated": ["MN", "MN", "MN"],
-        "name_id": [1, 2, 3],
-        "company_name": ["ABC Inc.", "XYZ Corp.", "123 LLC"],
-        "phone_id": [1, 2, 3],
-        "phone": ["123-456-7890", "555-555-5555", "999-999-9999"],
-    }
-)
-df2 = pd.DataFrame(
-    {
-        "firm_id": [2, 3, 4],
-        "url_id": [1, 2, 3],
-        "url": [
-            "http://www.xyzcorp.com",
-            "http://www.123llc.com",
-            "http://www.456inc.com",
-        ],
-        "email_id": [1, 2, 3],
-        "email": ["info@xyzcorp.com", "info@123llc.com", "info@456inc.com"],
-    }
-)
-df3 = pd.DataFrame(
-    {
-        "firm_id": [1, 3, 4],
-        "address_1": ["123 Main St", "456 Elm St", "789 Oak St"],
-        "address_2": ["Suite 100", "Suite 200", ""],
-        "city": ["Minneapolis", "St. Paul", "Bloomington"],
-        "zip_code": ["55401", "55101", "55420"],
-    }
-)
-
-
-print(join_dataframe_firmid(df1, df2, df3))
 # Read data from the specified file and return a DataFrame containing information for the active businesses
 def get_valid_businesses_info(file_path: str) -> pd.DataFrame | None:
     """

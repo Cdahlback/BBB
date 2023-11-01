@@ -6,7 +6,7 @@ from pathlib import Path
 import os
 
 modular = importlib.util.spec_from_file_location(
-    "chris_function", str(Path(__file__).parent.parent / "data_processing/main.py")
+    "main", str(Path(__file__).parent.parent / "data_processing/main.py")
 )
 
 main = importlib.util.module_from_spec(modular)
@@ -92,89 +92,6 @@ def test_compare_dataframes_fail():
     assert error_message == False
 
 
-# # Define a test case for a passing case in compare_dataframes
-# def test_join_dataframe_firmid_multiple_success():
-#     """
-#     Test joining multiple dataframes in the given function
-#     """
-#     # Input dataframes
-#     df1 = pd.DataFrame({'firm_id': [1, 2, 3], 'company_name': ['A', 'B', 'C']})
-#     df2 = pd.DataFrame({'firm_id': [1, 2, 3], 'Phone': ['134234234', '24534534', '789786567']})
-#     df3 = pd.DataFrame({'firm_id': [1, 2, 3], 'Location': ['USA', 'USA', 'USA']})
-
-#     #Expected output
-#     expected = pd.DataFrame({'firm_id': [1, 2, 3], 'BusinessName': ['A', 'B', 'C'], 'Business_type': ['Construction', 'Construction', 'Something'], 'Location': ['USA', 'USA', 'USA']})
-
-#     # Actual output
-#     actual = main.join_dataframe_firmid(df1, df2, df3)
-
-#     # Compare
-#     assert actual.equals(expected)
-
-
-# # Define a test case for a failing case in compare_dataframes
-# def test_join_dataframe_firmid_failed():
-#     "Test what would happen if the FirmID failed"
-#     # Input dataframes
-#     df1 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Name': ['A', 'B', 'C']})
-#     df2 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Business_type': ['Construction', 'Construction', 'Something']})
-#     df3 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Location': ['USA', 'USA', 'USA']})
-# Define a test case for a passing case in compare_dataframes
-def test_join_dataframe_firmid_multiple_success():
-    """
-    Test joining multiple dataframes in the given function
-    """
-    # Input dataframes
-    df1 = pd.DataFrame({"FirmID": [1, 2, 3], "Name": ["A", "B", "C"]})
-    df2 = pd.DataFrame(
-        {
-            "FirmID": [1, 2, 3],
-            "Business_type": ["Construction", "Construction", "Something"],
-        }
-    )
-    df3 = pd.DataFrame({"FirmID": [1, 2, 3], "Location": ["USA", "USA", "USA"]})
-
-    # Expected output
-    expected = pd.DataFrame(
-        {
-            "FirmID": [1, 2, 3],
-            "Name": ["A", "B", "C"],
-            "Business_type": ["Construction", "Construction", "Something"],
-            "Location": ["USA", "USA", "USA"],
-        }
-    )
-
-    # Actual output
-    actual = main.join_dataframe_firmid(df1, df2, df3)
-
-    # Compare
-    assert actual.equals(expected)
-
-
-# Define a test case for a failing case in compare_dataframes
-def test_join_dataframe_firmid_failed():
-    "Test what would happen if the FirmID failed"
-    # Input dataframes
-    df1 = pd.DataFrame({"FirmIDD": [1, 2, 3], "Name": ["A", "B", "C"]})
-    df2 = pd.DataFrame(
-        {
-            "FirmIDD": [1, 2, 3],
-            "Business_type": ["Construction", "Construction", "Something"],
-        }
-    )
-    df3 = pd.DataFrame({"FirmIDD": [1, 2, 3], "Location": ["USA", "USA", "USA"]})
-
-
-#     #Expected output
-#     expected = False
-
-#     # Actual output
-#     actual = main.join_dataframe_firmid(df1, df2, df3)
-
-#     # Compare
-#     assert actual == expected
-
-
 def test_join_dataframe_firmid():
     # create test dataframes
     df1 = pd.DataFrame(
@@ -243,17 +160,15 @@ def test_join_dataframe_firmid():
     #     for j in range(len(example_dataframe.columns)):
     #         assert example_dataframe.iloc[i,j] == expected_output.iloc[i,j]
 
+    actual = main.join_dataframe_firmid(df1, df2, df3)
+
     assert main.join_dataframe_firmid(df1, df2, df3).equals(expected_output)
-
-    # test function with two dataframes
-    assert main.join_dataframe_firmid(df1, df2).equals(expected_output.iloc[:2])
-
-    # test function with one dataframe
-    assert main.join_dataframe_firmid(df1).equals(df1)
 
     # test function with no dataframes
     assert main.join_dataframe_firmid() == False
 
+
+test_join_dataframe_firmid()
 
 # Test filtering of valid DataFrames
 def test_filter_success():

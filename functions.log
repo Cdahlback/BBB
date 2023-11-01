@@ -1,2 +1,69 @@
 DEBUG:root:Dataframe contains FirmID - Success
 INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+INFO:root:Successfully read and filtered data from file: BBBDM/Data/mn_business.csv
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+DEBUG:root:Dataframe contains FirmID - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+DEBUG:root:Dataframe contains FirmID - Success
+INFO:root:Merging dataframes - Success
+ERROR:root:tuple index out of range
+Traceback (most recent call last):
+  File "C:\Users\6547c\OneDrive\Documents\GitHub\BBB\BBBDM\data_processing\main.py", line 296, in join_dataframe_firmid
+    x = data_frames[0]["firm_id"]
+IndexError: tuple index out of range
+ERROR:root:Did the dataframes have firm_id?
+Traceback (most recent call last):
+  File "C:\Users\6547c\OneDrive\Documents\GitHub\BBB\BBBDM\data_processing\main.py", line 296, in join_dataframe_firmid
+    x = data_frames[0]["firm_id"]
+IndexError: tuple index out of range
