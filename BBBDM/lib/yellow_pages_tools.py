@@ -1,88 +1,71 @@
 import logging
 import re
 import pandas as pd
-
 from apify_client import ApifyClient
 
+# Custom Exception class for Authentication Errors.
 class AuthenticationError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
-
 def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     """
-        Update the 'data' DataFrame with information from 'yellow_pages_data' based on matching 'BusinessName'.
-        If a match is found, update certain columns in 'data' with corresponding values from 'yellow_pages_data'.
+    Update the given DataFrame 'data' with information from Yellow Pages based on matching business names.
+    If matching data is found in Yellow Pages, updates corresponding columns in the 'data' DataFrame.
+    The updates are performed based on the presence of certain columns in the original 'data'.
 
-        :param data: The DataFrame containing your data.
-        :return: The updated 'data' DataFrame.
+    :param data: DataFrame containing the original data.
+    :return: Updated DataFrame.
     """
-    # Calls call_scrape_yellow_page_data and fills in global dataframe scraped_yellow_pages_data
+
+    # For each row in the input data, try to scrape Yellow Pages data.
     data.apply(call_scrape_yellow_page_data, axis=1)
 
+    # Iterate through each row of the data.
     for index, row in data.iterrows():
-        # IF we have updated data for all data types, we can continue for that row. Since this is the lowest on the
-        # trust pyramid
+        # If all update fields have data, skip processing for this row.
         if pd.notna(row["BusinessWebsiteUpdate"]) and pd.notna(
                 row["BusinessPhoneUpdate"]) and pd.notna(row["BusinessAddressUpdate"]):
             continue
 
-        # Else, see which values we can update
+        # Check if we have any data to update from the scraped_yellow_pages_data based on matching business name.
         business_name = row["BusinessName"]
-        if pd.isna(business_name):
-            return False
         matching_row = scraped_yellow_pages_data[scraped_yellow_pages_data["Business Name"] == business_name]
 
         if not matching_row.empty:
-            # Check and update columns if they are None
-            if pd.isna(row["BusinessNameUpdate"]):
-                data.at[index, "BusinessNameUpdate"] = matching_row.iloc[0]["BusinessNameYP"]
-                data.at[index, "BusinessNameFound"] = "YP"
+            # Update data fields if they're not already populated.
+            # Here we're looking for BusinessName, Website, Phone, and Address.
+            # If found in the Yellow Pages data, we update the original dataframe and mark the source as 'YP'.
+            for column, yp_column in [("BusinessNameUpdate", "BusinessNameYP"), 
+                                      ("BusinessWebsiteUpdate", "BusinessWebsiteYP"),
+                                      ("BusinessPhoneUpdate", "BusinessPhoneYP"),
+                                      ("BusinessAddressUpdate", "BusinessAddressYP")]:
+                if pd.isna(row[column]):
+                    data.at[index, column] = matching_row.iloc[0][yp_column]
+                    data.at[index, column.replace("Update", "Found")] = "YP"
 
-            if pd.isna(row["BusinessWebsiteUpdate"]):
-                data.at[index, "BusinessWebsiteUpdate"] = matching_row.iloc[0]["BusinessWebsiteYP"]
-                data.at[index, "BusinessWebsiteFound"] = "YP"
-
-            if pd.isna(row["BusinessPhoneUpdate"]):
-                data.at[index, "BusinessPhoneUpdate"] = matching_row.iloc[0]["BusinessPhoneYP"]
-                data.at[index, "BusinessPhoneFound"] = "YP"
-
-            if pd.isna(row["BusinessAddressUpdate"]):
-                data.at[index, "BusinessAddressUpdate"] = matching_row.iloc[0]["BusinessAddressYP"]
-                data.at[index, "BusinessAddressFound"] = "YP"
-
-    # Clean up the scraped data dataframe for the next run
+    # Clean up the Yellow Pages data for next usage by dropping all its columns.
     scraped_yellow_pages_data.drop(columns=scraped_yellow_pages_data.columns, inplace=True)
+
     return data
-
-    # Example usage:
-    # Assuming 'data' is your original DataFrame and 'scraped_yellow_pages_data' is the DataFrame with Yellow Pages data
-    # updated_data = update_dataframe_with_yellow_pages_data(data, scraped_yellow_pages_data)
-
 
 def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
     """
-    Example usage:
-    - Assuming 'df' is your dataframe, you can apply the function to each row
-    - results = df.apply(call_scrape_yellow_page_data, axis=1)
+    Calls the scrape_yellow_page_data function for each row in the dataframe.
+    Extracts required fields and invokes the scraper function.
+    Results from scraper are stored in a global dataframe.
 
-    Columns Needed to search:
-    - City (if no city, use "Minnesota")
-    - Business Name (used as a search term)
+    :param data: Row from the dataframe.
     """
 
-    # # This should also check for expected columns to be present
-    # if len(data) == 0:
-    #     return False
-
+    # Construct the search term and location from the data.
     search_term = data["BusinessNameUpdate"] if not pd.isna(data["BusinessNameUpdate"]) else data["BusinessName"]
     location = data["City"] if not pd.isna(data["City"]) else "Minnesota"
-    max_items = 1
+    
+    # Invoke the scraper for the given search term and location.
+    result = scrape_yellow_page_data(search_term, location, max_items=1)
 
-    # Ideally, we would store the results in their own dataFrame, making it easier to compare after this step
-    result = scrape_yellow_page_data(search_term, location, max_items)
-
-    # Add the result to the 'scraped_yellow_pages_data' DataFrame
+    # Add the scraped data to the global dataframe.
     global scraped_yellow_pages_data
     scraped_yellow_pages_data = scraped_yellow_pages_data.append(
         {
@@ -96,51 +79,35 @@ def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
         ignore_index=True
     )
 
-
-def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int,
-                            extendedOutputFunction="""
-                            ($, record) => {const website = $('a.business-website').attr('href');return { website };}
-                            """):
+def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int, extendedOutputFunction="""..."""):
     """
-    Ideally we would run this function for each row where we have an address OR searchTerm
-    Input: Set of parameters listed in function
-    Returned by API:
-    - Dictionary filled with these values
-        - Yellow pages link: 'url'
-        - Company Name:      'name'
-        - Address:           'address'
-        - Phone:             'phone'
-        - Rating (1-5):      'rating'
-        - Categories:        'categories'
+    Uses the ApifyClient to scrape Yellow Pages for the given search term, location, and other parameters.
+    Returns the scraped data if a match is found, otherwise returns False.
 
-    We should append these columns to rows in our final output dataframe
-    Columns will include:
-    - BusinessNameCorrectSOS: Bool
-    - BusinessNameUpdate:     string
-    - AddressCorrectSOS:      Bool
-    - AddressUpdate:          string
-    - PhoneCorrectSOS:        Bool
-    - PhoneUpdate:            string
-    - RatingSOS:              int
-    - BusinessCategories:     List[string]
-    - POSSIBLY some extended output:
-        - Data Transformation: Put the names, addresses, and phones through our normalize function prior to comparison
+    :param searchTerm: The business name or other keyword to search.
+    :param location: The location to focus the search on.
+    :param maxItems: Maximum number of results to fetch.
+    :param extendedOutputFunction: JS function to extract additional fields (optional).
+    :return: Dictionary of scraped data or False.
     """
-    # Initialize the API
+
+    # Initialize the API.
     client = login_yellow_pages()
 
+    # If client creation failed, raise an error.
     if not client:
         raise AuthenticationError("Login for yellow pages API failed")
 
-    # Prepare the Actor input
+    # Prepare the input for the Apify actor which will perform the scrape.
     run_input = {
         "search": searchTerm,
         "location": location,
         "maxItems": maxItems,
         "extendOutputFunction": extendedOutputFunction,
-        "proxyConfiguration": {"useApifyProxy": False}, }
+        "proxyConfiguration": {"useApifyProxy": False}
+    }
 
-    # Try to run the actor
+    # Execute the actor and log appropriate messages based on success/failure.
     try:
         run = client.actor("petr_cermak/yellow-pages-scraper").call(run_input=run_input)
         logging.info("Actor petr_cermak/yellow-pages-scraper finished successfully")
@@ -148,23 +115,23 @@ def scrape_yellow_page_data(searchTerm: str, location: str, maxItems: int,
         logging.debug(f"Actor petr_cermak/yellow-pages-scraper failed, {e}")
         return False
 
-    # Fetch and return Actor result where the name matches our name (if there are any)
+    # Iterate through the actor's results and return the relevant data based on the search term.
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():
-        # In for now, will update with standardized function
-        searchTerm = re.sub(r'[^A-Za-z0-9 ]', '', searchTerm)
         if item['name'] in searchTerm:
-            logging.info(
-                f'Updated row with business name: {searchTerm} from truth source: YP')
+            logging.info(f'Updated row with business name: {searchTerm} from truth source: YP')
             return item
 
-    # If no result is found which matches, return False
     return False
 
-
 def login_yellow_pages():
-    # Try to initialize the API
+    """
+    Tries to authenticate and initialize the ApifyClient using a hardcoded API token.
+    Returns the client if successful, otherwise logs an error and returns False.
+
+    :return: ApifyClient or False.
+    """
+
     try:
-        # Initialize the ApifyClient with your API token
         client = ApifyClient("apify_api_U8uBSwlhXCfv3sghNe50sbJ3udhdsY3loZKy")
         logging.info("ApifyClient API token success")
         return client
