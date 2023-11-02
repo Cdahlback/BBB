@@ -78,14 +78,17 @@ def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) 
     right_on = "Business Name"
 
     try:
-        # Merge the data, keeping all values from historicalData rows from newData where BusinessNames match
+        # Merge the data, keeping all rows from historicalData and rows from newData where theres a match for BusinessNames
         merged_data = historicalData.merge(newData, left_on=left_on, right_on=right_on, how='inner')
+        # Add that merged data back to the
         merged_data = pd.concat([historicalData, merged_data], ignore_index=True)
 
         # Drop duplicate rows which contain no updated information
         merged_data['is_duplicate'] = merged_data.duplicated(subset='Firm_id', keep=False)
         merged_data = merged_data[(merged_data['is_duplicate'] & merged_data['Business Name'].notna()) | (~merged_data['is_duplicate'])]
         merged_data.drop(columns=['is_duplicate'], inplace=True)
+
+        logging.info("Successfully merged the data with sos and dropped duplicate rows")
     except KeyError as e:
         logging.debug("Exception: KeyError {0} occurred when merging historicalData with secretary of state".format(e))
         logging.debug("Length historical data: {0}".format(len(historicalData)))
@@ -94,8 +97,9 @@ def compare_dataframes_sos(historicalData: pd.DataFrame, newData: pd.DataFrame) 
 
     try:
         add_sos_columns(merged_data)
+        logging.info("Columns for SOS have been added - Success")
     except KeyError as e:
-        logging.debug("Exception: KeyError {0} occurred when accessing merged_data (historical/secretary)".format(e))
+        logging.debug("Exception: KeyError {0} occurred when adding columns".format(e))
         return False
 
     # Select the desired columns

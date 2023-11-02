@@ -26,7 +26,7 @@ def normalize_email(email:str) -> str:
     email = re.sub(r'[^a-z0-9.@-]', '', email)
     if '@' not in email:
         logging.warning(f'Encountered an invalid email format: {email}')
-        return None  
+        return None
     return email
 
 def normalize_zipcode(zipcode:str) -> str:
