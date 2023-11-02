@@ -62,7 +62,7 @@ def extract_data(file_path: str) -> pd.DataFrame:
         return df
     except Exception as e:
         # Log error message
-        print(f"Error reading data from file: {file_path}. Error: {e}")
+        logging.debug(f"Error reading data from file: {file_path}. Error: {e}")
         return None
 
 
