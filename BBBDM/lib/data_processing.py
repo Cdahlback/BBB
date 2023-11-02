@@ -161,6 +161,7 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     Returns:
     Tuple of DataFrames containing the valid and invalid rows respectively
     """
+    # Change to name, address
     conditions = (
         ((df['name'].notna() & (df['name'] != '')) |
          (df['address'].notna() & (df['address'] != '')) |
@@ -217,6 +218,7 @@ def address_match_found(historical_addresses, found_addresses):
         def compare_addresses(row):
             if row['historical_address'] == row['found_address']:
                 return 1
+            # TODO: Check if any cities have commas
             elif row['historical_address'].split(',')[-1].strip() == row['found_address'].split(',')[-1].strip():
                 return 2
             else:

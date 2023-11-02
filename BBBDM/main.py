@@ -1,3 +1,16 @@
+"""
+Function to abstract all code into simple steps
+Step1: Extract the Data from different sources
+Step2: Merge the extracted dataframes
+Step3: Segregate valid/invalid data into their own dataframes
+Step4: Normalize both dataframes
+Step5: Compare our data to SOS
+Step6: Compare data NOT validated by SOS to Google Places
+Step7: Compare data NOT validated by SOS or Google places to Yellow pages
+Step8: Merge the data back with the invalid and unverified data
+Step9: Output results to csv file
+"""
+
 import pandas as pd
 import logging
 
@@ -12,6 +25,9 @@ logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 
 def main():
+    """
+    Function which sets up our environment variables and runs the system
+    """
     # Extract the data
     mn_business = get_valid_businesses_info("Data/mn_business.csv")
     mn_business_address = extract_data("Data/mn_business_address.csv")
