@@ -7,11 +7,12 @@ from BBBDM.lib.data_processing import *
 
 
 
+
 # Test case for a successful scenario
-def test_successful_scenario():
+def test_all_businesses_active():
     # Create a sample CSV file with active and inactive businesses
     sample_data = {'business_name': ['Business A', 'Business B'],
-                    'active': ['TRUE', 'FALSE']}
+                    'active': ['True', 'TRUE']}  # Both in uppercase 'True'
     # Create a pandas DataFrame from the sample data
     sample_df = pd.DataFrame(sample_data)
     # Define the filename for the sample CSV file
@@ -20,36 +21,61 @@ def test_successful_scenario():
     sample_df.to_csv(sample_csv, index=False)
 
     # Call the function with the sample CSV file
-    result = get_valid_businesses_info(sample_csv)
-
+    actual_output = get_valid_businesses_info(sample_csv)
+    print(actual_output)
+    # Define the expected DataFrame with 'True' for 'active'
+    expected_data = {'business_name': ['Business A','Business B'],
+                     'active': ['TRUE','TRUE']} 
+    expected_output = pd.DataFrame(expected_data)
+    print(expected_output)
     # Assert that the result is not None and contains expected data
-    assert result is not None
-    assert len(result) == 1 # Only 'Business A' is active in the sample data
+    assert expected_output.equals(actual_output)
 
-    # Test case for a failure scenario
-def test_failure_scenario(self):
-    # Call the function with a non-existent file
-    non_existent_file = 'non_existent_file.csv'
-    result = get_valid_businesses_info(non_existent_file)
 
-    # Assert that the result is None (indicating an error occurred)
-    self.assertIsNone(result)
 
-# Test case for all "active" values as 'FALSE'
-def test_all_inactive(self):
-    # Create a sample CSV file with all inactive businesses
-    sample_data = {'business_name': ['Business C', 'Business D'],
-                    'active': ['FALSE', 'FALSE']}
+# Test case for when there are no active businesses
+def test_no_active_businesses():
+    # Create a sample CSV file with no active businesses
+    sample_data = {'business_name': [],  # Empty list means no active businesses
+                    'active': []}  # Empty list means no active businesses
+    # Create a pandas DataFrame from the sample data
     sample_df = pd.DataFrame(sample_data)
-    sample_csv = 'sample_all_inactive.csv'
+    # Define the filename for the sample CSV file
+    sample_csv = 'sample_businesses.csv'
+    # Save the DataFrame as a CSV file
     sample_df.to_csv(sample_csv, index=False)
 
     # Call the function with the sample CSV file
-    result = get_valid_businesses_info(sample_csv)
+    actual_output = get_valid_businesses_info(sample_csv)
+    print(actual_output)
 
-    # Assert that the result is not None and contains expected data
-    self.assertIsNotNone(result)
-    self.assertEqual(len(result), 0)  # All businesses are inactive in this scenario
+    # Define the expected DataFrame for no active businesses with explicit data type
+    expected_data = {'business_name': [], 'active': []}
+    expected_output = pd.DataFrame(expected_data, dtype='object')
+    print(expected_output)
+
+    # Assert that the result is equal to the expected output using pd.testing.assert_frame_equal
+    pd.testing.assert_frame_equal(expected_output, actual_output)
+
+
+# Test case for a mix of active and non-active businesses
+def test_active_and_non_active_businesses():
+    # Create a sample CSV file with active and non-active businesses
+    sample_data = {'business_name': ['Business A', 'Business B', 'Business C'],
+                   'active': ['TRUE', 'TrUE', 'FALSE']}  # Mix of active and non-active businesses
+    # Create a pandas DataFrame from the sample data
+    sample_df = pd.DataFrame(sample_data)
+    # Define the filename for the sample CSV file
+    sample_csv = 'sample_businesses.csv'
+    # Save the DataFrame as a CSV file
+    sample_df.to_csv(sample_csv, index=False)
+    actual_output = get_valid_businesses_info(sample_csv)
+    print(actual_output)
+    expected_data={'business_name': ['Business A','Business B'],
+                     'active': ['TRUE','TRUE']}
+    expected_output=pd.DataFrame(expected_data, dtype='object')
+    # Assert that the result is equal to the expected output using pd.testing.assert_frame_equal
+    pd.testing.assert_frame_equal(expected_output, actual_output)
 
 
 def test_filter_success():

@@ -1,3 +1,4 @@
 business_name,active
 Business A,TRUE
-Business B,FALSE
+Business B,TrUE
+Business C,FALSE

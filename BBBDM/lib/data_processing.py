@@ -234,18 +234,26 @@ def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
     try:
         # Read the data from the specified file into a DataFrame
         df = pd.read_csv(file_path)
-        
+
         # Ensure the "active" column is treated as a string
         df['active'] = df['active'].astype(str)
 
-        # Filter the DataFrame to only keep rows where 'active' == 'TRUE'
-        active_businesses_df = df[df['active'].str.strip().str.upper() == 'TRUE']
+        # Standardize 'active' values regardless of capitalization
+        df['active'] = df['active'].str.strip().str.upper()
 
+        # Filter the DataFrame to only keep rows where 'active' is 'TRUE' (case-insensitive)
+        active_businesses_df = df[df['active'] == 'TRUE']
+
+        
+
+        if active_businesses_df.empty:
+            return pd.DataFrame(columns=['business_name', 'active'])  # Return an empty DataFrame
+        # Log success message
+            logging.info(f"Successfully read and filtered data from file: {file_path} .No active businesses present.")
+        else:
+            return active_businesses_df
         # Log success message
         logging.info(f"Successfully read and filtered data from file: {file_path}")
-
-        # Only return business information for the active businesses
-        return active_businesses_df
     except Exception as e:
         # Log error message
         logging.error(f"Error reading or filtering data from file: {file_path}. Error: {e}")
