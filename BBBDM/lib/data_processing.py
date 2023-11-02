@@ -10,6 +10,7 @@ from fuzzywuzzy import fuzz
 
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
+
 def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame:
     """
     Pass in dataframes and merge them on the FirmID column
@@ -44,6 +45,7 @@ def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame:
     df = df_merged.loc[:,~df_merged.columns.duplicated()]
     logging.debug("Removing duplicate columns - Success")
     return df
+
 
 def extract_data(file_path: str) -> pd.DataFrame:
     """
@@ -81,6 +83,8 @@ def concat_address(row: pd.Series) -> pd.Series:
         return row['Address 1'] + ', ' + row['city']
     else:
         return np.nan
+
+
 def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
     Filter the DataFrame based on the following conditions:
@@ -89,40 +93,30 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
      non- empty column
 
     """
-    valid_rows = []
-    invalid_rows = []
+    valid_rows = pd.DataFrame()
+    invalid_rows = pd.DataFrame()
 
     # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
 
     for idx, row in df.iterrowas():
         # Check ifthe 'name' column in the current row is null or empty  
         if pd.isna(row['name']) or row['name'] == '':
-            invalid_rows.append(idx) # If the name is missing, append the index to the invalid_rows list
+            invalid_rows.append(row) # If the name is missing, append the index to the invalid_rows list
             continue #skip the rest of the current loop iteration
 
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
         counter = 0
 
-        for column in ['address', 'iphone', 'website', 'email']:
+        for column in ['address', 'phone', 'website', 'email']:
             # Check if the current column's data is not null and not empty
-
             if not pd.isna(row[column]) and row[column] != '':
                 counter += 1 # Increment the counter if the column's data is non- empty
 
-
         # Check if the counter( number of non-rmpty columns) is greater than xero
         if counter > 0:
-         valid_rows.append(idx) #iF YES, THE row is valid. Append the index to the invalid_rows list
-        
-        else:
-            valid_rows.append(idx) #iF YES, THE row is valid. Append the index to the invalid_rows list
-    # create a new Dateframe using the indices of valid rows
-    valid_df = df.loc[valid_rows]
-    # create a new Dataframe using the indices of invalid rows
-    invalid_df = df.loc[invalid_rows]
+            valid_rows.append(row) #iF YES, THE row is valid. Append the row to the invalid_rows list
 
-    #Return the two Datafroma: valid_df and invalid_df
-    return valid_df, invalid_df
+    return valid_rows, invalid_rows
 
 
 def address_match_found(historical_addresses, found_addresses):
@@ -225,11 +219,6 @@ This is a helper function that normalizes the email to fit BBB expectations
         logging.debug(f'Invalid email: {str(e)}')
         return email  # Return the original email for invalid ones
 
-# normalize_dataframe function to normalize the entire DataFrame
-def normalize_dataframe(df:pd.DataFrame) ->pd.DataFrame:
-    # Apply the normalize_email function to the 'email' column
-    df['email'] = df['email'].apply(normalize_email)
-    return df # Return the modified DataFrame
 
 def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
     """
