@@ -1,6 +1,6 @@
 import pandas as pd
 
-from Lib.sos_tools import compare_dataframes_sos
+from BBBDM.lib.sos_tools import compare_dataframes_sos
 
 
 def test_compare_dataframes_pass1():

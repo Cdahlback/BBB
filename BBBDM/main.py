@@ -13,14 +13,13 @@ logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
 def main():
     # Extract the data
-    # Need to build a function which takes in a file path for a csv file, and outputs a dataframe
-    mn_business = get_valid_businesses_info("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business.csv")
-    mn_business_address = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_address.csv")
-    mn_business_contact = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_contact.csv")
-    mn_business_email = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_email.csv")
-    mn_business_name = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_name.csv")
-    mn_business_phone = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_phone.csv")
-    mn_business_url = extract_data("/Users/collindahlback/Library/Mobile Documents/com~apple~CloudDocs/Spring2023/CSParallel/BBB/BBBDM/Data/mn_business_url.csv")
+    mn_business = get_valid_businesses_info("Data/mn_business.csv")
+    mn_business_address = extract_data("Data/mn_business_address.csv")
+    mn_business_contact = extract_data("Data/mn_business_contact.csv")
+    mn_business_email = extract_data("Data/mn_business_email.csv")
+    mn_business_name = extract_data("Data/mn_business_name.csv")
+    mn_business_phone = extract_data("Data/mn_business_phone.csv")
+    mn_business_url = extract_data("Data/mn_business_url.csv")
 
     # Merge the data
     merged_data = join_dataframe_firmid(mn_business, mn_business_address, mn_business_contact, mn_business_email,
@@ -39,9 +38,10 @@ def main():
     valid_data = compare_dataframes_sos(valid_data, SOS_data)
 
     # Compare to Google API
-    
-    # Compare to YP
+    # TODO: Get chris's pull request merged
 
+    # Compare to YP
+    valid_data = update_dataframe_with_yellow_pages_data(valid_data)
     # Merge with bad data
 
     # Output csv

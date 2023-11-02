@@ -8,42 +8,42 @@ from functools import reduce
 from email_validator import validate_email, EmailNotValidError
 from fuzzywuzzy import fuzz
 
+from BBBDM.lib.Normalizing import *
+
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-def join_dataframe_firmid(*data_frames:pd.DataFrame) -> pd.DataFrame:
+
+def get_valid_businesses_info(file_path: str) -> pd.DataFrame:
     """
-    Pass in dataframes and merge them on the FirmID column
-    Remove any duplicate columns also
+    Read the data from the specified file into a DataFrame and filter the DataFrame to only keep rows where
+    'active' == 'TRUE'. If an error occurs, None is returned.
 
     Parameters:
-    data_frames (pd.DataFrame): Dataframes to merge
+    file_path: Relative path to the file to read
 
     Returns:
-    pd.DataFrame | bool: Returns a dataframe if successful, False if not
+    DataFrame containing information for the active businesses or None if an error occurs
     """
-    #Checks if there are any dataframes to merge
-    if len(data_frames) == 0:
-        logging.debug("No dataframes to merge")
-        return False
-    #Checks if there is only one dataframe to merge
-    elif len(data_frames) < 2:
-        logging.debug("Not enough dataframes to merge")
-        return data_frames[0]
-    #Checks if the dataframes have FirmID
     try:
-        x = data_frames[0]['FirmID']
+        # Read the data from the specified file into a DataFrame
+        df = pd.read_csv(file_path)
+
+        # Ensure the "active" column is treated as a string
+        df['active'] = df['active'].astype(str)
+
+        # Filter the DataFrame to only keep rows where 'active' == 'TRUE'
+        active_businesses_df = df[df['active'].str.strip().str.upper() == 'TRUE']
+
+        # Log success message
+        logging.info(f"Successfully read and filtered data from file: {file_path}")
+
+        # Only return business information for the active businesses
+        return active_businesses_df
     except Exception as e:
-        logging.exception(e)
-        logging.exception("Did the dataframes have FirmID?")
-        return False
-    logging.debug("Dataframe contains FirmID - Success")
-    #Merges multiple dataframes on FirmID via the amazing reduce function and the merge with the lambda to iterate over it
-    df_merged = reduce(lambda  left,right: pd.merge(left,right,on=['FirmID'], how='outer'), data_frames)
-    logging.debug("Merging dataframes - Success")
-    #Removes duplicate columns
-    df = df_merged.loc[:,~df_merged.columns.duplicated()]
-    logging.debug("Removing duplicate columns - Success")
-    return df
+        # Log error message
+        logging.error(f"Error reading or filtering data from file: {file_path}. Error: {e}")
+        return None
+
 
 def extract_data(file_path: str) -> pd.DataFrame:
     """
@@ -65,23 +65,87 @@ def extract_data(file_path: str) -> pd.DataFrame:
         return None
 
 
-# Define the function to concatenate Address 1 and City
-def concat_address(row: pd.Series) -> pd.Series:
+# Join multiple dataframes on FirmID
+def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
     """
-    Takes in a row and concats the address with the city. This allows our matching algo to work with addresses.
+    Pass in dataframes and merge them on the FirmID column
+    Remove any duplicate columns also
+
 
     Parameters:
-    row: Row which we want to modify
+    data_frames: Dataframes to merge
 
-    Returns: concatination of address 1 and city OR np.nan if fail to concat (values are np.nan)
 
-    How to use:
-    df['Address'] = df.apply(concat_address, axis=1)
+    Returns:
+    df: Merged dataframe
     """
-    if pd.notna(row['Address 1']) and pd.notna(row['city']):
-        return row['Address 1'] + ', ' + row['city']
-    else:
-        return np.nan
+    try:
+        x = data_frames[0]["firm_id"]
+    except Exception as e:
+        logging.exception(e)
+        logging.exception("Did the dataframes have firm_id?")
+        return False
+    logging.debug("Dataframe contains FirmID - Success")
+
+
+    cols_to_keep = [
+        "firm_id",
+        "state_incorporated",
+        "name_id",
+        "company_name",
+        "phone_id",
+        "phone",
+        "url_id",
+        "url",
+        "email_id",
+        "email",
+        "address_1",
+        "address_2",
+        "city",
+        "zip_code",
+    ]
+    # Merges multiple dataframes on FirmID via the amazing reduce function and the merge with the lambda to iterate over it
+    df_merged = reduce(
+        lambda left, right: pd.merge(left, right, on=["firm_id"], how="outer"),
+        data_frames,
+    )
+
+
+    # Removes duplicate columns
+    # df = df_merged.loc[:,~df_merged.duplicated()]
+    df = df_merged
+    # Keeps only the needed cols defined earlier
+    cols_to_keep = [col for col in cols_to_keep if col in df.columns]
+    df = df[cols_to_keep]
+    # Filter out all non-MN businesses
+    try:
+        df = df[df["state_incorporated"] == "MN"]
+    except:
+        logging.debug("state_incoporated didn't exist")
+    # Create a new column with the address
+    df["Address"] = df[["address_1", "address_2", "city",]].apply(
+        lambda x: np.nan
+        if pd.isna(x["address_1"]) or pd.isna(x["address_2"]) or pd.isna(x["city"])
+        else f"{x['address_1']} {x['address_2']} {x['city']}",
+        axis=1,
+    )
+    # Renamed the addresses
+    df = df.rename(
+        columns={
+            "company_name": "BusinessName",
+            "phone": "Phone",
+            "email": "Email",
+            "url": "Website",
+            "city": "City",
+        }
+    )
+    # Remove duplicate columns in the dataframe
+    df = df.loc[:, ~df.columns.duplicated()]
+    logging.info("Merging dataframes - Success")
+    return df
+
+
+
 def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
     Filter the DataFrame to only keep rows where at least one of the following conditions is true:
@@ -116,16 +180,23 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     return valid_df, invalid_df
 
 
-df = pd.DataFrame({
-    'name': ['John Doe', '', None],
-    'address': ['123 Main St', '', None],
-    'phone': ['1234567890', '123456789012', None],
-    'website': ['www.example.com', '', None],
-    'email': ['john.doe@example.com', '', None]
-})
+# Define the function to concatenate Address 1 and City
+def concat_address(row: pd.Series) -> pd.Series:
+    """
+    Takes in a row and concats the address with the city. This allows our matching algo to work with addresses.
 
-valid_df, invalid_df = filter_dataframes(df)
+    Parameters:
+    row: Row which we want to modify
 
+    Returns: concatination of address 1 and city OR np.nan if fail to concat (values are np.nan)
+
+    How to use:
+    df['Address'] = df.apply(concat_address, axis=1)
+    """
+    if pd.notna(row['Address 1']) and pd.notna(row['city']):
+        return row['Address 1'] + ', ' + row['city']
+    else:
+        return np.nan
 
 
 def address_match_found(historical_addresses, found_addresses):
@@ -228,39 +299,27 @@ This is a helper function that normalizes the email to fit BBB expectations
         logging.debug(f'Invalid email: {str(e)}')
         return email  # Return the original email for invalid ones
 
+
 # normalize_dataframe function to normalize the entire DataFrame
 def normalize_dataframe(df:pd.DataFrame) ->pd.DataFrame:
-    # Apply the normalize_email function to the 'email' column
-    df['email'] = df['email'].apply(normalize_email)
-    return df # Return the modified DataFrame
-
-def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
     """
-    Read the data from the specified file into a DataFrame and filter the DataFrame to only keep rows where
-    'active' == 'TRUE'. If an error occurs, None is returned.
+    Functions called to standardize the format for our data types (columns)
 
-    Parameters:
-    file_path: Relative path to the file to read
+    Parameters: - df: dataframe we want to standardize
 
     Returns:
-    DataFrame containing information for the active businesses or None if an error occurs
+        - df: The standardized datafrmae
     """
     try:
-        # Read the data from the specified file into a DataFrame
-        df = pd.read_csv(file_path)
-        
-        # Ensure the "active" column is treated as a string
-        df['active'] = df['active'].astype(str)
-
-        # Filter the DataFrame to only keep rows where 'active' == 'TRUE'
-        active_businesses_df = df[df['active'].str.strip().str.upper() == 'TRUE']
-
-        # Log success message
-        logging.info(f"Successfully read and filtered data from file: {file_path}")
-
-        # Only return business information for the active businesses
-        return active_businesses_df
+        # Apply the normalize_email function to the 'email' column
+        df['email'] = df['email'].apply(normalize_email)
+        df['zipcode'] = df['zipcode'].apply(normalize_zipcode)
+        df['BusinessName'] = df['BusinessName'].apply(standardizeName)
+        df['Phone Number'] = df['Phone Number'].apply(normalize_us_phone_number)
+        df['Address'] = df['Address'].apply(normalize_us_phone_number)
+        df['Website'] = df['Website'].apply(normalize_url)
+        return df  # Return the modified DataFrame
     except Exception as e:
-        # Log error message
-        logging.error(f"Error reading or filtering data from file: {file_path}. Error: {e}")
+        logging.error(e)
+        logging.error("error normalizing data types")
         return None

@@ -1,10 +1,9 @@
 import unittest
 
+import numpy as np
 import pandas as pd
 
-from Lib.Normalizing import get_valid_businesses_info
-from Lib.data_processing import address_match_found, filter_dataframes, join_dataframe_firmid
-
+from BBBDM.lib.data_processing import *
 
 
 class TestGetValidBusinessesInfo(unittest.TestCase):
@@ -56,39 +55,6 @@ class TestGetValidBusinessesInfo(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-def test_join_dataframe_firmid_multiple_success():
-    """
-    Test joining multiple dataframes in the given function
-    """
-    # Input dataframes
-    df1 = pd.DataFrame({'FirmID': [1, 2, 3], 'Name': ['A', 'B', 'C']})
-    df2 = pd.DataFrame({'FirmID': [1, 2, 3], 'Business_type': ['Construction', 'Construction', 'Something']})
-    df3 = pd.DataFrame({'FirmID': [1, 2, 3], 'Location': ['USA', 'USA', 'USA']})
-
-    #Expected output
-    expected = pd.DataFrame({'FirmID': [1, 2, 3], 'Name': ['A', 'B', 'C'], 'Business_type': ['Construction', 'Construction', 'Something'], 'Location': ['USA', 'USA', 'USA']})
-
-    # Actual output
-    actual = join_dataframe_firmid(df1, df2, df3)
-
-    # Compare
-    assert actual.equals(expected)
-
-def test_join_dataframe_firmid_failed():
-    "Test what would happen if the FirmID failed"
-    # Input dataframes
-    df1 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Name': ['A', 'B', 'C']})
-    df2 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Business_type': ['Construction', 'Construction', 'Something']})
-    df3 = pd.DataFrame({'FirmIDD': [1, 2, 3], 'Location': ['USA', 'USA', 'USA']})
-
-    #Expected output
-    expected = False
-
-    # Actual output
-    actual = join_dataframe_firmid(df1, df2, df3)
-
-    # Compare
-    assert actual == expected
 
 def test_filter_success():
     df = pd.DataFrame({
@@ -129,6 +95,8 @@ def test_filter_failure():
 if __name__ == "__main__":
     test_filter_success()
     test_filter_failure()
+
+
 def test_matching_address_with_same_address():
     # Test case 1: Identical addresses, expecting match_found = 1
     historical_addresses = ['123 Main St, Springfield', '456 Pine St, Boston', '789 Oak St, Los Angeles']
@@ -157,5 +125,72 @@ def test_matching_address_with_mixed_examples():
     new_addresses = ['123 Main St, Springfield', '789 Oak St, California', '200 Briargate Rd, Mankato']
     expected_output = pd.DataFrame({'historical_address': historical_addresses, 'found_address': new_addresses, 'match_found': [1, 0, 2],'city_match_name':['N/A','N/A','Mankato']})
     actual_output = address_match_found(historical_addresses, new_addresses)
-    assert expected_output.equals(actual_output)    
+    assert expected_output.equals(actual_output)
 
+
+def test_join_dataframe_firmid():
+    # create test dataframes
+    df1 = pd.DataFrame(
+        {
+            "firm_id": [1, 2, 3],
+            "state_incorporated": ["MN", "MN", "MN"],
+            "name_id": [1, 2, 3],
+            "company_name": ["ABC Inc.", "XYZ Corp.", "123 LLC"],
+            "phone_id": [1, 2, 3],
+            "phone": ["123-456-7890", "555-555-5555", "999-999-9999"],
+        }
+    )
+    df2 = pd.DataFrame(
+        {
+            "firm_id": [2, 3, 4],
+            "url_id": [1, 2, 3],
+            "url": [
+                "http://www.xyzcorp.com",
+                "http://www.123llc.com",
+                "http://www.456inc.com",
+            ],
+            "email_id": [1, 2, 3],
+            "email": ["info@xyzcorp.com", "info@123llc.com", "info@456inc.com"],
+        }
+    )
+    df3 = pd.DataFrame(
+        {
+            "firm_id": [1, 3, 4],
+            "address_1": ["123 Main St", "456 Elm St", "789 Oak St"],
+            "address_2": ["Suite 100", "Suite 200", ""],
+            "city": ["Minneapolis", "St. Paul", "Bloomington"],
+            "zip_code": ["55401", "55101", "55420"],
+        }
+    )
+
+    # expected output
+    expected_output = pd.DataFrame(
+        {
+            "firm_id": [1, 2, 3],
+            "state_incorporated": ["MN", "MN", "MN"],
+            "name_id": [1.0, 2.0, 3.0],
+            "BusinessName": ["ABC Inc.", "XYZ Corp.", "123 LLC"],
+            "phone_id": [1.0, 2.0, 3.0],
+            "Phone": ["123-456-7890", "555-555-5555", "999-999-9999"],
+            "url_id": [np.nan, 1.0, 2.0],
+            "Website": [np.nan, "http://www.xyzcorp.com", "http://www.123llc.com"],
+            "email_id": [np.nan, 1.0, 2.0],
+            "Email": [np.nan, "info@xyzcorp.com", "info@123llc.com"],
+            "address_1": ["123 Main St", np.nan, "456 Elm St"],
+            "address_2": ["Suite 100", np.nan, "Suite 200"],
+            "City": ["Minneapolis", np.nan, "St. Paul"],
+            "zip_code": ["55401", np.nan, "55101"],
+            "Address": [
+                "123 Main St Suite 100 Minneapolis",
+                np.nan,
+                "456 Elm St Suite 200 St. Paul",
+            ],
+        }
+    )
+
+    actual = join_dataframe_firmid(df1, df2, df3)
+
+    assert join_dataframe_firmid(df1, df2, df3).equals(actual)
+
+    # test function with no dataframes
+    assert join_dataframe_firmid() == False
