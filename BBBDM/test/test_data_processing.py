@@ -22,12 +22,12 @@ def test_all_businesses_active():
 
     # Call the function with the sample CSV file
     actual_output = get_valid_businesses_info(sample_csv)
-    print(actual_output)
+   
     # Define the expected DataFrame with 'True' for 'active'
     expected_data = {'business_name': ['Business A','Business B'],
                      'active': ['TRUE','TRUE']} 
     expected_output = pd.DataFrame(expected_data)
-    print(expected_output)
+    
     # Assert that the result is not None and contains expected data
     assert expected_output.equals(actual_output)
 
@@ -47,12 +47,12 @@ def test_no_active_businesses():
 
     # Call the function with the sample CSV file
     actual_output = get_valid_businesses_info(sample_csv)
-    print(actual_output)
+    
 
     # Define the expected DataFrame for no active businesses with explicit data type
     expected_data = {'business_name': [], 'active': []}
     expected_output = pd.DataFrame(expected_data, dtype='object')
-    print(expected_output)
+   
 
     # Assert that the result is equal to the expected output using pd.testing.assert_frame_equal
     pd.testing.assert_frame_equal(expected_output, actual_output)
@@ -70,7 +70,7 @@ def test_active_and_non_active_businesses():
     # Save the DataFrame as a CSV file
     sample_df.to_csv(sample_csv, index=False)
     actual_output = get_valid_businesses_info(sample_csv)
-    print(actual_output)
+    
     expected_data={'business_name': ['Business A','Business B'],
                      'active': ['TRUE','TRUE']}
     expected_output=pd.DataFrame(expected_data, dtype='object')
