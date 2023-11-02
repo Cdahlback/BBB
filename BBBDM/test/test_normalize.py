@@ -1,9 +1,8 @@
 import unittest
 
 import pandas as pd
-from BBBDM.data_processing.main import normalize_address
 
-from Lib.Normalizing import normalize_dataframe, normalize_email, normalize_url, normalize_us_phone_number, standardizeName
+from BBBDM.lib.Normalizing import *
 
 
 class TestNormalizationFunctions(unittest.TestCase):
@@ -33,8 +32,7 @@ class TestNormalizationFunctions(unittest.TestCase):
         self.assertIsNone(result.loc[1, 'Zipcode'])  # Invalid zipcode
         self.assertEqual(result.loc[2, 'Zipcode'], '54321')
 
-if __name__ == '__main__':
-    unittest.main()
+
 def test_normalize_us_phone_number():
     """Test the phone number normalization function."""
     test_cases = [
@@ -52,6 +50,7 @@ def test_normalize_us_phone_number():
         except ValueError as e:
             assert expected is None, f"Unexpected exception for {phone_str}: {e}"
 
+
 def test_standardizeName():
     """Test the business name standardization function."""
     test_cases = [
@@ -63,6 +62,7 @@ def test_standardizeName():
     for name, expected in test_cases:
         result = standardizeName(name)
         assert result == expected, f"Expected {expected} but got {result} for input {name}"
+
 
 def test_normalize_address():
     """Test the address normalization function."""
@@ -87,6 +87,7 @@ def test_normalize_address():
         result = normalize_address(addr)
         assert result == expected, f"Expected {expected} but got {result} for input {addr}"
 
+
 def test_normalize_url():
     """Test the URL normalization function."""
     test_cases = [
@@ -99,28 +100,45 @@ def test_normalize_url():
         result = normalize_url(url)
         assert result == expected, f"Expected {expected} but got {result} for input {url}"
 
-if __name__ == "__main__":
-    # Run the test functions
-    test_normalize_us_phone_number()
-    test_standardizeName()
-    test_normalize_address()
-    test_normalize_url()
-
 
 def test_normalize_with_invalid_emails():
     emails_invalid = pd.DataFrame({'email': ['raniaanjor#gmail.com', 'Rania@.com', '@gmail.com']})
     expected_output = pd.DataFrame({'email': ['raniaanjor#gmail.com', 'Rania@.com', '@gmail.com']})
-    actual_output = normalize_email.normalize_dataframe(emails_invalid)
+    actual_output = normalize_dataframe(emails_invalid)
     assert expected_output.equals(actual_output)
 
 def test_normalize_with_valid_emails():
     emails_valid = pd.DataFrame({'email': ['W3071442@aol.com','Anjorinr1@student.iugb.edu.ci','Raniaanjor@gmail.com']})
     expected_output = pd.DataFrame({'email': ['w3071442@aol.com','anjorinr1@student.iugb.edu.ci','raniaanjor@gmail.com']})
-    actual_output = normalize_email.normalize_dataframe(emails_valid)
+    actual_output = normalize_dataframe(emails_valid)
     assert expected_output.equals(actual_output)
 
 def test_normalize_with_mixed_emails():
     emails_mixed = pd.DataFrame({'email': [' W3071442@aol.com ','raniaanjor#gmail.com','Anjorinr1@student.iugb.edu.ci','@gmail.com']})
     expected_output = pd.DataFrame({'email': ['w3071442@aol.com','raniaanjor#gmail.com','anjorinr1@student.iugb.edu.ci','@gmail.com']})
-    actual_output = normalize_email.normalize_dataframe(emails_mixed)
+    actual_output = normalize_dataframe(emails_mixed)
     assert expected_output.equals(actual_output)
+
+def test_normalize_email_success():
+    """
+    Test normalization of email addresses
+    """
+    data = {'Email': ['johndoe@example.com', 'invalidemail', 'alice.smith@gmail.com'],
+            'Phone Number': ['123-456-7890', 'invalid phone', '9876543210'],
+            'Zipcode': ['12345', 'ABCDE', '54321']}
+    data = pd.DataFrame(data)
+    result = normalize_dataframe(data)
+    assert result.loc[0, 'Email'] == 'johndoe@example.com'
+    assert result.loc[1, 'Email'] is None  # Invalid email
+    assert result.loc[2, 'Email'] == 'alice.smith@gmail.com'
+
+
+def test_normalize_phone_number_success():
+    data = {'Email': ['johndoe@example.com', 'invalidemail', 'alice.smith@gmail.com'],
+            'Phone Number': ['123-456-7890', 'invalid phone', '9876543210'],
+            'Zipcode': ['12345', 'ABCDE', '54321']}
+    data = pd.DataFrame(data)
+    result = normalize_dataframe(data)
+    assert result.loc[0, 'Phone Number'] == '1234567890'
+    assert result.loc[1, 'Phone Number'] is None  # Invalid phone number
+    assert result.loc[2, 'Phone Number'] == '9876543210'

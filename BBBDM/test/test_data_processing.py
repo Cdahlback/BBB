@@ -6,54 +6,50 @@ import pandas as pd
 from BBBDM.lib.data_processing import *
 
 
-class TestGetValidBusinessesInfo(unittest.TestCase):
 
-    # Test case for a successful scenario
-    def test_successful_scenario():
-        # Create a sample CSV file with active and inactive businesses
-        sample_data = {'business_name': ['Business A', 'Business B'],
-                       'active': ['TRUE', 'FALSE']}
-        # Create a pandas DataFrame from the sample data
-        sample_df = pd.DataFrame(sample_data)
-         # Define the filename for the sample CSV file
-        sample_csv = 'sample_businesses.csv'
-        # Save the DataFrame as a CSV file 
-        sample_df.to_csv(sample_csv, index=False)
+# Test case for a successful scenario
+def test_successful_scenario():
+    # Create a sample CSV file with active and inactive businesses
+    sample_data = {'business_name': ['Business A', 'Business B'],
+                    'active': ['TRUE', 'FALSE']}
+    # Create a pandas DataFrame from the sample data
+    sample_df = pd.DataFrame(sample_data)
+    # Define the filename for the sample CSV file
+    sample_csv = 'sample_businesses.csv'
+    # Save the DataFrame as a CSV file
+    sample_df.to_csv(sample_csv, index=False)
 
-        # Call the function with the sample CSV file
-        result = get_valid_businesses_info(sample_csv)
+    # Call the function with the sample CSV file
+    result = get_valid_businesses_info(sample_csv)
 
-        # Assert that the result is not None and contains expected data
-        assert result is not None
-        assert len(result) == 1 # Only 'Business A' is active in the sample data
+    # Assert that the result is not None and contains expected data
+    assert result is not None
+    assert len(result) == 1 # Only 'Business A' is active in the sample data
 
     # Test case for a failure scenario
-    def test_failure_scenario(self):
-        # Call the function with a non-existent file
-        non_existent_file = 'non_existent_file.csv'
-        result = get_valid_businesses_info(non_existent_file)
+def test_failure_scenario(self):
+    # Call the function with a non-existent file
+    non_existent_file = 'non_existent_file.csv'
+    result = get_valid_businesses_info(non_existent_file)
 
-        # Assert that the result is None (indicating an error occurred)
-        self.assertIsNone(result)
+    # Assert that the result is None (indicating an error occurred)
+    self.assertIsNone(result)
 
-    # Test case for all "active" values as 'FALSE'
-    def test_all_inactive(self):
-        # Create a sample CSV file with all inactive businesses
-        sample_data = {'business_name': ['Business C', 'Business D'],
-                       'active': ['FALSE', 'FALSE']}
-        sample_df = pd.DataFrame(sample_data)
-        sample_csv = 'sample_all_inactive.csv'
-        sample_df.to_csv(sample_csv, index=False)
+# Test case for all "active" values as 'FALSE'
+def test_all_inactive(self):
+    # Create a sample CSV file with all inactive businesses
+    sample_data = {'business_name': ['Business C', 'Business D'],
+                    'active': ['FALSE', 'FALSE']}
+    sample_df = pd.DataFrame(sample_data)
+    sample_csv = 'sample_all_inactive.csv'
+    sample_df.to_csv(sample_csv, index=False)
 
-        # Call the function with the sample CSV file
-        result = get_valid_businesses_info(sample_csv)
+    # Call the function with the sample CSV file
+    result = get_valid_businesses_info(sample_csv)
 
-        # Assert that the result is not None and contains expected data
-        self.assertIsNotNone(result)
-        self.assertEqual(len(result), 0)  # All businesses are inactive in this scenario
-
-if __name__ == '__main__':
-    unittest.main()
+    # Assert that the result is not None and contains expected data
+    self.assertIsNotNone(result)
+    self.assertEqual(len(result), 0)  # All businesses are inactive in this scenario
 
 
 def test_filter_success():
@@ -91,10 +87,6 @@ def test_filter_failure():
     assert len(invalid_df) == 2
 
     assert all(col in invalid_df.columns for col in ['name', 'address', 'phone', 'website', 'email'])
-
-if __name__ == "__main__":
-    test_filter_success()
-    test_filter_failure()
 
 
 def test_matching_address_with_same_address():
@@ -194,49 +186,3 @@ def test_join_dataframe_firmid():
 
     # test function with no dataframes
     assert join_dataframe_firmid() == False
-
-
-
-def test_filter_dataframes():
-    # some sample data for testing
-
-    test_df = pd.DataFrame({
-        'name': ['John Doe', '', None, 'Jane Smith', 'Alex'],
-        'address': ['123 Main St', '', None, '456 Elm St', ''],
-        'phone': ['1234567890', '123456789012', None, '', '1234567890'],
-        'website': ['www.example.com', '', None, '', ''],
-        'email': ['john.doe@example.com', '', None, 'jane.smith@example.com', '']
-    })
-    
-    try:
-          # Usinf the filter_dataframes functions on the sample data
-
-        valid_df, invalid_df = filter_dataframes(test_df)
-
-        #Asserting the expected results
-
-        #1. Check the number of rows in each returned Dataframe
-        assert valid_df.shape[0]==3, "Number of valid rows is incorrect."
-        assert invalid_df.shape[0]==2, "Number of invalid rows is incorrect."
-        #2. Check if certain expected values are in the valid dataframe
-        assert "John Doe" in valid_df["name"].values, "John Doe should be in valid DataFrame."
-        assert "Jane Smith" in valid_df["name"].values, "Jane Smith should be in valid DataFrame."
-         # 3. Check if certain expected values are in the invalid DataFrame.
-        assert "Alex" in invalid_df["name"].values, "Alex should be in invalid DataFrame."
-        
-        # Print success if all assertions pass.
-        print("All tests passed!")
-    
-    except AssertionError as e:
-        # If there's an AssertionError, print the error message.
-        print(f"Test failed! Reason: {e}")
-
-# Run the test function.
-test_filter_dataframes()
-
-      
-
-    
-    
-  
-

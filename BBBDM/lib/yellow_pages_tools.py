@@ -61,9 +61,11 @@ def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
     # Construct the search term and location from the data.
     search_term = data["BusinessNameUpdate"] if not pd.isna(data["BusinessNameUpdate"]) else data["BusinessName"]
     location = data["City"] if not pd.isna(data["City"]) else "Minnesota"
-    
+
+    if not isinstance(search_term, str):
+        return
     # Invoke the scraper for the given search term and location.
-    result = scrape_yellow_page_data(search_term, location, max_items=1)
+    result = scrape_yellow_page_data(search_term, location, maxItems=1)
 
     # Add the scraped data to the global dataframe.
     global scraped_yellow_pages_data

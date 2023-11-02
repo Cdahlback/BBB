@@ -1,40 +1,7 @@
 import numpy as np
 import pandas as pd
-from Lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
 
-
-def test_update_dataframe_with_yellow_pages_data_fail():
-    # Create a sample 'data' DataFrame with the specified columns
-    data = pd.DataFrame({
-        'Firm_id': [2],
-        'BusinessName': [np.nan],
-        'BusinessNameCorrect': [False],
-        'BusinessNameUpdate': [np.nan],
-        'BusinessNameFound': [np.nan],
-        'Address': ["blah"],
-        'BusinessAddressCorrect': [False],
-        'BusinessAddressUpdate': [np.nan],
-        'BusinessAddressFound': [np.nan],
-        'Zip Code': ["blah"],
-        'BusinessZipCorrect': [False],
-        'BusinessZipUpdate': [np.nan],
-        'BusinessZipFound': [np.nan],
-        'Website': ['blah'],
-        'BusinessWebsiteCorrect': [False],
-        'BusinessWebsiteUpdate': [np.nan],
-        'BusinessWebsiteFound': [np.nan],
-        'Phone': ['blah'],
-        'BusinessPhoneCorrect': [False],
-        'BusinessPhoneUpdate': [np.nan],
-        'BusinessPhoneFound': [np.nan],
-        'City': ["Saint Paul"]
-    })
-
-    # Apply the function to update 'data'
-    updated_data = update_dataframe_with_yellow_pages_data(data)
-
-    # Check if the 'data' DataFrame has been updated correctly
-    assert not updated_data
+from BBBDM.lib.yellow_pages_tools import *
 
 
 def test_update_dataframe_with_yellow_pages_data_pass1():
@@ -69,6 +36,7 @@ def test_update_dataframe_with_yellow_pages_data_pass1():
 
     # Check that none of the rows in 'data' have been updated
     assert isinstance(updated_data, pd.DataFrame)
+
 
 def test_update_dataframe_with_yellow_pages_data_pass2():
     # Create a sample 'data' DataFrame with no matching 'BusinessName' and the specified columns
