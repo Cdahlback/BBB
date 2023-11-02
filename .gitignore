@@ -5,3 +5,4 @@ TEST.py
 .pytest_cache/
 venv/
 *./log
+bbbdm/test/sample_business.csv

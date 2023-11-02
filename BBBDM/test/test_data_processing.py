@@ -263,11 +263,8 @@ def test_join_dataframe_firmid():
             ],
         }
     )
-    # TODO: Chris take a look at this
-    # BBBDM/test/test_data_processing.py:243:5: F841 local variable 'expected_output' is assigned to but never used
-    actual = join_dataframe_firmid(df1, df2, df3)
 
-    assert join_dataframe_firmid(df1, df2, df3).equals(actual)
+    assert join_dataframe_firmid(df1, df2, df3).equals(expected_output)
 
     # test function with no dataframes
     assert join_dataframe_firmid() == False

@@ -12,42 +12,79 @@ from fuzzywuzzy import fuzz
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
 
-def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame:
+# Join multiple dataframes on FirmID
+def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
     """
     Pass in dataframes and merge them on the FirmID column
     Remove any duplicate columns also
 
     Parameters:
-    data_frames (pd.DataFrame): Dataframes to merge
+    data_frames: Dataframes to merge
 
     Returns:
-    pd.DataFrame | bool: Returns a dataframe if successful, False if not
+    df: Merged dataframe
     """
-    # Checks if there are any dataframes to merge
-    if len(data_frames) == 0:
-        logging.debug("No dataframes to merge")
-        return False
-    # Checks if there is only one dataframe to merge
-    elif len(data_frames) < 2:
-        logging.debug("Not enough dataframes to merge")
-        return data_frames[0]
-    # Checks if the dataframes have FirmID
     try:
-        x = data_frames[0]["FirmID"]
+        x = data_frames[0]["firm_id"]
     except Exception as e:
         logging.exception(e)
-        logging.exception("Did the dataframes have FirmID?")
+        logging.exception("Did the dataframes have firm_id?")
         return False
     logging.debug("Dataframe contains FirmID - Success")
+
+    cols_to_keep = [
+        "firm_id",
+        "state_incorporated",
+        "name_id",
+        "company_name",
+        "phone_id",
+        "phone",
+        "url_id",
+        "url",
+        "email_id",
+        "email",
+        "address_1",
+        "address_2",
+        "city",
+        "zip_code",
+    ]
     # Merges multiple dataframes on FirmID via the amazing reduce function and the merge with the lambda to iterate over it
     df_merged = reduce(
-        lambda left, right: pd.merge(left, right, on=["FirmID"], how="outer"),
+        lambda left, right: pd.merge(left, right, on=["firm_id"], how="outer"),
         data_frames,
     )
-    logging.debug("Merging dataframes - Success")
+
     # Removes duplicate columns
-    df = df_merged.loc[:, ~df_merged.columns.duplicated()]
-    logging.debug("Removing duplicate columns - Success")
+    # df = df_merged.loc[:,~df_merged.duplicated()]
+    df = df_merged
+    # Keeps only the needed cols defined earlier
+    cols_to_keep = [col for col in cols_to_keep if col in df.columns]
+    df = df[cols_to_keep]
+    # Filter out all non-MN businesses
+    try:
+        df = df[df["state_incorporated"] == "MN"]
+    except:
+        logging.debug("state_incoporated didn't exist")
+    # Create a new column with the address
+    df["Address"] = df[["address_1", "address_2", "city",]].apply(
+        lambda x: np.nan
+        if pd.isna(x["address_1"]) or pd.isna(x["address_2"]) or pd.isna(x["city"])
+        else f"{x['address_1']} {x['address_2']} {x['city']}",
+        axis=1,
+    )
+    # Renamed the addresses
+    df = df.rename(
+        columns={
+            "company_name": "BusinessName",
+            "phone": "Phone",
+            "email": "Email",
+            "url": "Website",
+            "city": "City",
+        }
+    )
+    # Remove duplicate columns in the dataframe
+    df = df.loc[:, ~df.columns.duplicated()]
+    logging.info("Merging dataframes - Success")
     return df
 
 
