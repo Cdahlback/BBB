@@ -4,6 +4,10 @@ import pandas as pd
 from apify_client import ApifyClient
 
 
+scraped_yellow_pages_data = pd.DataFrame(columns=["Business Name", "City", "BusinessNameYP", "BusinessAddressYP",
+                                                  "BusinessPhoneYP", "BusinessWebsiteYP"])
+
+
 # Custom Exception class for Authentication Errors.
 class AuthenticationError(Exception):
     def __init__(self, message):
@@ -124,7 +128,7 @@ def scrape_yellow_page_data(
         "search": searchTerm,
         "location": location,
         "maxItems": maxItems,
-        "extendOutputFunction": extendedOutputFunction,
+        "extendOutputFunction": "($, record) => {return {};}",
         "proxyConfiguration": {"useApifyProxy": False},
     }
 

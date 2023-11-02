@@ -2,7 +2,15 @@ import unittest
 
 import pandas as pd
 
-from BBBDM.lib.Normalizing import *
+from BBBDM.lib.Normalizing import (
+    normalize_address,
+    normalize_dataframe,
+    normalize_url,
+    normalize_us_phone_number,
+    standardizeName,
+)
+
+# TODO: Need to make tests for normalize_email function
 
 
 class TestNormalizationFunctions(unittest.TestCase):

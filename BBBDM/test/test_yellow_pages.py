@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from BBBDM.lib.yellow_pages_tools import *
+from BBBDM.lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
 
 
 def test_update_dataframe_with_yellow_pages_data_pass1():
