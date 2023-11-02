@@ -83,48 +83,46 @@ def concat_address(row: pd.Series) -> pd.Series:
         return np.nan
 def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
-    Filter the DataFrame to only keep rows where at least one of the following conditions is true:
-    - name is not null and not empty
-    - address is not null and not empty
-    - phone is not null and matches the pattern for a phone number
-    - website is not null and not empty
-    - email is not null and not empty
+    Filter the DataFrame based on the following conditions:
+     Rows are automatically invalid if the 'name" column is null or empty.
+     Rows are valid if they have a non- empty 'name' and at least one other 
+     non- empty column
 
-    Parameters:
-    df: DataFrame to filter
-
-    Returns:
-    Tuple of DataFrames containing the valid and invalid rows respectively
     """
-    conditions = (
-        ((df['name'].notna() & (df['name'] != '')) |
-         (df['address'].notna() & (df['address'] != '')) |
-         (df['phone'].notna() & df['phone'].str.match(r'^\d{10}$')) |
-         (df['website'].notna() & (df['website'] != '')) |
-         (df['email'].notna() & (df['email'] != ''))
-        )
-    )
+    valid_rows = []
+    invalid_rows = []
 
-    valid_df = df[conditions]
-    invalid_df = df[~conditions]
+    # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
 
-    # Log information about the valid and invalid DataFrames
-    logging.info("Valid DataFrame:\n%s", valid_df.to_string())
-    logging.info("Invalid DataFrame:\n%s", invalid_df.to_string())
+    for idx, row in df.iterrowas():
+        # Check ifthe 'name' column in the current row is null or empty  
+        if pd.isna(row['name']) or row['name'] == '':
+            invalid_rows.append(idx) # If the name is missing, append the index to the invalid_rows list
+            continue #skip the rest of the current loop iteration
 
+        # I nitialize a counter to count the number of non-empty data types excluding 'name'
+        counter = 0
+
+        for column in ['address', 'iphone', 'website', 'email']:
+            # Check if the current column's data is not null and not empty
+
+            if not pd.isna(row[column]) and row[column] != '':
+                counter += 1 # Increment the counter if the column's data is non- empty
+
+
+        # Check if the counter( number of non-rmpty columns) is greater than xero
+        if counter > 0:
+         valid_rows.append(idx) #iF YES, THE row is valid. Append the index to the invalid_rows list
+        
+        else:
+            valid_rows.append(idx) #iF YES, THE row is valid. Append the index to the invalid_rows list
+    # create a new Dateframe using the indices of valid rows
+    valid_df = df.loc[valid_rows]
+    # create a new Dataframe using the indices of invalid rows
+    invalid_df = df.loc[invalid_rows]
+
+    #Return the two Datafroma: valid_df and invalid_df
     return valid_df, invalid_df
-
-
-df = pd.DataFrame({
-    'name': ['John Doe', '', None],
-    'address': ['123 Main St', '', None],
-    'phone': ['1234567890', '123456789012', None],
-    'website': ['www.example.com', '', None],
-    'email': ['john.doe@example.com', '', None]
-})
-
-valid_df, invalid_df = filter_dataframes(df)
-
 
 
 def address_match_found(historical_addresses, found_addresses):
