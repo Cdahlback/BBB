@@ -142,10 +142,11 @@ def address_match_found(historical_addresses, found_addresses):
             else:
                 return 0
 
-        # Apply the compare_addresses function to each row to determine matches
+        # Apply the compare_addresses function to each row to determine matches and create a 'match_found' column
         merged_df['match_found'] = merged_df.apply(compare_addresses, axis=1)
 
-        # Add 'city_match_name' column using list comprehension
+        # Add a 'city_match_name' column using list comprehension
+        ## If match_found is 2, set the city name from the found address; otherwise, set 'N/A'
         merged_df['city_match_name'] = ['N/A' if match != 2 else address.split(',')[-1].strip() for match, address in zip(merged_df['match_found'], merged_df['found_address'])]
         logging.info("Successful merge ")
         return merged_df
