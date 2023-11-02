@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BBBDM"
+authors = [
+    {name = "MNSU Data Defenders", email = "bbbdms@gmail.com"},
+]
+description = "A data management tool designed for the Better Business Buearu."
+readme = {file = ["README.md"], context-type = "text/markdown"}
+requires-python = ">=3.9"
+license = {text = "BSD-3-Clause"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+exclude = ["previous_team_code*",
+            "BBBDM.test*"]
+dependencies = [
+    "requests",
+    'importlib-metadata; python_version>="3.9"',
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["VERSION"]}

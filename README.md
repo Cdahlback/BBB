@@ -8,7 +8,7 @@ Better Business Bureau Data Management (BBBDM) is a tool designed by the Data De
 ### What is this repository for? ###
 
 * The goal of this repo is the collection of scripts to run the main function, alongside that it currently provides the file location to download additional data to be used with.
-* 0.8.5
+* 0.4.0
 
 ### How do I get set up? ###
 
