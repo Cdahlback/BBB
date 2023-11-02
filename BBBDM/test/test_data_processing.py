@@ -194,3 +194,49 @@ def test_join_dataframe_firmid():
 
     # test function with no dataframes
     assert join_dataframe_firmid() == False
+
+
+
+def test_filter_dataframes():
+    # some sample data for testing
+
+    test_df = pd.DataFrame({
+        'name': ['John Doe', '', None, 'Jane Smith', 'Alex'],
+        'address': ['123 Main St', '', None, '456 Elm St', ''],
+        'phone': ['1234567890', '123456789012', None, '', '1234567890'],
+        'website': ['www.example.com', '', None, '', ''],
+        'email': ['john.doe@example.com', '', None, 'jane.smith@example.com', '']
+    })
+    
+    try:
+          # Usinf the filter_dataframes functions on the sample data
+
+        valid_df, invalid_df = filter_dataframes(test_df)
+
+        #Asserting the expected results
+
+        #1. Check the number of rows in each returned Dataframe
+        assert valid_df.shape[0]==3, "Number of valid rows is incorrect."
+        assert invalid_df.shape[0]==2, "Number of invalid rows is incorrect."
+        #2. Check if certain expected values are in the valid dataframe
+        assert "John Doe" in valid_df["name"].values, "John Doe should be in valid DataFrame."
+        assert "Jane Smith" in valid_df["name"].values, "Jane Smith should be in valid DataFrame."
+         # 3. Check if certain expected values are in the invalid DataFrame.
+        assert "Alex" in invalid_df["name"].values, "Alex should be in invalid DataFrame."
+        
+        # Print success if all assertions pass.
+        print("All tests passed!")
+    
+    except AssertionError as e:
+        # If there's an AssertionError, print the error message.
+        print(f"Test failed! Reason: {e}")
+
+# Run the test function.
+test_filter_dataframes()
+
+      
+
+    
+    
+  
+

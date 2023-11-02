@@ -100,10 +100,10 @@ def filter_dataframes(df:pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
             invalid_rows.append(idx) # If the name is missing, append the index to the invalid_rows list
             continue #skip the rest of the current loop iteration
 
-        # I nitialize a counter to count the number of non-empty data types excluding 'name'
+        # Initialize a counter to count the number of non-empty data types excluding 'name'
         counter = 0
 
-        for column in ['address', 'iphone', 'website', 'email']:
+        for column in ['address', 'phone', 'website', 'email']:
             # Check if the current column's data is not null and not empty
 
             if not pd.isna(row[column]) and row[column] != '':
