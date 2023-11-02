@@ -1,7 +1,8 @@
+from itertools import repeat
+
 import pandas as pd
 import requests
 import ThreadPoolExecutorPlus
-from itertools import repeat
 
 
 def get_statuscode(lst):
@@ -14,8 +15,8 @@ def get_statuscode(lst):
     """
     executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/74.0.3729.169 Safari/537.36 '
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/74.0.3729.169 Safari/537.36 "
     }
     timeout = 3
     results = []
@@ -50,19 +51,22 @@ def get_statuscode_forPandas(df):
     :param df: dataframe
     :return: updated dataframe with status codes
     """
-    urls = df['Website'].values[:]
-    ids = df['BusinessID'].values[:]
+    urls = df["Website"].values[:]
+    ids = df["BusinessID"].values[:]
     executor = ThreadPoolExecutorPlus.ThreadPoolExecutor(max_workers=70)
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/74.0.3729.169 Safari/537.36 '
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/74.0.3729.169 Safari/537.36 "
     }
     timeout = 5
     results = []
-    for result in executor.map(status_code_forPandas, urls, ids, repeat(headers), repeat(timeout)):
+    for result in executor.map(
+        status_code_forPandas, urls, ids, repeat(headers), repeat(timeout)
+    ):
         results.append(result)
-    df['status_code'] = results
+    df["status_code"] = results
     return df
+
 
 def status_code_forPandas(url, id, headers, timeout):
     """

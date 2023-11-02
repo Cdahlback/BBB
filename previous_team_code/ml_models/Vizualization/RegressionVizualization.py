@@ -19,7 +19,7 @@ def vizualize_compare_true_and_pred(y_test, y_pred_test):
     m = y_test.min()
     M = y_test.max()
 
-    plt.plot((m, M), (m, M), color='red')
+    plt.plot((m, M), (m, M), color="red")
     return plt
 
 
@@ -34,11 +34,15 @@ def visualize_line_of_best_fit(x_test, y_test, y_pred_test, model, feature):
     :return:
     """
     plt.scatter(x_test, y_test)
-    plt.plot(x_test, y_pred_test, color='red')
+    plt.plot(x_test, y_pred_test, color="red")
     plt.title("Line of best fit")
-    plt.title("Model coef: {:0.3f}, Intercept: {:0.2f}".format(model.coef_[0], model.intercept_))
+    plt.title(
+        "Model coef: {:0.3f}, Intercept: {:0.2f}".format(
+            model.coef_[0], model.intercept_
+        )
+    )
     plt.xlabel(feature)
-    plt.ylabel("manually_checked");
+    plt.ylabel("manually_checked")
     return plt
 
 
@@ -50,9 +54,7 @@ def visualize_feature_vs_dep_var(df, feature):
     :return:
     """
     # Possibly need to print
-    sns.scatterplot(data=df,
-                    x=feature,
-                    y='manually_checked')
+    sns.scatterplot(data=df, x=feature, y="manually_checked")
     plt.title("feature vs dep var")
     return plt
 
@@ -76,7 +78,7 @@ def save_image(filename):
     # iterating over the numbers in list
     for fig in figs:
         # and saving the files
-        fig.savefig(p, format='pdf')
+        fig.savefig(p, format="pdf")
 
         # close the object
     p.close()
@@ -93,14 +95,14 @@ def plot_logistic_regression_bar(model, feature):
     coefficients = model.coef_[0]
 
     # Create a DataFrame of coefficients
-    coef_df = pd.DataFrame({'feature': feature, 'coefficient': coefficients})
+    coef_df = pd.DataFrame({"feature": feature, "coefficient": coefficients})
 
     # Create a bar chart of coefficients
     fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(x='coefficient', y='feature', data=coef_df, orient='h', ax=ax)
-    ax.set_title('Logistic Regression Coefficients')
-    ax.set_xlabel('Coefficient')
-    ax.set_ylabel('Feature')
+    sns.barplot(x="coefficient", y="feature", data=coef_df, orient="h", ax=ax)
+    ax.set_title("Logistic Regression Coefficients")
+    ax.set_xlabel("Coefficient")
+    ax.set_ylabel("Feature")
     return plt
 
 
@@ -116,7 +118,7 @@ def plot_logistic_regression_plot(model, X, y):
     fig, ax = plt.subplots(figsize=(8, 6))
     x = model.predict_proba(X)[:, 1]
     sns.regplot(x=model.predict_proba(X)[:, 1], y=y, logistic=True, ax=ax)
-    ax.set_title('Logistic Regression Plot')
-    ax.set_xlabel('Predicted Probability')
-    ax.set_ylabel('Actual Outcome')
+    ax.set_title("Logistic Regression Plot")
+    ax.set_xlabel("Predicted Probability")
+    ax.set_ylabel("Actual Outcome")
     return plt

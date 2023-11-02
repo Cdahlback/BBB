@@ -1,7 +1,8 @@
+import pickle
+
 import numpy as np
 import pandas as pd
 from Extract_Data.fill_ind_var_columns import fill_columns
-import pickle
 
 """
 In the readME for this directory, find the section labeled MACHINE LEARNING for steps and suggestions for global
@@ -12,32 +13,35 @@ variable values.
 # ###############################################--Global vars--#######################################################
 
 features = [
-        "contains_contacts_page",
-        "contains_business_name",
-        "contains_business_name_in_copyright",
-        "contains_social_media_links",
-        "contains_reviews_page",
-        "contains_zipCode",
-        "url_contains_phone_number",
-        "BBBRatingScore",
-        "IsHQ",
-        "IsCharity",
-        "IsBBBAccredited",
-        "url_is_review_page"
-    ]
+    "contains_contacts_page",
+    "contains_business_name",
+    "contains_business_name_in_copyright",
+    "contains_social_media_links",
+    "contains_reviews_page",
+    "contains_zipCode",
+    "url_contains_phone_number",
+    "BBBRatingScore",
+    "IsHQ",
+    "IsCharity",
+    "IsBBBAccredited",
+    "url_is_review_page",
+]
 
 
 def main(df, df_copy):
     # open decision tree model from pickle file
-    with open('../ml_models/dt_model.pkl', 'rb') as f:
+    with open("../ml_models/dt_model.pkl", "rb") as f:
         model = pickle.load(f)
         f.close()
     # create stream
-    stream = pd.DataFrame(columns=['BusinessID', 'Email', 'Phone', 'Website', "Addresses", 'predictive%'])
+    stream = pd.DataFrame(
+        columns=["BusinessID", "Email", "Phone", "Website", "Addresses", "predictive%"]
+    )
     return main_ml(df, df_copy, stream, model)
 
 
 # ###############################################--FUNCTIONS--##########################################################
+
 
 def main_ml(data, data_copy, stream, model):
     """
@@ -52,7 +56,7 @@ def main_ml(data, data_copy, stream, model):
     :return: stream of data
     """
     for index, row in data.iterrows():
-        businessID = row['BusinessID']
+        businessID = row["BusinessID"]
         if can_predict(row):
             row = fill_columns(row)
             selected_columns = np.array(row[features]).reshape(1, -1)
@@ -63,7 +67,7 @@ def main_ml(data, data_copy, stream, model):
             y_pred = y_pred[0][1]
 
             # here we need to add the data to a stream, since we now have everything aquired.
-            row_copy = data_copy[data_copy['BusinessID'] == businessID]
+            row_copy = data_copy[data_copy["BusinessID"] == businessID]
             add_to_stream(row, row_copy, stream, y_pred)
     return stream
 
@@ -80,20 +84,26 @@ def add_to_stream(row, row_copy, stream, predictive_percentage):
     :return: None
     """
     businessID = row["BusinessID"]
-    dict = {"BusinessID": businessID,"Email": None, "Phone": None, "Website": None, "Addresses": None,
-            "predictive%": predictive_percentage}
-    url = row['Website']
+    dict = {
+        "BusinessID": businessID,
+        "Email": None,
+        "Phone": None,
+        "Website": None,
+        "Addresses": None,
+        "predictive%": predictive_percentage,
+    }
+    url = row["Website"]
     dict["Website"] = url
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
     if _new_email_found(row, row_copy, businessID):
-        dict['Email'] = row['Email']
+        dict["Email"] = row["Email"]
 
     # check if we found a new phone number, if we did add it to the stream. (it is plural ATM due to a list of
     # emails being returned. possibly)
     if _new_phone_found(row, row_copy, businessID):
-        dict['Phone'] = row['Phone']
+        dict["Phone"] = row["Phone"]
 
     # check if we found a new email, if we did add it to the stream. (it is plural ATM due to a list of emails
     # being returned. possibly)
@@ -111,8 +121,8 @@ def _new_email_found(row, row_copy, businessId):
     :param row_copy: original dataframe with no updated values
     :return:
     """
-    possible_new_email = row['Email']
-    old_value = row_copy.loc[row_copy['BusinessID'] == businessId, 'Email'].iloc[0]
+    possible_new_email = row["Email"]
+    old_value = row_copy.loc[row_copy["BusinessID"] == businessId, "Email"].iloc[0]
     if isinstance(possible_new_email, list) and pd.isna(old_value):
         return True
     if pd.notna(possible_new_email) and pd.isna(old_value):
@@ -128,8 +138,8 @@ def _new_phone_found(row, row_copy, businessId):
     :param row_copy: original dataframe with no updated values
     :return:
     """
-    possible_new_phone = row['Phone']
-    old_value = row_copy.loc[row_copy['BusinessID'] == businessId, 'Email'].iloc[0]
+    possible_new_phone = row["Phone"]
+    old_value = row_copy.loc[row_copy["BusinessID"] == businessId, "Email"].iloc[0]
     if isinstance(possible_new_phone, list) and pd.isna(old_value):
         return True
     if pd.notna(possible_new_phone) and pd.isna(old_value):
@@ -146,8 +156,8 @@ def _new_address_found(row, row_copy):
     :return:
     """
     # if there wasn't an address there already
-    if row_copy['Address'].empty:
-        if row['Address'].empty:
+    if row_copy["Address"].empty:
+        if row["Address"].empty:
             return True
     # if there already was an address there, don't add it to the stream
     else:
@@ -159,7 +169,7 @@ def can_predict(row):
     helper function for main_ml
     determines if a row of data can be predicted
     """
-    if _url_exists(row['Website']):
+    if _url_exists(row["Website"]):
         return True
     # if the url doesn't exist, return false, since we cannot predict anything
     return False

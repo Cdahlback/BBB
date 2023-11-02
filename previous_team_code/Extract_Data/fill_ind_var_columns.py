@@ -1,9 +1,9 @@
 import time
-from Extract_Data.data_extraction import *
+
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
-
+from Extract_Data.data_extraction import *
 
 """Script to run our independent variable scrapers for entire database"""
 
@@ -14,14 +14,14 @@ def add_ind_var_columns(data):
     :param data: data that is associated with Business URLS.
     :return: the modified DataFrame with the new columns added.
     """
-    data['contains_contacts_page'] = np.nan
-    data['contains_business_name'] = np.nan
-    data['contains_business_name_in_copyright'] = np.nan
-    data['contains_social_media_links'] = np.nan
-    data['contains_reviews_page'] = np.nan
-    data['contains_zipCode'] = np.nan
-    data['url_contains_phone_number'] = np.nan
-    data['url_is_review_page'] = np.nan
+    data["contains_contacts_page"] = np.nan
+    data["contains_business_name"] = np.nan
+    data["contains_business_name_in_copyright"] = np.nan
+    data["contains_social_media_links"] = np.nan
+    data["contains_reviews_page"] = np.nan
+    data["contains_zipCode"] = np.nan
+    data["url_contains_phone_number"] = np.nan
+    data["url_is_review_page"] = np.nan
     return data
 
 
@@ -32,7 +32,7 @@ def fill_single_row(row):
     :return: updated row will proper information filled out
     """
     row = add_ind_var_columns(row)
-    html = get_html(row['Website'])
+    html = get_html(row["Website"])
     if html is None:
         print("not found")
         row["contains_contacts_page"] = False
@@ -49,12 +49,17 @@ def fill_single_row(row):
         phone_number = row["Phone"]
         row["contains_contacts_page"] = contains_contacts_page(html)
         row["contains_business_name"] = contains_business_name(html, business_name)
-        row["contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
+        row[
+            "contains_business_name_in_copyright"
+        ] = contains_business_name_in_copyright(html, business_name)
         row["contains_social_media_links"] = contains_social_media_links(html)
         row["contains_reviews_page"] = contains_reviews_page(html)
         row["contains_zipCode"] = contains_zipCode(html, str(zip))
-        row["url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
-        row["url_is_review_page"] = url_is_review_page(row['Website'])
+        row["url_contains_phone_number"] = contains_phone_number(
+            html, str(phone_number)
+        )
+        row["url_is_review_page"] = url_is_review_page(row["Website"])
+
 
 def fill_columns(data):
     """
@@ -90,12 +95,18 @@ def fill_columns(data):
         phone_number = data["Phone"]
         email = data["Email"]
         data_copy.loc["contains_contacts_page"] = contains_contacts_page(html)
-        data_copy.loc["contains_business_name"] = contains_business_name(html, business_name)
-        data_copy.loc["contains_business_name_in_copyright"] = contains_business_name_in_copyright(html, business_name)
+        data_copy.loc["contains_business_name"] = contains_business_name(
+            html, business_name
+        )
+        data_copy.loc[
+            "contains_business_name_in_copyright"
+        ] = contains_business_name_in_copyright(html, business_name)
         data_copy.loc["contains_social_media_links"] = contains_social_media_links(html)
         data_copy.loc["contains_reviews_page"] = contains_reviews_page(html)
         data_copy.loc["contains_zipCode"] = contains_zipCode(html, str(zip))
-        data_copy.loc["url_contains_phone_number"] = contains_phone_number(html, str(phone_number))
+        data_copy.loc["url_contains_phone_number"] = contains_phone_number(
+            html, str(phone_number)
+        )
         # data_copy.loc[index, "url_contains_email"] = contains_email(html, email)
         data_copy.loc["url_is_review_page"] = url_is_review_page(website)
         # print("time taken to scrape ind vars for index: {0}".format(index))
@@ -107,23 +118,23 @@ def fill_columns(data):
 
 def get_html(website):
     """
-     A function
-     :param website: The URL of the website to retrieve the HTML from.
-     :return: The HTML content of the page
+    A function
+    :param website: The URL of the website to retrieve the HTML from.
+    :return: The HTML content of the page
     """
     if website is None:
         return None
     try:
         website = str(website)
         response = requests.get(website, timeout=7)
-        html = BeautifulSoup(response.content, 'html.parser')
+        html = BeautifulSoup(response.content, "html.parser")
         return html
     except Exception as e:
         return None
 
 
-if __name__ == '__main__':
-    df = pd.read_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/combined_data.csv')
+if __name__ == "__main__":
+    df = pd.read_csv("/Users/jacksonthoe/Documents/GitHub/BBB/data/combined_data.csv")
     revised = add_ind_var_columns(df)
     final = fill_columns(revised)
-    final.to_csv('/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var.csv')
+    final.to_csv("/Users/jacksonthoe/Documents/GitHub/BBB/data/filled_ind_var.csv")

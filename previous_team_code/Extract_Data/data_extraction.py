@@ -1,11 +1,11 @@
-import bs4
-from bs4 import BeautifulSoup
-import requests
 import re
-import whois
 from urllib.parse import urlparse
-import pandas as pd
 
+import bs4
+import pandas as pd
+import requests
+import whois
+from bs4 import BeautifulSoup
 
 """
 For CODE REVIEWER:
@@ -30,10 +30,10 @@ def contains_contacts_page(html):
     if html is None:
         return False
     # Find all a tags in the html
-    for tag in html.find_all('a'):
+    for tag in html.find_all("a"):
         # Get the next href link and check if it contains the word contact
-        possible_contact = tag.get('href')
-        if possible_contact and 'contact' in possible_contact.lower():
+        possible_contact = tag.get("href")
+        if possible_contact and "contact" in possible_contact.lower():
             return True
     # No contacts page was found
     return False
@@ -46,28 +46,30 @@ def contains_business_name(html, business_name):
     :param business_name: name of business we want to find
     :return: bool True of False
     """
-    if business_name == '':
+    if business_name == "":
         return False
     if html is not None:
         # remove '&#39;' from string and replace with '
-        if re.search(r'&#39;', business_name):
-            business_name = re.sub('&#39;', '\'', business_name)
+        if re.search(r"&#39;", business_name):
+            business_name = re.sub("&#39;", "'", business_name)
         # remove any floating non-letter characters
-        if re.search(r'\s\W\s', business_name):
-            business_name = re.sub(r'\s\W\s', ' ', business_name)
+        if re.search(r"\s\W\s", business_name):
+            business_name = re.sub(r"\s\W\s", " ", business_name)
         # remove any non-letter/digit characters
-        business_name = re.sub(r'[^A-Za-z0-9\'\s]*', '', business_name)
-        name_lst = business_name.split()        # split business_name into list of words
-        found_name = 0                  # counter for every word in the list found on the html
-        for name in name_lst:           # loop through word in list
+        business_name = re.sub(r"[^A-Za-z0-9\'\s]*", "", business_name)
+        name_lst = business_name.split()  # split business_name into list of words
+        found_name = 0  # counter for every word in the list found on the html
+        for name in name_lst:  # loop through word in list
             found = False
             for text in html.find_all(text=True):
                 if name.lower() in text.lower():
-                    found = True        # found is mark true if word was found in html
+                    found = True  # found is mark true if word was found in html
             if found:
-                found_name += 1         # add to counter
-        if found_name / len(name_lst) >= 0.5:     # if more than half of the words in the list were found in the html
-            return True                          # then return True
+                found_name += 1  # add to counter
+        if (
+            found_name / len(name_lst) >= 0.5
+        ):  # if more than half of the words in the list were found in the html
+            return True  # then return True
         else:
             return False
     else:
@@ -86,15 +88,15 @@ def contains_business_name_in_copyright(html, business_name):
     if html is not None:
         try:
             # Find the footer element in the HTML
-            footer = html.find('footer')
+            footer = html.find("footer")
 
             # If footer is found, extract the text and count the number of matching words
             if footer is not None:
                 footer_text = footer.text
                 # extract all words from the footer text
-                footer_text_words = re.findall(r'\b\w+\b', footer_text.lower())
+                footer_text_words = re.findall(r"\b\w+\b", footer_text.lower())
                 # extract all words from the business name
-                business_name_words = re.findall(r'\b\w+\b', business_name.lower())
+                business_name_words = re.findall(r"\b\w+\b", business_name.lower())
                 matches = set(footer_text_words) & set(business_name_words)
                 num_matches = len(matches)
 
@@ -120,11 +122,11 @@ def contains_social_media_links(html):
     """
     if html is None:
         return False
-    links = html.find_all('a')
+    links = html.find_all("a")
     # Check each link to see if it points to a social media website
-    social_media_sites = ['facebook', 'twitter', 'instagram', 'linkedin']
+    social_media_sites = ["facebook", "twitter", "instagram", "linkedin"]
     for link in links:
-        href = link.get('href')
+        href = link.get("href")
         if href and any(site in href.lower() for site in social_media_sites):
             return True
     # If we didn't find any social media links, return False
@@ -139,38 +141,38 @@ def contains_reviews_page(html):
     """
     if html is None:
         return False
-    for tag in html.find_all('a'):
-        possible_review = tag.get('href')
-        if possible_review and 'review' in possible_review.lower():
+    for tag in html.find_all("a"):
+        possible_review = tag.get("href")
+        if possible_review and "review" in possible_review.lower():
             return True
     return False
 
 
 def contains_zipCode(html, zip_code):
     """
-        Check if the html contains the given zip code.
-        :param html: html extracted from url
-        :param zip_code: business zip code to find
-        :return: True if the zip code is found in the html, False if not
-        """
+    Check if the html contains the given zip code.
+    :param html: html extracted from url
+    :param zip_code: business zip code to find
+    :return: True if the zip code is found in the html, False if not
+    """
     if html is not None and zip_code is not None:
         zip_code = zip_code[:-2]
         try:
             # Look for zip code in the body of the HTML
             body_text = html.text.lower()
-            zip_regex = re.compile(r'\b\d{5}\b')
+            zip_regex = re.compile(r"\b\d{5}\b")
             body_matches = zip_regex.findall(body_text)
 
             # If zip code not found in body, look in footer of the HTML
             if not body_matches:
-                footer = html.find('footer')
+                footer = html.find("footer")
                 if footer is not None:
                     footer_text = footer.text.lower()
                     footer_matches = zip_regex.findall(footer_text)
                     body_matches += footer_matches
 
             # Check if the zip code is in the list of matches or present in the HTML using regex
-            regex = r'.*' + str(zip_code) + '.*'
+            regex = r".*" + str(zip_code) + ".*"
             return str(zip_code) in body_matches or re.search(regex, html)
         except Exception as e:
             return False
@@ -180,11 +182,11 @@ def contains_zipCode(html, zip_code):
 
 def contains_phone_number(html, phone_number):
     """
-        Check if the html contains the given phone number
-        :param html: html extracted from url
-        :param phone_number: business phone number to find
-        :return: True if the phone num is found in the html, False if not
-        """
+    Check if the html contains the given phone number
+    :param html: html extracted from url
+    :param phone_number: business phone number to find
+    :return: True if the phone num is found in the html, False if not
+    """
     if html is not None and phone_number is not None:
         phone_numbers = []
         phone_number = phone_number[:-2]
@@ -200,7 +202,7 @@ def contains_phone_number(html, phone_number):
 
 
 def _strip_non_integers(string):
-    pattern = r"\D+" # Matches one or more non-digit characters
+    pattern = r"\D+"  # Matches one or more non-digit characters
     return re.sub(pattern, "", string)
 
 
@@ -214,8 +216,8 @@ def contains_email(html, email):
     if pd.isnull(email) or html is None:
         return False
     emails = []
-    for tag in html.find_all('a'):
-        href = tag.get('href')
+    for tag in html.find_all("a"):
+        href = tag.get("href")
         if href:
             if "@" in href:
                 emails.append(href)
@@ -249,11 +251,30 @@ def url_is_review_page(url):
     :return: True if url is a review page, false if not
     """
     # list of rating sites we have already excluded from search.
-    rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi', 'yellowpages',
-                    'bizapedia']
+    rating_sites = [
+        "mapquest",
+        "yelp",
+        "bbb",
+        "podium",
+        "porch",
+        "chamberofcommerce",
+        "angi",
+        "yellowpages",
+        "bizapedia",
+    ]
     # list of phrases that would indicate if the url is a review page.
-    indicator_list = ['/businessdirectory/', '/pages/', '/restaurants/', '/companies/', '/businesses/',
-                      '/contractor/', '/profile/', '/company-information/', '/directory/', '/listing/']
+    indicator_list = [
+        "/businessdirectory/",
+        "/pages/",
+        "/restaurants/",
+        "/companies/",
+        "/businesses/",
+        "/contractor/",
+        "/profile/",
+        "/company-information/",
+        "/directory/",
+        "/listing/",
+    ]
     # Case 1: looping through the rating sites we already excluded from our search, making sure none slipped through.
     for site in rating_sites:
         if site in url.lower():
@@ -283,7 +304,7 @@ def extract_phone_data(business_id, url):
     phone_numbers = []
     counter = 0
     try:
-        for tag in soup.find_all(text=re.compile(r'(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}')):
+        for tag in soup.find_all(text=re.compile(r"(?\d{3})?[-.\s]?\d{3}[-.\s]?\d{4}")):
             counter += 1
             phone_numbers.append(tag.string)
     except:
@@ -310,9 +331,9 @@ def extract_email_data(business_id, url):
     # Extract email addresses
     email_addresses = []
     email_number = 0
-    for tag in soup.find_all('a'):
-        email = tag.get('href')
-        if email and 'mailto:' in email:
+    for tag in soup.find_all("a"):
+        email = tag.get("href")
+        if email and "mailto:" in email:
             if email in email_addresses:
                 continue
             email_number += 1

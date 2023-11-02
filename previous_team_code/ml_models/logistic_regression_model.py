@@ -1,8 +1,9 @@
+import pickle
+
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from Vizualization.RegressionVizualization import *
-import pickle
 
 
 def test_different_inputs(df, feature):
@@ -14,11 +15,12 @@ def test_different_inputs(df, feature):
     """
 
     X = df[feature].values
-    y = df['manually_checked'].values
+    y = df["manually_checked"].values
 
     # train/split data
     X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.3, random_state=21)
+        X, y, test_size=0.3, random_state=21
+    )
 
     # create model
     model = LogisticRegression()
@@ -47,7 +49,7 @@ def test_different_inputs(df, feature):
     print("")
 
     # store model into a pickle file
-    with open('../ml_models/lr_model.pkl', 'wb') as f:
+    with open("../ml_models/lr_model.pkl", "wb") as f:
         pickle.dump(model, f)
         f.close()
 
@@ -55,7 +57,7 @@ def test_different_inputs(df, feature):
 if __name__ == "__main__":
 
     df = pd.read_csv("../Extract_Data/best_ind_vars.csv", low_memory=False)
-    #EDIT VARIABLES HERE
+    # EDIT VARIABLES HERE
     variables = [
         "contains_contacts_page",
         "contains_business_name",
@@ -68,7 +70,7 @@ if __name__ == "__main__":
         "IsHQ",
         "IsCharity",
         "IsBBBAccredited",
-        "url_is_review_page"
+        "url_is_review_page",
     ]
 
     test_different_inputs(df, variables)

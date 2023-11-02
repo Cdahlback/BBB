@@ -1,8 +1,9 @@
-from sklearn import tree
-from sklearn.model_selection import train_test_split
-from ml_models.Vizualization.ClassificationVisualization import *
-from sklearn.metrics import accuracy_score
 import pickle
+
+from ml_models.Vizualization.ClassificationVisualization import *
+from sklearn import tree
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 # Load the iris dataset
 model_data = pd.read_csv("../data/filled_ind_var.csv")
@@ -14,7 +15,7 @@ def build_tree(input_data):
     build decision tree based on data given
     :return trained model
     """
-    #EDIT FEATURES HERE
+    # EDIT FEATURES HERE
     features = [
         "contains_contacts_page",
         "contains_business_name",
@@ -27,7 +28,7 @@ def build_tree(input_data):
         "IsHQ",
         "IsCharity",
         "IsBBBAccredited",
-        "url_is_review_page"
+        "url_is_review_page",
     ]
 
     # Enter model data here:
@@ -36,10 +37,12 @@ def build_tree(input_data):
 
     # Create features and output (these should be created from the passed in dataframe, not the one stored locally here)
     X = input_data[features].values
-    y = input_data['manually_checked'].values
+    y = input_data["manually_checked"].values
 
     # Split the dataset into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=0
+    )
 
     # Create a decision tree classifier
     model = DecisionTreeClassifier(max_depth=max_depth, ccp_alpha=ccp_alpha)
@@ -53,10 +56,12 @@ def build_tree(input_data):
 def model_eval(model, variables, r_s):
     # Create features and output
     X = model_data[variables].values
-    y = model_data['manually_checked'].values
+    y = model_data["manually_checked"].values
 
     # Split the dataset into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=r_s)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=r_s
+    )
 
     # Create a decision tree classifier
     clf = model
@@ -77,14 +82,17 @@ def model_eval(model, variables, r_s):
 
     # save results
     print(f"Accuracy: {accuracy}")
-    dict_to_append = {"Accuracy": accuracy, "VariablesUsed": variables[:], "RandomStateUsed": r_s}
+    dict_to_append = {
+        "Accuracy": accuracy,
+        "VariablesUsed": variables[:],
+        "RandomStateUsed": r_s,
+    }
     add_to_csv(dict_to_append)
 
     fig = plt.figure(figsize=(25, 20))
-    _ = tree.plot_tree(clf,
-                       feature_names=variables,
-                       class_names="manually_checked",
-                       filled=True)
+    _ = tree.plot_tree(
+        clf, feature_names=variables, class_names="manually_checked", filled=True
+    )
     plt.show()
 
 
@@ -95,7 +103,7 @@ def add_to_csv(dictionary):
 def get_highest_accuracy():
     """Gets the top5 largest accuracies from testing different inputs"""
     df = pd.read_csv("../data/ml_data/ml_stats.csv")
-    new_df = df.loc[df["Accuracy"] >= .7]
+    new_df = df.loc[df["Accuracy"] >= 0.7]
     new_df.to_csv("../data/top_preformers.csv")
 
 
@@ -119,6 +127,6 @@ def model_test_diff_inputs(model, n, vars):
 if __name__ == "__main__":
     model = build_tree(model_data)
     # store model into a pickle file
-    with open('../ml_models/dt_model.pkl', 'wb') as f:
+    with open("../ml_models/dt_model.pkl", "wb") as f:
         pickle.dump(model, f)
         f.close()

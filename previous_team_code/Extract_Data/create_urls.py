@@ -1,12 +1,9 @@
-
-
 import re
-import pandas as pd
 import time
 
-from Not_Our_Code.elis_functions import cleanEmail
+import pandas as pd
 from googlesearch import search
-
+from Not_Our_Code.elis_functions import cleanEmail
 
 """
 For CODE REVIEWER:
@@ -24,15 +21,37 @@ We have two functions which build new urls for us
 """
 
 # list of domain names we don't want
-bad_domain_names = ['yahoo.com', 'gmail.com', "hotmail.com", "icloud.com", "comcast.net", "GMAIL.COM",
-                    "outlook.com", "msn.com", "arvig.net", "charter.net", "winona.edu", "aol.com", "frontier.net",
-                    "frontiernet.net", "results.net"]
+bad_domain_names = [
+    "yahoo.com",
+    "gmail.com",
+    "hotmail.com",
+    "icloud.com",
+    "comcast.net",
+    "GMAIL.COM",
+    "outlook.com",
+    "msn.com",
+    "arvig.net",
+    "charter.net",
+    "winona.edu",
+    "aol.com",
+    "frontier.net",
+    "frontiernet.net",
+    "results.net",
+]
 
 # regex to detect valid email (works great so far, may need building upon
-email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+email_regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
 
 # list of rating sites for generating urls without emails.
-rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi']
+rating_sites = [
+    "mapquest",
+    "yelp",
+    "bbb",
+    "podium",
+    "porch",
+    "chamberofcommerce",
+    "angi",
+]
 
 
 def build_url_from_email(email):
@@ -55,16 +74,41 @@ def search_urls(df):
     :return: a list of new websites found via search which we should append to the dataframe OUTSIDE of the function
     """
     results = []
-    rating_sites = ['mapquest', 'yelp', 'bbb', 'podium', 'porch', 'chamberofcommerce', 'angi', "yellowpages",
-                    'localsolution', 'northdakota', 'allbiz', 'pitchbook', '411', 'dnd', 'thebluebook', 'opencorporates'
-                    'menupix', 'buildzoom', 'buzzfile', 'manta', 'dandb', 'bloomberg', 'nextdoor', 'dnb', 'homeadvisor']
+    rating_sites = [
+        "mapquest",
+        "yelp",
+        "bbb",
+        "podium",
+        "porch",
+        "chamberofcommerce",
+        "angi",
+        "yellowpages",
+        "localsolution",
+        "northdakota",
+        "allbiz",
+        "pitchbook",
+        "411",
+        "dnd",
+        "thebluebook",
+        "opencorporates" "menupix",
+        "buildzoom",
+        "buzzfile",
+        "manta",
+        "dandb",
+        "bloomberg",
+        "nextdoor",
+        "dnb",
+        "homeadvisor",
+    ]
 
     for index, row in df.iterrows():
         business_name = df.loc[index, "BusinessName"]
-        business_city = df.loc[index, 'City']
-        business_id = df.loc[index, 'BusinessID']
-        business_id, website = get_url_from_search(business_name, rating_sites, business_id, business_city)
-        df.loc[df['BusinessID'] == business_id]['Website'] = website
+        business_city = df.loc[index, "City"]
+        business_id = df.loc[index, "BusinessID"]
+        business_id, website = get_url_from_search(
+            business_name, rating_sites, business_id, business_city
+        )
+        df.loc[df["BusinessID"] == business_id]["Website"] = website
         results.append(website)
         time.sleep(10)
 
@@ -79,7 +123,7 @@ def get_url_from_search(company_name, rating_sites, business_id, company_city_st
     """
     if pd.isnull(company_city_state):
         company_city_state = ""
-    term = ' '.join([company_name, company_city_state])
+    term = " ".join([company_name, company_city_state])
     try:
         for j in search(term, num_results=5):
             if filter(j, rating_sites):
@@ -103,7 +147,7 @@ def filter(url, rating_sites):
     :param rating_sites: list of any known rating sites
     :return: True if url is a not a rating site, false otherwise
     """
-    domain = extract_domain_name(url)    # print("Subdomain ", sub.domain)
+    domain = extract_domain_name(url)  # print("Subdomain ", sub.domain)
     for i in rating_sites:
         if domain.lower() == i:
             return False

@@ -11,17 +11,23 @@ Step8: Merge the data back with the invalid and unverified data
 Step9: Output results to csv file
 """
 
-import pandas as pd
 import logging
 
-from BBBDM.lib.data_processing import *
+import pandas as pd
+
+from BBBDM.lib.data_processing import (
+    extract_data,
+    filter_dataframes,
+    get_valid_businesses_info,
+    join_dataframe_firmid,
+)
 from BBBDM.lib.google_places_tools import *
-from BBBDM.lib.sos_tools import *
-from BBBDM.lib.Normalizing import *
-from BBBDM.lib.yellow_pages_tools import *
+from BBBDM.lib.Normalizing import normalize_dataframe
+from BBBDM.lib.sos_tools import compare_dataframes_sos
+from BBBDM.lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
 
 pd.options.mode.chained_assignment = None  # Disable the warning
-logging.basicConfig(filename='functions.log', level=logging.DEBUG)
+logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
 
 def main():
@@ -38,8 +44,15 @@ def main():
     mn_business_url = extract_data("Data/mn_business_url.csv")
 
     # Merge the data
-    merged_data = join_dataframe_firmid(mn_business, mn_business_address, mn_business_contact, mn_business_email,
-                                        mn_business_name, mn_business_phone, mn_business_url)
+    merged_data = join_dataframe_firmid(
+        mn_business,
+        mn_business_address,
+        mn_business_contact,
+        mn_business_email,
+        mn_business_name,
+        mn_business_phone,
+        mn_business_url,
+    )
 
     # Create valid/invalid dataframes
     valid_data, invalid_data = filter_dataframes(merged_data)
