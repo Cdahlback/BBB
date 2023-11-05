@@ -1,36 +1,22 @@
-import unittest
+
 
 import pandas as pd
 
 from BBBDM.lib.Normalizing import *
 
+def test_zipcodes():
+    zipcode=["55001","55  111","ABCD"]
+    expected_output= pd.DataFrame({
+                'Original Zip Code': ["55001","55  111","ABCD"],
+                'Standardized Zip Code': ["55001", "55111", "N/A"]
+            })
+    print(expected_output)
+    
+    actual_output=normalize_zipcode(zipcode)
+    print(actual_output)
+    assert expected_output.equals(actual_output)
 
-class TestNormalizationFunctions(unittest.TestCase):
 
-    def setUp(self):
-        # Sample dataframe for testing
-        data = {'Email': ['johndoe@example.com', 'invalidemail', 'alice.smith@gmail.com'],
-                'Phone Number': ['123-456-7890', 'invalid phone', '9876543210'],
-                'Zipcode': ['12345', 'ABCDE', '54321']}
-        self.df = pd.DataFrame(data)
-
-    def test_normalize_email_success(self):
-        result = normalize_dataframe(self.df)
-        self.assertEqual(result.loc[0, 'Email'], 'johndoe@example.com')
-        self.assertIsNone(result.loc[1, 'Email'])  # Invalid email
-        self.assertEqual(result.loc[2, 'Email'], 'alice.smith@gmail.com')
-
-    def test_normalize_phone_number_success(self):
-        result = normalize_dataframe(self.df)
-        self.assertEqual(result.loc[0, 'Phone Number'], '1234567890')
-        self.assertIsNone(result.loc[1, 'Phone Number'])  # Invalid phone number
-        self.assertEqual(result.loc[2, 'Phone Number'], '9876543210')
-
-    def test_normalize_zipcode_success(self):
-        result = normalize_dataframe(self.df)
-        self.assertEqual(result.loc[0, 'Zipcode'], '12345')
-        self.assertIsNone(result.loc[1, 'Zipcode'])  # Invalid zipcode
-        self.assertEqual(result.loc[2, 'Zipcode'], '54321')
 
 
 def test_normalize_us_phone_number():
@@ -119,26 +105,3 @@ def test_normalize_with_mixed_emails():
     actual_output = normalize_dataframe(emails_mixed)
     assert expected_output.equals(actual_output)
 
-def test_normalize_email_success():
-    """
-    Test normalization of email addresses
-    """
-    data = {'Email': ['johndoe@example.com', 'invalidemail', 'alice.smith@gmail.com'],
-            'Phone Number': ['123-456-7890', 'invalid phone', '9876543210'],
-            'Zipcode': ['12345', 'ABCDE', '54321']}
-    data = pd.DataFrame(data)
-    result = normalize_dataframe(data)
-    assert result.loc[0, 'Email'] == 'johndoe@example.com'
-    assert result.loc[1, 'Email'] is None  # Invalid email
-    assert result.loc[2, 'Email'] == 'alice.smith@gmail.com'
-
-
-def test_normalize_phone_number_success():
-    data = {'Email': ['johndoe@example.com', 'invalidemail', 'alice.smith@gmail.com'],
-            'Phone Number': ['123-456-7890', 'invalid phone', '9876543210'],
-            'Zipcode': ['12345', 'ABCDE', '54321']}
-    data = pd.DataFrame(data)
-    result = normalize_dataframe(data)
-    assert result.loc[0, 'Phone Number'] == '1234567890'
-    assert result.loc[1, 'Phone Number'] is None  # Invalid phone number
-    assert result.loc[2, 'Phone Number'] == '9876543210'

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import logging
 from functools import reduce
-from email_validator import validate_email, EmailNotValidError
+
 from fuzzywuzzy import fuzz
 
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
@@ -197,28 +197,6 @@ def is_same_business(historical_name: str, new_name: str, threshold: int = 80,
     return any(ratio >= threshold for ratio in [token_ratio, fuzzy_ratio, partial_ratio])
 
 
-def normalize_email(email:str) ->str:
-    """
-This is a helper function that normalizes the email to fit BBB expectations
-
-:param email: str of the emial
-
-:returns: email as a str that is normalized"""
-
-    try:
-        # Normalize and validate the email using email-validator library
-        # 1. Strip leading and trailing spaces in the email
-        # 2. Convert all characters to lowercase
-        # 3. Remove non-alphanumeric characters except for . _ - @
-        normalized_email = ''.join(e.lower() for e in email.strip() if e.isalnum() or e in '._-@')
-        #normalized the valid email
-        valid_email = validate_email(normalized_email).normalized
-        logging.info("Valid email normalized")
-        return valid_email
-    except EmailNotValidError as e:
-     # Handle invalid emails by logging and returning the original email
-        logging.debug(f'Invalid email: {str(e)}')
-        return email  # Return the original email for invalid ones
 
 
 def get_valid_businesses_info(file_path:str) -> pd.DataFrame:

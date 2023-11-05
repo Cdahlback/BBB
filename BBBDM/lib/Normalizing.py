@@ -2,53 +2,58 @@ import re
 import logging
 import pandas as pd
 from i18naddress import normalize_address
-
+from email_validator import validate_email, EmailNotValidError
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-def normalize_email(email:str) -> str:
+def normalize_email(email:str) ->str:
     """
-    This function is designed to handle the normalization of email addresses. It carries out the following steps:
-    1. Converts the email address to lowercase.
-    2. Removes any whitespace.
-    3. Filters out any special characters with the exception of ".", "@", and "-".
-    
-    Should the processed email lack an "@" symbol, it will be deemed as invalid and will return None.
-    
-    Parameters:
-    - email (str): The raw email address that needs to be normalized.
-    
-    Returns:
-    - str | None: Returns the normalized email if valid, otherwise None.
-    """
-    email = email.lower()
-    email = re.sub(r'\s', '', email)  
-    email = re.sub(r'[^a-z0-9.@-]', '', email)
-    if '@' not in email:
-        logging.warning(f'Encountered an invalid email format: {email}')
-        return None
-    return email
+This is a helper function that normalizes the email to fit BBB expectations
 
-def normalize_zipcode(zipcode:str) -> str:
-    """
-    This function processes and validates zip codes. Specifically, it:
-    1. Removes any whitespace.
-    2. Filters out any non-numeric characters.
-    
-    If the resultant zipcode does not comprise exactly 5 numeric digits, it's deemed as invalid.
-    
-    Parameters:
-    - zipcode (str): The raw zipcode that needs to be normalized.
-    
-    Returns:
-    - str | None: Returns the processed zipcode if valid, otherwise None.
-    """
-    zipcode = re.sub(r'\s|\D', '', zipcode)
-    if len(zipcode) != 5:
-        logging.warning(f'Detected an invalid zipcode format: {zipcode}')
-        return None
-    return zipcode
+:param email: str of the emial
 
+:returns: email as a str that is normalized"""
+
+    try:
+        # Normalize and validate the email using email-validator library
+        # 1. Strip leading and trailing spaces in the email
+        # 2. Convert all characters to lowercase
+        # 3. Remove non-alphanumeric characters except for . _ - @
+        normalized_email = ''.join(e.lower() for e in email.strip() if e.isalnum() or e in '._-@')
+        #normalized the valid email
+        valid_email = validate_email(normalized_email).normalized
+        logging.info("Valid email normalized")
+        return valid_email
+    except EmailNotValidError as e:
+     # Handle invalid emails by logging and returning the original email
+        logging.debug(f'Invalid email: {str(e)}')
+        return email  # Return the original email for invalid ones
+    
+def normalize_zipcode(zipcode_list):
+    standardized_zipcodes = []
+
+    for zipcode in zipcode_list:
+        try:
+            # Remove white spaces and non-numeric characters
+            standardized_zipcode = re.sub(r'\s|\D', '', zipcode)
+
+            # Check if the standardized zipcode has a length of 5
+            if len(standardized_zipcode) == 5:
+                standardized_zipcodes.append(standardized_zipcode)
+            else:
+                standardized_zipcodes.append("N/A")
+        except Exception as e:
+            # Handle exceptions by marking the zip code as "Error"
+            logging.debug(f"Error processing zip code '{zipcode}': {str(e)}")
+            standardized_zipcodes.append("Error")
+
+    # Create a DataFrame
+    data = {'Original Zip Code': zipcode_list, 'Standardized Zip Code': standardized_zipcodes}
+    df = pd.DataFrame(data)
+
+    return df
+    
+    return normalized_zipcodes
 def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
     """
     This function serves to normalize various columns within a given DataFrame. The columns targeted for normalization
