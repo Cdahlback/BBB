@@ -34,14 +34,14 @@ def test_regression_extract_data():
           "date_joined_bbb","outofbusiness_date","hq","lastupdate"]
 
     expected_df=pd.DataFrame(data1,columns=columns)
-    mn_columns_expected=expected_df.columns
+    mn_columns_expected_set=set(expected_df.columns)
     print(expected_df)
     mn_business_path="../Data/mn_business.csv"
     mn_business_df=extract_data(mn_business_path)
-    mn_columns=mn_business_df.columns
+    mn_columns_set=set(mn_business_df.columns)
     mn_business_df=mn_business_df.head(10)
     print(mn_business_df)
-    assert mn_columns==mn_columns_expected
+    assert mn_columns_set==mn_columns_expected_set
 
 test_regression_extract_data()
 
