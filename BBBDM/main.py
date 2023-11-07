@@ -10,7 +10,7 @@ Step7: Compare data NOT validated by SOS or Google places to Yellow pages
 Step8: Merge the data back with the invalid and unverified data
 Step9: Output results to csv file
 """
-
+ 
 import logging
 
 import pandas as pd
