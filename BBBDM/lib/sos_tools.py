@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from BBBDM.lib.data_processing import address_match_found, is_same_business
+from lib.data_processing import address_match_found, is_same_business
 
 
 def update_columns_sos(row: pd.Series) -> pd.Series:

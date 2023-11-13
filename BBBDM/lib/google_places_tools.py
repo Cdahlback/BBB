@@ -6,27 +6,30 @@ import pandas as pd
 import googlemaps
 import logging
 from dotenv import load_dotenv
+from pathlib import Path
 
-ENV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), os.pardir, ".env")
+ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
+print(ENV_PATH)
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 load_dotenv(dotenv_path=ENV_PATH)
 
-# try:
-#     gmaps = googlemaps.Client(os.getenv("GOOGLE_API_KEY"), timeout= None)
-# except:
-#     logging.error("Could not connect to Google API")
-#     raise Exception("Could not connect to Google Places API")
+try:
+    gmaps = googlemaps.Client(os.getenv("GOOGLE_API_KEY"), timeout= None)
+except:
+    logging.error("Could not connect to Google API")
+    raise Exception("Could not connect to Google Places API")
 
-# def find_place_by_exact_location(address:str) -> str:
-#     """
-#     Finds the location and returns place_id based on the known EXACT locaiton
+
+def find_place_by_exact_location(address:str) -> str:
+    """
+    Finds the location and returns place_id based on the known EXACT locaiton
     
-#     :parameter: address of the business
+    :parameter: address of the business
     
-#     :returns: place_id of the location for google
-#     """
-#     gmaps.find_place(input=address, input_type="textquery", fields=["place_id"])
+    :returns: place_id of the location for google
+    """
+    gmaps.find_place(input=address, input_type="textquery", fields=["place_id"])
 
 
 
@@ -52,12 +55,20 @@ def find_place_details(place_id:str) -> dict:
 
 
 
-def google_validation(dataframe:pd.DataFrame) -> pd.DataFrame:
+def google_validation(dataframe:pd.Series) -> pd.Series:
     """
-    Main google function which takes the valid data frame and then searches google for the business
-    and then returns a dataframe with the updated information, with the columsn updated to indicate
-    as such 
+    Takes in a Series and checks if the information is valid using the google places API
+
+    :parameter: Series of the information
+
+    :return: dataframe with the updated information
     """
+    #Check to see if the series contains the information that is expected, if not return a error
+    try:
+        dataframe["Address"]
+        dataframe["City"]
+        dataframe["State"]
+        dataframe["Zip"]
     #Iterate over the dataframe for verified locations and use those to find the place_id
 
     #Use that place_id to then find information on it and fill that out

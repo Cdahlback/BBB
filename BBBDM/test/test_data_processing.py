@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import os
+from pathlib import Path
 
 from BBBDM.lib.data_processing import (
     address_match_found,
@@ -7,7 +9,6 @@ from BBBDM.lib.data_processing import (
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
-
 
 # Test case for a successful scenario
 def test_successful_scenario():
@@ -27,6 +28,7 @@ def test_successful_scenario():
     result = get_valid_businesses_info(sample_csv)
 
     # Assert that the result is not None and contains expected data
+    os.remove(Path(__file__).parent / sample_csv)
     assert result is not None
     assert len(result) == 1  # Only 'Business A' is active in the sample data
 
@@ -56,6 +58,7 @@ def test_all_inactive(self):
     # Call the function with the sample CSV file
     result = get_valid_businesses_info(sample_csv)
 
+    os.remove(Path(__file__).parent / sample_csv)
     # Assert that the result is not None and contains expected data
     self.assertIsNotNone(result)
     self.assertEqual(len(result), 0)  # All businesses are inactive in this scenario

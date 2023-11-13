@@ -15,16 +15,16 @@ import logging
 
 import pandas as pd
 
-from BBBDM.lib.data_processing import (
+from lib.data_processing import (
     extract_data,
     filter_dataframes,
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
-from BBBDM.lib.google_places_tools import *
-from BBBDM.lib.Normalizing import normalize_dataframe
-from BBBDM.lib.sos_tools import compare_dataframes_sos
-from BBBDM.lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
+from lib.google_places_tools import *
+from lib.Normalizing import normalize_dataframe
+from lib.sos_tools import compare_dataframes_sos
+from lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
 
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
