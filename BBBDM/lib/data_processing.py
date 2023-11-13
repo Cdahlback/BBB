@@ -102,7 +102,7 @@ def extract_data(file_path: str) -> pd.DataFrame:
         return df
     except Exception as e:
         # Log error message
-        print(f"Error reading data from file: {file_path}. Error: {e}")
+        logging.debug(f"Error reading data from file: {file_path}. Error: {e}")
         return None
 
 
@@ -301,13 +301,15 @@ def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
         
 
         if active_businesses_df.empty:
-            return pd.DataFrame(columns=['business_name', 'active'])  # Return an empty DataFrame
-        # Log success message
-            logging.info(f"Successfully read and filtered data from file: {file_path} .No active businesses present.")
+           # Log success message
+           logging.info(f"Successfully read and filtered data from file: {file_path} .No active businesses present.")
+           return pd.DataFrame(columns=['business_name', 'active'])  # Return an empty DataFrame
+        
         else:
+            # Log success message
+            logging.info(f"Successfully read and filtered data from file: {file_path}")
             return active_businesses_df
-        # Log success message
-        logging.info(f"Successfully read and filtered data from file: {file_path}")
+        
     except Exception as e:
         # Log error message
         logging.error(f"Error reading or filtering data from file: {file_path}. Error: {e}")
