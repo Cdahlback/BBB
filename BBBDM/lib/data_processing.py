@@ -54,18 +54,25 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
         data_frames,
     )
 
+    #Merg
+
     # Removes duplicate columns
     # df = df_merged.loc[:,~df_merged.duplicated()]
     df = df_merged
     # Keeps only the needed cols defined earlier
     cols_to_keep = [col for col in cols_to_keep if col in df.columns]
     df = df[cols_to_keep]
+
+    # Group by 'firm_id' and aggregate all other columns into a list
+    df = df.groupby('firm_id').agg(lambda x: x.tolist()).reset_index()
+
     # Filter out all non-MN businesses
     try:
         df = df[df["state_incorporated"] == "MN"]
     except:
         logging.debug("state_incoporated didn't exist")
     # Create a new column with the address
+
     df["Address"] = df[["address_1", "address_2", "city",]].apply(
         lambda x: np.nan
         if pd.isna(x["address_1"]) or pd.isna(x["address_2"]) or pd.isna(x["city"])
