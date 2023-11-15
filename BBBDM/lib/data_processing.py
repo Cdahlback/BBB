@@ -54,8 +54,6 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
         data_frames,
     )
 
-    #Merg
-
     # Removes duplicate columns
     # df = df_merged.loc[:,~df_merged.duplicated()]
     df = df_merged
@@ -68,17 +66,17 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
 
     # Filter out all non-MN businesses
     try:
-        df = df[df["state_incorporated"] == "MN"]
+        df = df[df["state_incorporated"].apply(lambda x: "MN" in x)]
     except:
         logging.debug("state_incoporated didn't exist")
     # Create a new column with the address
 
-    df["Address"] = df[["address_1", "address_2", "city",]].apply(
-        lambda x: np.nan
-        if pd.isna(x["address_1"]) or pd.isna(x["address_2"]) or pd.isna(x["city"])
-        else f"{x['address_1']} {x['address_2']} {x['city']}",
-        axis=1,
+    #This handles address creation
+    df["Address"] = df.apply(
+    lambda x: [f"{a1} {a2 if not pd.isna(a2) else ''} {c}" if not (pd.isna(a1) or pd.isna(c)) else np.nan for a1, a2, c in zip(x["address_1"], x["address_2"], x["city"])],
+    axis=1,
     )
+
     # Renamed the addresses
     df = df.rename(
         columns={
