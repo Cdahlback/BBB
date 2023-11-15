@@ -59,18 +59,23 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
     # Keeps only the needed cols defined earlier
     cols_to_keep = [col for col in cols_to_keep if col in df.columns]
     df = df[cols_to_keep]
+
+    # Group by 'firm_id' and aggregate all other columns into a list
+    df = df.groupby('firm_id').agg(lambda x: x.tolist()).reset_index()
+
     # Filter out all non-MN businesses
     try:
-        df = df[df["state_incorporated"] == "MN"]
+        df = df[df["state_incorporated"].apply(lambda x: "MN" in x)]
     except:
         logging.debug("state_incoporated didn't exist")
     # Create a new column with the address
-    df["Address"] = df[["address_1", "address_2", "city",]].apply(
-        lambda x: np.nan
-        if pd.isna(x["address_1"]) or pd.isna(x["address_2"]) or pd.isna(x["city"])
-        else f"{x['address_1']} {x['address_2']} {x['city']}",
-        axis=1,
+
+    #This handles address creation
+    df["Address"] = df.apply(
+    lambda x: [f"{a1} {a2 if not pd.isna(a2) else ''} {c}" if not (pd.isna(a1) or pd.isna(c)) else np.nan for a1, a2, c in zip(x["address_1"], x["address_2"], x["city"])],
+    axis=1,
     )
+
     # Renamed the addresses
     df = df.rename(
         columns={
