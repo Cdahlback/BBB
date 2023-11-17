@@ -86,6 +86,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
             "city": "City",
         }
     )
+    # Remove duplicate values in the dataframe (i.e. duplicate phone numbers, emails, etc.)
     df = df.applymap(lambda x: list(set(x)) if isinstance(x, list) else x)
     # Remove duplicate columns in the dataframe
     df = df.loc[:, ~df.columns.duplicated()]
