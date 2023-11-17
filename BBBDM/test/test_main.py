@@ -5,7 +5,9 @@ import numpy as np
 
 import pandas as pd
 import pytest
+import sys
 
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from BBBDM.lib.data_processing import (
     extract_data,
@@ -46,7 +48,7 @@ def test_regression_extract_data():
 
     expected_df=pd.DataFrame(data1,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_path="../Data/mn_business.csv"
+    mn_business_path=str(Path(__file__).parent.parent / "Data/mn_business.csv")
     mn_business_df=extract_data(mn_business_path)
     mn_columns_set=set(mn_business_df.columns)
     mn_business_df=mn_business_df.head(10)
@@ -71,7 +73,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data2,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_address_path="../Data/mn_business_address.csv"
+    mn_business_address_path=str(Path(__file__).parent.parent / "Data/mn_business_address.csv")
     mn_business_address_df=extract_data(mn_business_address_path)
     mn_columns_set=set(mn_business_address_df.columns)
     mn_business_address_df=mn_business_address_df.head(10)
@@ -97,7 +99,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data3,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_contact_path="../Data/mn_business_contact.csv"
+    mn_business_contact_path=str(Path(__file__).parent.parent / "Data/mn_business_contact.csv")
     mn_business_contact_df=extract_data(mn_business_contact_path)
     mn_columns_set=set(mn_business_contact_df.columns)
     mn_business_contact_df=mn_business_contact_df.head(10)
@@ -123,7 +125,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data4,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_email_path="../Data/mn_business_email.csv"
+    mn_business_email_path=str(Path(__file__).parent.parent / "Data/mn_business_email.csv")
     mn_business_email_df=extract_data(mn_business_email_path)
     mn_columns_set=set(mn_business_email_df.columns)
     mn_business_email_df=mn_business_email_df.head(10)
@@ -148,7 +150,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data5,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_name_path="../Data/mn_business_name.csv"
+    mn_business_name_path=str(Path(__file__).parent.parent / "Data/mn_business_name.csv")
     mn_business_name_df=extract_data(mn_business_name_path)
     mn_columns_set=set(mn_business_name_df.columns)
     mn_business_name_df=mn_business_name_df.head(10)
@@ -171,7 +173,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data6,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_phone_path="../Data/mn_business_phone.csv"
+    mn_business_phone_path=str(Path(__file__).parent.parent / "Data/mn_business_phone.csv")
     mn_business_phone_df=extract_data(mn_business_phone_path)
     mn_columns_set=set(mn_business_phone_df.columns)
     mn_business_phone_df=mn_business_phone_df.head(10)
@@ -194,7 +196,7 @@ def test_regression_extract_data():
     
     expected_df=pd.DataFrame(data7,columns=columns)
     mn_columns_expected_set=set(expected_df.columns)
-    mn_business_url_path="../Data/mn_business_url.csv"
+    mn_business_url_path=str(Path(__file__).parent.parent / "Data/mn_business_url.csv")
     mn_business_url_df=extract_data(mn_business_url_path)
     mn_columns_set=set(mn_business_url_df.columns)
     mn_business_url_df=mn_business_url_df.head(10)
@@ -252,7 +254,7 @@ def test_regression_get_valid_business():
         "1979-09-04 00:00:00",
         "None",
     ],
-    "state_incorporated": ["MN", "1974-04-26 00:00:00", "MN", "MN", "None", "None", "None", "None"],
+    "state_incorporated": ["MN", "None", "MN", "MN", "None", "None", "None", "None"],
     "date_joined_bbb": [
         "1977-07-01 00:00:00",
         "None",
@@ -278,12 +280,12 @@ def test_regression_get_valid_business():
      })
 
      mn_columns_expected_set=set(expected_df.columns)
-     mn_business_path="../Data/mn_business.csv"
+     mn_business_path=str(Path(__file__).parent.parent / "Data/mn_business.csv")
      mn_business_active_df = get_valid_businesses_info(mn_business_path)
      mn_columns_set=set(mn_business_active_df.columns)
      mn_business_active_df=mn_business_active_df.head(10)
      assert mn_columns_set==mn_columns_expected_set
-get_valid_businesses_info("../Data/mn_business.csv")
+get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
 
 
 def test_regression_join_dataframe_firmid():
@@ -316,7 +318,7 @@ def test_regression_join_dataframe_firmid():
         "1979-09-04 00:00:00",
         "None",
     ],
-    "state_incorporated": ["MN", "1974-04-26 00:00:00", "MN", "MN", "None", "None", "None", "None"],
+    "state_incorporated": ["MN", "None", "MN", "MN", "None", "None", "None", "None"],
     "date_joined_bbb": [
         "1977-07-01 00:00:00",
         "None",
@@ -409,44 +411,34 @@ def test_regression_join_dataframe_firmid():
     "modifiedon": [None, "2019-10-11 10:10:03.44", "2017-10-17 13:16:13.217", "2022-10-26 13:24:22.737", "2018-09-07 17:01:48.927", "2018-09-07 17:01:51.03", "2018-09-07 17:01:54.593", "2018-09-07 17:01:56.927", "2018-05-25 12:07:02.457", None]
     })
 
-    expected_df=pd.DataFrame({
-    "firm_id": [2, 5, 7, 9],
-    "state_incorporated": ["MN", "MN", "MN", "MN"],
-    "name_id": [1, 2, 3, 4],
-    "BusinessName": ["Able Fence, Inc.", "Albin Chapel", "Albin Funeral Chapel Inc", "Albin Endeavor, Inc."],
-    "phone_id": [1.0, 2.0, 8.0, 9.0],
-    "Phone": ["6512224355", "9529149410", "7632242883", "6516451976"],
-    "url_id": [3, 6, 10, 12],
-    "Website": ["http://www.arthurwilliamsoptical.com/", "http://www.andersencorp.com", "http://www.asphaltmn.com", "http://twitter.com/asphaltmn"],
-    "email_id": [3, 6, 12, 13],
-    "Email": ["jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    "address_2": [np.nan, np.nan, np.nan,np.nan],  
-    "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    "zip_code": ["55404", "55344", "55102", "55116"],
-    "Address": [
-        "2200 Nicollet Ave Minneapolis",
-        "PO Box 46147 Eden Prairie",
-        "366 Saint Peter St Saint Paul",
-        "772 Cleveland Ave S Saint Paul"
-    ]
-    }
-)   
-    print(expected_df)
+    # expected_df=pd.DataFrame({
+    # "firm_id": [2, 7, 9],
+    # "state_incorporated": [["MN"], ["MN"], ["MN"]],
+    # "name_id": [[1], [5,6] ,[8,9]],
+    # "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.", "Albrecht Company"],["Arthur Williams Opticians","Arthur Williams Optical Inc"]],
+    # "phone_id":[ [1.0], [5.0], [8.0, 9.0, 10.0]],
+    # "Phone": [["6512224355"],["6516334510"],["6512242883", "7632242883", "6516451976"]],
+    # "url_id": [[],[],[3]],
+    # "Website": [[],[],["http://www.arthurwilliamsoptical.com/"]],
+    # "email_id": [[],[5,6],[7]],
+    # "Email": [[],"jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
+    # "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
+    # "address_2": [np.nan, np.nan, np.nan,np.nan],  
+    # "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
+    # "zip_code": ["55404", "55344", "55102", "55116"],
+    # "Address": ["2200 Nicollet Ave, Minneapolis", "PO Box 46147, Eden Prairie", "366 Saint Peter St, Saint Paul", "772 Cleveland Ave S, Saint Paul"]
 
+    # })
 
+    # print(expected_df)
 
-
-
-
-
-    mn_business = get_valid_businesses_info("../Data/mn_business.csv")
-    mn_business_address = extract_data("../Data/mn_business_address.csv")
-    mn_business_contact = extract_data("../Data/mn_business_contact.csv")
-    mn_business_email = extract_data("../Data/mn_business_email.csv")
-    mn_business_name = extract_data("../Data/mn_business_name.csv")
-    mn_business_phone = extract_data("../Data/mn_business_phone.csv")
-    mn_business_url = extract_data("../Data/mn_business_url.csv")
+    mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
+    mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
+    mn_business_contact = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_contact.csv"))
+    mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
+    mn_business_name = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_name.csv"))
+    mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
+    mn_business_url = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_url.csv"))
 
     result_df= join_dataframe_firmid(
     mn_business.head(10),
@@ -457,12 +449,10 @@ def test_regression_join_dataframe_firmid():
     mn_business_phone.head(10),
     mn_business_url.head(10)
 )
-    
-    
-    
+     
     print (result_df)
     assert expected_df==result_df
-''''
+
 
 test_regression_join_dataframe_firmid()  
 
@@ -470,7 +460,7 @@ test_regression_join_dataframe_firmid()
 
 
 
-
+'''
 def test_regression_valid_invalid_dataframe():
     merge_df=pd.DataFrame({
     "firm_id": [2, 5, 7, 9],
@@ -520,13 +510,13 @@ def test_regression_valid_invalid_dataframe():
 
     invalid_rows = pd.DataFrame()  # There are no invalid rows in the provided DataFrame
 
-    mn_business = get_valid_businesses_info("../Data/mn_business.csv")
-    mn_business_address = extract_data("../Data/mn_business_address.csv")
-    mn_business_contact = extract_data("../Data/mn_business_contact.csv")
-    mn_business_email = extract_data("../Data/mn_business_email.csv")
-    mn_business_name = extract_data("../Data/mn_business_name.csv")
-    mn_business_phone = extract_data("../Data/mn_business_phone.csv")
-    mn_business_url = extract_data("../Data/mn_business_url.csv")
+    mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
+    mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
+    mn_business_contact = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_contact.csv"))
+    mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
+    mn_business_name = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_name.csv"))
+    mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
+    mn_business_url = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_url.csv"))
 
     merged_df= join_dataframe_firmid(
     mn_business.head(10),

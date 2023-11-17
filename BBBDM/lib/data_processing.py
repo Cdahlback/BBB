@@ -1,5 +1,5 @@
 """
-Mine
+Mine 
 """
 import logging
 from functools import reduce
