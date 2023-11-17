@@ -65,7 +65,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
 
     # Filter out all non-MN businesses
     try:
-        df = df[df["state_incorporated"].apply(lambda x: "MN" in x)]
+        df = df[df["state_incorporated"].apply(lambda x: "MN" or pd.nan in x)]
     except:
         logging.debug("state_incoporated didn't exist")
     # Create a new column with the address
@@ -86,6 +86,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
             "city": "City",
         }
     )
+    df = df.applymap(lambda x: list(set(x)) if isinstance(x, list) else x)
     # Remove duplicate columns in the dataframe
     df = df.loc[:, ~df.columns.duplicated()]
     logging.info("Merging dataframes - Success")

@@ -82,33 +82,6 @@ def test_regression_extract_data():
 
     
 
-
-    data3=[
-    [1, 2, "Able Fence, Inc.", "ablefenceinc", True],
-    [2, 5, "Albin Chapel", "albinchapel", False],
-    [3, 5, "Albin Funeral Chapel Inc", "albinfuneralchapelinc", False],
-    [4, 5, "Albin Endeavor, Inc.", "albinendeavorinc", True],
-    [5, 7, "Albrecht Company", "albrechtcompany", True],
-    [6, 7, "Albrecht Enterprises, LLC", "albrechtenterprisesllc", False],
-    [8, 9, "Arthur Williams Opticians", "arthurwilliamsopticians", False],
-    [9, 9, "Arthur Williams Optical Inc", "arthurwilliamsopticalinc", False],
-    [10, 10, "Able Movers LLC", "ablemoversllc", True],
-    [11, 10, "Able Moving & Storage Inc", "ablemovingandstorageinc", False]
-]
-    columns=["name_id","firm_id","company_name","condensed_name","main"]
-    
-    expected_df=pd.DataFrame(data3,columns=columns)
-    mn_columns_expected_set=set(expected_df.columns)
-    mn_business_contact_path=str(Path(__file__).parent.parent / "Data/mn_business_contact.csv")
-    mn_business_contact_df=extract_data(mn_business_contact_path)
-    mn_columns_set=set(mn_business_contact_df.columns)
-    mn_business_contact_df=mn_business_contact_df.head(10)
-    assert mn_columns_set==mn_columns_expected_set
-
-
-    
-   
-    
     data4=[
     [2, 5, "office@albinchapel.com", None],
     [3, 5, "jimalbinson@gmail.com", None],
@@ -434,7 +407,6 @@ def test_regression_join_dataframe_firmid():
 
     mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
     mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
-    mn_business_contact = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_contact.csv"))
     mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
     mn_business_name = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_name.csv"))
     mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
@@ -443,7 +415,6 @@ def test_regression_join_dataframe_firmid():
     result_df= join_dataframe_firmid(
     mn_business.head(10),
     mn_business_address.head(10),
-    mn_business_contact.head(10),
     mn_business_email.head(10),
     mn_business_name.head(10),
     mn_business_phone.head(10),
@@ -512,7 +483,6 @@ def test_regression_valid_invalid_dataframe():
 
     mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
     mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
-    mn_business_contact = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_contact.csv"))
     mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
     mn_business_name = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_name.csv"))
     mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
@@ -521,7 +491,6 @@ def test_regression_valid_invalid_dataframe():
     merged_df= join_dataframe_firmid(
     mn_business.head(10),
     mn_business_address.head(10),
-    mn_business_contact.head(10),
     mn_business_email.head(10),
     mn_business_name.head(10),
     mn_business_phone.head(10),
