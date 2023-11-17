@@ -5,14 +5,13 @@ import os
 import pandas as pd
 import googlemaps
 import logging
-from dotenv import load_dotenv
-from pathlib import Path
 
-ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
-print(ENV_PATH)
+
+# ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
+# load_dotenv(dotenv_path=ENV_PATH)
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
-load_dotenv(dotenv_path=ENV_PATH)
+
 
 try:
     gmaps = googlemaps.Client(os.getenv("GOOGLE_API_KEY"), timeout= None)
@@ -30,7 +29,6 @@ def find_place_by_exact_location(address:str) -> str:
     :returns: place_id of the location for google
     """
     gmaps.find_place(input=address, input_type="textquery", fields=["place_id"])
-
 
 
 def find_places_by_name(name:str) -> str:
@@ -70,8 +68,11 @@ def google_validation(dataframe:pd.Series) -> pd.Series:
         dataframe["State"]
         dataframe["Zip"]
     #Iterate over the dataframe for verified locations and use those to find the place_id
-
+    except:
+        logging.error("Dataframe does not contain the correct information")
+        raise Exception("Dataframe does not contain the correct information")
     #Use that place_id to then find information on it and fill that out
+    
 
     #Checks using the website for a valid email and if it is then it will update the dataframe with that information
 
