@@ -45,7 +45,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
         "address_1",
         "address_2",
         "city",
-        "zip_code",
+        "zip",
     ]
     # Merges multiple dataframes on FirmID via the amazing reduce function and the merge with the lambda to iterate over it
     df_merged = reduce(
@@ -130,8 +130,6 @@ def concat_address(row: pd.Series) -> pd.Series:
         return row["Address 1"] + ", " + row["city"]
     else:
         return np.nan
-
-
 def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """
     Filter the DataFrame based on the following conditions:
@@ -168,7 +166,6 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
             )  # iF YES, THE row is valid. Append the row to the invalid_rows list
 
     return valid_rows, invalid_rows
-
 
 def address_match_found(historical_addresses, found_addresses):
     """

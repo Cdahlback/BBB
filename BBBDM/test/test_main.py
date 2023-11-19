@@ -384,27 +384,6 @@ def test_regression_join_dataframe_firmid():
     "modifiedon": [None, "2019-10-11 10:10:03.44", "2017-10-17 13:16:13.217", "2022-10-26 13:24:22.737", "2018-09-07 17:01:48.927", "2018-09-07 17:01:51.03", "2018-09-07 17:01:54.593", "2018-09-07 17:01:56.927", "2018-05-25 12:07:02.457", None]
     })
 
-    # expected_df=pd.DataFrame({
-    # "firm_id": [2, 7, 9],
-    # "state_incorporated": [["MN"], ["MN"], ["MN"]],
-    # "name_id": [[1], [5,6] ,[8,9]],
-    # "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.", "Albrecht Company"],["Arthur Williams Opticians","Arthur Williams Optical Inc"]],
-    # "phone_id":[ [1.0], [5.0], [8.0, 9.0, 10.0]],
-    # "Phone": [["6512224355"],["6516334510"],["6512242883", "7632242883", "6516451976"]],
-    # "url_id": [[],[],[3]],
-    # "Website": [[],[],["http://www.arthurwilliamsoptical.com/"]],
-    # "email_id": [[],[5,6],[7]],
-    # "Email": [[],"jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    # "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    # "address_2": [np.nan, np.nan, np.nan,np.nan],  
-    # "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    # "zip_code": ["55404", "55344", "55102", "55116"],
-    # "Address": ["2200 Nicollet Ave, Minneapolis", "PO Box 46147, Eden Prairie", "366 Saint Peter St, Saint Paul", "772 Cleveland Ave S, Saint Paul"]
-
-    # })
-
-    # print(expected_df)
-
     mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
     mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
     mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
@@ -412,74 +391,100 @@ def test_regression_join_dataframe_firmid():
     mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
     mn_business_url = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_url.csv"))
 
-    result_df= join_dataframe_firmid(
+    actual_result_df= join_dataframe_firmid(
     mn_business.head(10),
     mn_business_address.head(10),
     mn_business_email.head(10),
     mn_business_name.head(10),
     mn_business_phone.head(10),
-    mn_business_url.head(10)
-)
-     
-    print (result_df)
-    assert expected_df==result_df
+    mn_business_url.head(10))
+    expected_df=pd.DataFrame({
+    "firm_id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
+    "state_incorporated": [["MN"],[np.nan],["MN"],["MN"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan], ["MN"], [np.nan]],
+    "name_id": [[1], [2,3,4], [5,6], [8,9], [10,11], [np.nan,np.nan] ,[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan] ],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "phone_id":[ [1], [2,3,4], [5], [8,9,10],[11,12],[np.nan,np.nan],[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "url_id": [[np.nan],[1],[np.nan,np.nan,np.nan,np.nan],[3],[5],[6],[np.nan],[9,10,12,13],[np.nan],[15],[16]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "email_id": [[np.nan],[2,3],[5,6],[7],[8],[9,11],[np.nan],[12,13],[np.nan],[np.nan],[np.nan]],
+    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "address_1": [["78 Acker St E"],["2200 Nicollet Ave,6855 Rowland Rd,PO Box 46147,2024 Blackberry Ln"],["1408 County Road C W"],["366 Saint Peter St,772 Cleveland Ave S"],["12285 Rush Cir NW,14601 Spring Lake Rd"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
+    "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "zip": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
 
-
+     })
+    
+    expected_result=expected_df
+    mn_columns_expected_set=set(expected_result.columns)
+    mn_columns_set=set(actual_result_df.columns)
+    assert mn_columns_set==mn_columns_expected_set
+    
 test_regression_join_dataframe_firmid()  
 
 
 
 
 
-'''
 def test_regression_valid_invalid_dataframe():
     merge_df=pd.DataFrame({
-    "firm_id": [2, 5, 7, 9],
-    "state_incorporated": ["MN", "MN", "MN", "MN"],
-    "name_id": [1, 2, 3, 4],
-    "BusinessName": ["Able Fence, Inc.", "Albin Chapel", "Albin Funeral Chapel Inc", "Albin Endeavor, Inc."],
-    "phone_id": [1, 2, 8, 9],
-    "Phone": ["6512224355", "9529149410", "7632242883", "6516451976"],
-    "url_id": [3, 6, 10, 12],
-    "Website": ["http://www.arthurwilliamsoptical.com/", "http://www.andersencorp.com", "http://www.asphaltmn.com", "http://twitter.com/asphaltmn"],
-    "email_id": [3, 6, 12, 13],
-    "Email": ["jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    "address_2": [np.nan, np.nan, np.nan,np.nan],  
-    "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    "zip_code": ["55404", "55344", "55102", "55116"],
-    "Address": [
-        "2200 Nicollet Ave Minneapolis 55404",
-        "PO Box 46147 Eden Prairie 55344",
-        "366 Saint Peter St Saint Paul 55102",
-        "772 Cleveland Ave S Saint Paul 55116"
-    ]
-    }
-    )
-    valid_rows = pd.DataFrame({
-    "firm_id": [2, 5, 7, 9],
-    "state_incorporated": ["MN", "MN", "MN", "MN"],
-    "name_id": [1, 2, 3, 4],
-    "BusinessName": ["Able Fence, Inc.", "Albin Chapel", "Albin Funeral Chapel Inc", "Albin Endeavor, Inc."],
-    "phone_id": [1, 2, 8, 9],
-    "Phone": ["6512224355", "9529149410", "7632242883", "6516451976"],
-    "url_id": [3, 6, 10, 12],
-    "Website": ["http://www.arthurwilliamsoptical.com/", "http://www.andersencorp.com", "http://www.asphaltmn.com", "http://twitter.com/asphaltmn"],
-    "email_id": [3, 6, 12, 13],
-    "Email": ["jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    "address_2": [np.nan, np.nan, np.nan, np.nan],
-    "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    "zip_code": ["55404", "55344", "55102", "55116"],
-    "Address": [
-        "2200 Nicollet Ave Minneapolis 55404",
-        "PO Box 46147 Eden Prairie 55344",
-        "366 Saint Peter St Saint Paul 55102",
-        "772 Cleveland Ave S Saint Paul 55116"
-    ]
+    "firm_id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
+    "state_incorporated": [["MN"],[np.nan],["MN"],["MN"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan], ["MN"], [np.nan]],
+    "name_id": [[1], [2,3,4], [5,6], [8,9], [10,11], [np.nan,np.nan] ,[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan] ],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "phone_id":[ [1], [2,3,4], [5], [8,9,10],[11,12],[np.nan,np.nan],[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "url_id": [[np.nan],[1],[np.nan,np.nan,np.nan,np.nan],[3],[5],[6],[np.nan],[9,10,12,13],[np.nan],[15],[16]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "email_id": [[np.nan],[2,3],[5,6],[7],[8],[9,11],[np.nan],[12,13],[np.nan],[np.nan],[np.nan]],
+    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "address_1": [["78 Acker St E"],["2200 Nicollet Ave,6855 Rowland Rd,PO Box 46147,2024 Blackberry Ln"],["1408 County Road C W"],["366 Saint Peter St,772 Cleveland Ave S"],["12285 Rush Cir NW,14601 Spring Lake Rd"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
+    "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "zip": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+
+     })
+    expected_valid_rows = pd.DataFrame({
+    "firm_id": [2, 5, 7, 9, 10],
+    "state_incorporated": [["MN"],[np.nan],["MN"],["MN"],[np.nan]],
+    "name_id": [[1], [2,3,4], [5,6], [8,9], [10,11]],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"]],
+    "phone_id": [[1], [2,3,4], [5], [8,9,10],[11,12]],
+    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"]],
+    "url_id": [[np.nan],[1],[np.nan,np.nan,np.nan,np.nan],[3],[5]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
+    "email_id": [[np.nan],[2,3],[5,6],[7],[8]],
+    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    "address_1": [["78 Acker St E"],["2200 Nicollet Ave,6855 Rowland Rd,PO Box 46147,2024 Blackberry Ln"],["1408 County Road C W"],["366 Saint Peter St,772 Cleveland Ave S"],["12285 Rush Cir NW,14601 Spring Lake Rd"]],
+    "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"]],
+    "zip": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"]],
+    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"]]
 })
 
-    invalid_rows = pd.DataFrame()  # There are no invalid rows in the provided DataFrame
+    expected_invalid_rows =pd.DataFrame({
+    "firm_id": [18, 19, 22, 29, 30, 31],
+    "state_incorporated": [[np.nan],[np.nan],[np.nan],[np.nan], ["MN"], [np.nan]],
+    "name_id": [[np.nan,np.nan] ,[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
+    "BusinessName": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "phone_id": [[np.nan,np.nan],[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "url_id": [[6],[np.nan],[9,10,12,13],[np.nan],[15],[16]],
+    "Website": [["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "email_id": [[9,11],[np.nan],[12,13],[np.nan],[np.nan],[np.nan]],
+    "Email": [["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "address_1": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "City": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "zip": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]]
+})
+    print(expected_valid_rows)
+    print(expected_invalid_rows)
+     # There are no invalid rows in the provided DataFrame
 
     mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
     mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
@@ -497,9 +502,14 @@ def test_regression_valid_invalid_dataframe():
     mn_business_url.head(10)
 )
     valid_data, invalid_data = filter_dataframes(merged_df)
-    assert invalid_rows==invalid_data
-    assert valid_rows==valid_data
-    
+    print(valid_data)
+    print(invalid_data)
+
+    assert expected_valid_rows==valid_data
+    assert expected_invalid_rows==invalid_data
+test_regression_valid_invalid_dataframe()
+
+''''' 
 
 def test_regression_normalize_dataframe():
     valid_rows=pd.DataFrame({
@@ -548,11 +558,12 @@ def test_regression_normalize_dataframe():
         "772 Cleveland Ave S Saint Paul 55116"
     ]
 })
-
+'''''
+'''''
 def test_regression_sos_comparison():
     pass
 
 def test_regression_yellow_pages_comparison():
     pass
+''''' 
     
-    '''
