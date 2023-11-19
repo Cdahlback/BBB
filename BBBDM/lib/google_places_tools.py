@@ -3,46 +3,93 @@ Various Google Places tool utilizing Google Places API
 """
 import os
 import pandas as pd
-import googlemaps
 import logging
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
 
-URL = 'https://places.googleapis.com/v1/places:searchText'
 
 ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
 load_dotenv(dotenv_path=ENV_PATH)
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
-class new_GoogleMaps:
+class google_maps:
     """
     The class that will be used to interact with the Google Maps API
     """
-    url = ''
-    fields = 'places.id'
-    headers = {
-        'Context-Type': 'application/json',
-        'X-Goog-Api-Key': os.getenv("GOOGLE_API_KEY"),
-        'X-Goog-FieldMask': fields
-    }
-    def __init__(self, url:str, fields:str):
+    api_key = ""
+    place_ids = []
+    # Initialized our object the url and fields that will be used
+    def __init__(self, api_key:str):
         """
         Initializes the class with the url and fields that will be used
         """
-        self.url = url
-        self.fields = fields
+        self.api_key = api_key
+    
+    def find_place(self, input:str):
+        """
+        Finds the place based on the input and input_type and returns the fields that are specified
+        
+        :parameter input: The input that is being searched for such as the name of the business
+
+        :parameter fields: The fields that are being returned from the API at the second level field and down
+
+        :return: dictionary of the information that is returned from the API
+        """
+        url = 'https://places.googleapis.com/v1/places:searchText'
+
+        headers = {
+            'Context-Type': 'application/json',
+            'X-Goog-Api-Key': self.api_key,
+            'X-Goog-FieldMask': 'places.id'
+        }
+        #Appends the first level field to the fields
+        # field_str = ""
+        # for field in fields:
+        #     if field == "displayName":
+        #         field_str = field_str + ",places.displayName.text"
+        #     else:
+        #         field_str = field_str + ",places." + field.strip()
+
+        data = {
+            'textQuery': input,
+        }
+        #Sends the request to the API and returns the json
+        try:
+            logging.info("Sending request to Google API for place_id")
+            response = requests.post(url, headers=headers, data=data)
+            if response.status_code == 200:
+                self.place_ids =  response.json()['places'].values()
+        except:
+            logging.error("Could not connect to Google API")
+            raise Exception("Could not connect to Google Places API")
+        
+    def find_details(self,input: str) -> dict:
+        """
+        Finds the details of the place based on the place_id and returns the fields that are specified
+
+        :parameter input: The input that is being searched for such as the name of the business
+
+        :parameter fields: The fields that are being returned from the API at the second level field and down
+        """
+        self.find_place(input)
+
+        if not self.place_ids:
+            logging.error("Could not find place_id")
+            return None
+    
+url = 'https://places.googleapis.com/v1/places:searchText'
 
 headers = {
     'Context-Type': 'application/json',
     'X-Goog-Api-Key': os.getenv("GOOGLE_API_KEY"),
-    'X-Goog-FieldMask': 'places.displayName,places.id'
+    'X-Goog-FieldMask': 'places.id'
 }
 data= {
-    'textQuery': 'River Rock Coffee, Mankato MN',
+    'textQuery': 'Invalid request that wont work mankato minnesota',
 }
-print(requests.post(URL, headers=headers, data=data).json())
+print(requests.post(url, headers=headers, data=data).json())
 try:
     gmaps = googlemaps.Client(key = os.getenv("GOOGLE_API_KEY"))
 except:
