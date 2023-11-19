@@ -284,7 +284,7 @@ def normalize_email(email: str) -> str:
     """
     This is a helper function that normalizes the email to fit BBB expectations
 
-    :param email: str of the emial
+    :param email: str of the email
 
     :returns: email as a str that is normalized"""
 
