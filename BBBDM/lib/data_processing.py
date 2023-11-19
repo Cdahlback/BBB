@@ -148,18 +148,29 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
 
     for idx, row in df.iterrows():
-        # Check ifthe 'name' column in the current row is null or empty
-        if pd.isna(row["BusinessName"]):
+
+        valid = False
+        # Check ifthe 'name' column in the current row has ANY values, other than np.nan
+        for name in row["BusinessName"]:
+            if pd.notna(name):
+                valid = True
+
+        if not valid:
             invalid_rows = invalid_rows.append(row, ignore_index=True)
             continue  # skip the rest of the current loop iteration
 
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
         counter = 0
 
-        for column in ["Address", "Email", "Phone", "Zipcode"]:
-            # Check if the current column's data is not null and not empty
-            if not pd.isna(row[column]):
-                counter += 1  # Increment the counter if the column's data is non- empty
+        for column in ["Address", "Email", "Phone", "zip"]:
+            found = False
+            # Check ifthe column in the current row has ANY values, other than np.nan
+            for val in row[column]:
+                if pd.notna(val):
+                    found = True
+
+            if found:
+                counter += 1
 
         # Check if the counter( number of non-rmpty columns) is greater than xero
         if counter > 0:
