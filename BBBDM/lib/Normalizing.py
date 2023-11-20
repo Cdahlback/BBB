@@ -130,13 +130,14 @@ def normalize_address_i18n(raw_address: str) -> str:
         address_list = raw_address.split(',')
         address_dict = {
             'street_address': address_list[0],
-            'city': address_list[1].split(' ')[0],
-            'country_area': 'MN',
-            'postal_code': address_list[1].split(' ')[1]
+            'city': address_list[1],
+            'country_area': 'Minnesota',
+            'country_code': 'US',
+            'postal_code': address_list[2]
         }
         normalized_address = normalize_address(address_dict)
         logging.info(f"Successfully normalized address: {normalized_address}")
-        normalize_address = f"{normalized_address['street_address']},{normalized_address['city']} {normalized_address['postal_code']}"
+        normalize_address = f"{normalized_address['street_address']},{normalized_address['city'].lower()},{normalized_address['postal_code']}"
         return normalized_address
     except Exception as e:
         logging.error(f"Failed to normalize address due to error: {str(e)}")
