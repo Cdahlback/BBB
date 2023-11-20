@@ -136,7 +136,7 @@ class google_maps:
                         # Split the address into the different parts and then normalize them based on commas
                         address = response.json()["formattedAddress"].split(",")
                         return_values["Address"].append(
-                            normalize_address_i18n(
+                            normalize_address_i18n(f"{address[0]}, {address[1]}}"
                                 {
                                     "street_address": address[0],
                                     "city": address[1],
@@ -209,15 +209,17 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
     business_name = "BusinessName"
     address = "Address"
 
-    if dataframe["BusinessName_Found"]:
+    if dataframe["BusinessNameCorrect"]:
         sos_worked = True
-        if dataframe["BusinessName_Update"]:
-            business_name = "BusinessName_Update"
+        for name in dataframe["BusinessNameUpdate"]:
+            if not pd.isna(name):
+                business_name = "BusinessNameUpdate"
 
-    if dataframe["Address_Found"]:
+    if dataframe["AddressCorrect"]:
         sos_worked = True
-        if dataframe["Address_Update"]:
-            address = "Address_Update"
+        for address in dataframe["AddressUpdate"]:
+            if not pd.isna(address):
+                address = "AddressUpdate"
 
     if sos_worked:
         search_list = [business_name, address]
@@ -237,6 +239,10 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
                     # Extra security check for pd.isna
                     if pd.isna(record):
                         continue
+                    # Add Minnesota to the end of the record if it is a business name
+                    if search == "BusinessName" or "BusinessNameUpdate":
+                        record = record + " Minnesota"
+                    #Actual code call  
                     info = google.details(record)
 
                     # Success check
@@ -255,16 +261,27 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
         return dataframe
 
     # Checks to see if the BusinessNames match, if not update dataframe['BusinessName_Update'] to the new value, always update dataframe['BusinessName_Found'] to Google
-    if not dataframe["BusinessName_Found"]:
-        if dataframe["BusinessName"] == info["Name"]:
-            dataframe["BusinessName_Found"] = "Google"
-        else:
-            # Do a normalization check to see if the names are similar enough
-            if is_same_business(dataframe["BusinessName"], info["Name"]):
-                dataframe["BusinessName_Found"] = "Google"
-            else:
-                dataframe["BusinessName_Update"] = info["Name"]
-                dataframe["BusinessName_Found"] = "Google"
+    new_names = []
+    update_names = False
+    if not dataframe["BusinessNameCorrect"]:
+        #Looks through the list of business names to see if any of them match
+        for bname in dataframe["BusinessName"]:
+            for newbname in info["Name"]:
+                #If it straight up matches it shows here
+                if bname == newbname:
+                    dataframe["BusinessNameFound"] = "Google"
+                    dataframe["BusinessNameCorrect"] = True
+                    update_names = True
+                    new_names.append(newbname)
+                else:
+                    # Do a normalization check to see if the names are similar enough
+                    if is_same_business(bname, info["Name"]):
+                        dataframe["BusinessNameFound"] = "Google"
+                        dataframe["BusinessNameCorrect"] = True
+                        dataframe["BusinessNameUpdate"] = info["Name"]
+                    else:
+                        dataframe["BusinessNameUpdate"] = info["Name"]
+                        dataframe["BusinessNameFound"] = "Google"
 
     # Repat this process for address
     if not dataframe["Address_Found"]:
