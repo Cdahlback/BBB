@@ -12,6 +12,7 @@ Step9: Output results to csv file
 """
 
 import logging
+from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -21,17 +22,17 @@ from lib.data_processing import (
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
-from lib.google_places_tools import *
+from lib.google_places_tools import google_validation
 from lib.Normalizing import normalize_dataframe
 from lib.sos_tools import compare_dataframes_sos
 from lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
-from pathlib import Path
 
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
-#Loads the .env file
+# Loads the .env file
 ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
 load_dotenv(dotenv_path=ENV_PATH)
+
 
 def main():
     """
