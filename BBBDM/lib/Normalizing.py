@@ -116,7 +116,7 @@ def standardizeName(name: str) -> str:
     name = re.sub(' {2,}', ' ', name)
     return name.strip()
 
-def normalize_address_i18n(raw_address: dict) -> dict:
+def normalize_address_i18n(raw_address: str) -> str:
     """
     Utilizes the i18naddress library to normalize and structure address data.
     
@@ -127,8 +127,16 @@ def normalize_address_i18n(raw_address: dict) -> dict:
     - dict: A structured and normalized address dictionary.
     """
     try:
-        normalized_address = normalize_address(raw_address)
+        address_list = raw_address.split(',')
+        address_dict = {
+            'street_address': address_list[0],
+            'city': address_list[1].split(' ')[0],
+            'country_area': 'MN',
+            'postal_code': address_list[1].split(' ')[1]
+        }
+        normalized_address = normalize_address(address_dict)
         logging.info(f"Successfully normalized address: {normalized_address}")
+        normalize_address = f"{normalized_address['street_address']},{normalized_address['city']} {normalized_address['postal_code']}"
         return normalized_address
     except Exception as e:
         logging.error(f"Failed to normalize address due to error: {str(e)}")

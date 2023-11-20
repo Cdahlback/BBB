@@ -72,7 +72,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
 
     #This handles address creation
     df["Address"] = df.apply(
-    lambda x: [f"{a1} {a2 if not pd.isna(a2) else ''} {c}" if not (pd.isna(a1) or pd.isna(c)) else np.nan for a1, a2, c in zip(x["address_1"], x["address_2"], x["city"])],
+    lambda x: [f"{a1} {a2 if not pd.isna(a2) else ''},{c} {d}" if not (pd.isna(a1) or pd.isna(c)) else np.nan for a1, a2, c, d in zip(x["address_1"], x["address_2"], x["city"], x['zip'])],
     axis=1,
     )
 
