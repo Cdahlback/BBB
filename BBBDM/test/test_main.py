@@ -414,7 +414,7 @@ def test_regression_join_dataframe_firmid():
     "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
     "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Zipcode": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
 
      })
     
@@ -426,7 +426,7 @@ def test_regression_join_dataframe_firmid():
     
 test_regression_join_dataframe_firmid()  
 
-'''''
+
 def test_regression_valid_invalid_dataframe():
     merge_df=pd.DataFrame({
     "Firm_Id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
@@ -443,7 +443,7 @@ def test_regression_valid_invalid_dataframe():
     "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
     "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "zip": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
 
      })
     expected_valid_rows = pd.DataFrame({
@@ -453,7 +453,7 @@ def test_regression_valid_invalid_dataframe():
     "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
     "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
     "Zipcode": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"]],
-    "Address": [["78 Acker St E  Saint Paul"],["PO Box 46147  Eden Prairie,6855 Rowland Rd  Eden Prairie,2024 Blackberry Ln  Wayzata,2200 Nicollet Ave  Minneapolis"],["1408 County Road C W  Roseville"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["12285 Rush Cir NW  Elk River,14601 Spring Lake Rd  Minnetonka"]]
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"]]
 })
 
     expected_invalid_rows =pd.DataFrame({
@@ -492,7 +492,7 @@ def test_regression_valid_invalid_dataframe():
     assert expected_invalid_rows==invalid_data
 test_regression_valid_invalid_dataframe()
 
-''''' 
+
 '''''
 def test_regression_normalize_dataframe():
     valid_rows=pd.DataFrame({
