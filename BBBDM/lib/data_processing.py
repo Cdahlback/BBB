@@ -168,11 +168,8 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
             found = False
             # Check ifthe column in the current row has ANY values, other than np.nan
             for val in row[column]:
-                for attr in val:
-                    if pd.notna(attr):
-                        found = True
-                        continue 
-                if found:
+                if pd.notna(val):
+                   found = True
                    continue # skip the rest of the current loop iteration
 
             if found:
