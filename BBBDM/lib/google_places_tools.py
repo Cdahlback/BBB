@@ -213,13 +213,13 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
 
     if dataframe["BusinessName_Found"]:
         sos_worked = True
-        if dataframe["BusinessName_Updated"]:
-            business_name = "BusinessName_Updated"
+        if dataframe["BusinessName_Update"]:
+            business_name = "BusinessName_Update"
 
     if dataframe["Address_Found"]:
         sos_worked = True
-        if dataframe["Address_Updated"]:
-            address = "Address_Updated"
+        if dataframe["Address_Update"]:
+            address = "Address_Update"
 
     if sos_worked:
         search_list = [business_name, address]
@@ -256,7 +256,7 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
         logging.info("Could not find any information using Google Places API")
         return dataframe
 
-    # Checks to see if the BusinessNames match, if not update dataframe['BusinessName_Updated'] to the new value, always update dataframe['BusinessName_Found'] to Google
+    # Checks to see if the BusinessNames match, if not update dataframe['BusinessName_Update'] to the new value, always update dataframe['BusinessName_Found'] to Google
     if not dataframe["BusinessName_Found"]:
         if dataframe["BusinessName"] == info["Name"]:
             dataframe["BusinessName_Found"] = "Google"
@@ -265,7 +265,7 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
             if is_same_business(dataframe["BusinessName"], info["Name"]):
                 dataframe["BusinessName_Found"] = "Google"
             else:
-                dataframe["BusinessName_Updated"] = info["Name"]
+                dataframe["BusinessName_Update"] = info["Name"]
                 dataframe["BusinessName_Found"] = "Google"
 
     # Repat this process for address
@@ -277,7 +277,7 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
             dataframe["Address_Found"] = "Google"
         else:
             dataframe[
-                "Address_Updated"
+                "Address_Update"
             ] = f"{info['Address']['street_address']}, {info['Address']['city']}, {info['Address']['country_area']}"
             dataframe["Address_Found"] = "Google"
 
@@ -286,7 +286,7 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
         if dataframe["Phone"] == info["PhoneNumber"]:
             dataframe["Phone_Found"] = "Google"
         else:
-            dataframe["Phone_Updated"] = info["PhoneNumber"]
+            dataframe["Phone_Update"] = info["PhoneNumber"]
             dataframe["Phone_Found"] = "Google"
 
     # Repat this process for website
@@ -294,7 +294,7 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
         if dataframe["Website"] == info["Website"]:
             dataframe["Website_Found"] = "Google"
         else:
-            dataframe["Website_Updated"] = info["Website"]
+            dataframe["Website_Update"] = info["Website"]
             dataframe["Website_Found"] = "Google"
 
     return dataframe
