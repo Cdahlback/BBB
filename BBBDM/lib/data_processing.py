@@ -85,6 +85,7 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
             "email": "Email",
             "url": "Website",
             "city": "City",
+            "zip_code": "Zipcode",
         }
     )
     # Remove duplicate columns in the dataframe
