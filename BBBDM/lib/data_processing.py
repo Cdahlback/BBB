@@ -79,11 +79,13 @@ def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
     # Renamed the addresses
     df = df.rename(
         columns={
+            "firm_id": "Firm_Id",
             "company_name": "BusinessName",
             "phone": "Phone",
             "email": "Email",
             "url": "Website",
             "city": "City",
+            "zip": "Zipcode",
         }
     )
     # Remove duplicate values in the dataframe (i.e. duplicate phone numbers, emails, etc.)
@@ -139,10 +141,10 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     """
     valid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Address", "Email", "Phone", "Zipcode"]
+        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "Zipcode","Address"]
     )
     invalid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Address", "Email", "Phone", "Zipcode"]
+        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "Zipcode","Address"]
     )
 
     # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
@@ -162,12 +164,16 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
         counter = 0
 
-        for column in ["Address", "Email", "Phone", "zip"]:
+        for column in ["BusinessName", "Phone","Website", "Email", "Zipcode","Address"]:
             found = False
             # Check ifthe column in the current row has ANY values, other than np.nan
             for val in row[column]:
-                if pd.notna(val):
-                    found = True
+                for attr in val:
+                    if pd.notna(attr):
+                        found = True
+                        continue 
+                if found:
+                   continue # skip the rest of the current loop iteration
 
             if found:
                 counter += 1
