@@ -3,12 +3,10 @@ Various Google Places tool utilizing Google Places API
 """
 import logging
 import os
-from pathlib import Path
 
 import pandas as pd
 import requests
 from lib.data_processing import is_same_business
-from dotenv import load_dotenv
 from lib.Normalizing import (
     normalize_address_i18n,
     normalize_url,
