@@ -1,0 +1,15 @@
+from email_validator import validate_email
+
+def test_validate_email():
+    # Test cases for validate_email
+    assert validate_email("john.doe@company.com", "Company Inc.", "john.doe@company.com"), "Test failed: Exact email match"
+    assert validate_email("john.doe@company.com", "Company Inc.", "jane.doe@company.com"), "Test failed: Same domain, different user"
+    assert validate_email("contact@company.co", "Company Inc.", "info@company.co"), "Test failed: Same domain, different prefixes"
+
+    assert not validate_email("john.doe@company.com", "Company Inc.", "john.doe@different.com"), "Test failed: Different domain"
+    assert not validate_email("john.doe@company.com", "Company Inc.", "john.doe@company.org"), "Test failed: Same name, different domain type"
+    assert not validate_email("john.doe@company.com", "Company Inc.", "jane.doe@completelydifferent.com"), "Test failed: Completely different domain"
+
+# Run the test function
+if __name__ == "__main__":
+    test_validate_email()
