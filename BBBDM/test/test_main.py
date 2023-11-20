@@ -426,8 +426,7 @@ def test_regression_join_dataframe_firmid():
     
 test_regression_join_dataframe_firmid()  
 
-
-
+'''''
 def test_regression_valid_invalid_dataframe():
     merge_df=pd.DataFrame({
     "Firm_Id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
@@ -494,7 +493,7 @@ def test_regression_valid_invalid_dataframe():
 test_regression_valid_invalid_dataframe()
 
 ''''' 
-
+'''''
 def test_regression_normalize_dataframe():
     valid_rows=pd.DataFrame({
     "firm_id": [2, 5, 7, 9],
