@@ -6,55 +6,65 @@ from email_validator import validate_email, EmailNotValidError
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename='functions.log', level=logging.DEBUG)
 
-def normalize_email(email:str) ->str:
+
+def normalize_email(emails: list[str]) -> list[str]:
     """
-This is a helper function that normalizes the email to fit BBB expectations
+    This is a helper function that normalizes the email to fit BBB expectations
+    1. Strip spaces
+    2. Convert to lowercase
+    3. Remove non-alphanumeric except for . _ - @
+    4. Validate the email with our validate_email package function
 
-:param email: str of the emial
+    :param emails: list of email values for a SPECIFIC business
 
-:returns: email as a str that is normalized"""
+    :returns: email as a str that is normalized"""
+    normalized_emails = []
 
-    try:
-        # Normalize and validate the email using email-validator library
-        # 1. Strip leading and trailing spaces in the email
-        # 2. Convert all characters to lowercase
-        # 3. Remove non-alphanumeric characters except for . _ - @
-        normalized_email = ''.join(e.lower() for e in email.strip() if e.isalnum() or e in '._-@')
-        #normalized the valid email
-        valid_email = validate_email(normalized_email).normalized
-        logging.info("Valid email normalized")
-        return valid_email
-    except EmailNotValidError as e:
-     # Handle invalid emails by logging and returning the original email
-        logging.debug(f'Invalid email: {str(e)}')
-        return email  # Return the original email for invalid ones
+    for email in emails:
+        if not isinstance(email, str):
+            continue
+        try:
+            # Steps 1-3
+            normalized_email = ''.join(e.lower() for e in email.strip() if e.isalnum() or e in '._-@')
+            # Step 4
+            valid_email = validate_email(normalized_email).normalized
+            logging.info("Valid email normalized")
+            normalized_emails.append(valid_email)
+        except EmailNotValidError as e:
+            logging.debug(f'{email} not valid, removing from email list')
+            continue
+
+    return normalized_emails
+
     
-def normalize_zipcode(zipcode_list):
-    standardized_zipcodes = []
+def normalize_zipcode(zipcodes: list[str]) -> list[str]:
+    """
+    Function to normalize a list of zipcodes for a business
 
-    for zipcode in zipcode_list:
+    :param zipcodes: list of zipcode values for a SPECIFIC business
+    1. Removed non-numeric characters
+    2. Ensures length of 5
+    """
+    normalized_zipcodes = []
+
+    for zipcode in zipcodes:
+        if not isinstance(zipcode, str):
+            continue
         try:
             # Remove white spaces and non-numeric characters
             standardized_zipcode = re.sub(r'\s|\D', '', zipcode)
 
             # Check if the standardized zipcode has a length of 5
             if len(standardized_zipcode) == 5:
-                standardized_zipcodes.append(standardized_zipcode)
-            else:
-                standardized_zipcodes.append("N/A")
+                normalized_zipcodes.append(standardized_zipcode)
         except Exception as e:
-            # Handle exceptions by marking the zip code as "Error"
-            logging.debug(f"Error processing zip code '{zipcode}': {str(e)}")
-            standardized_zipcodes.append("Error")
+            logging.debug(f"{zipcode} not valid, removing from zipcode list")
+            continue
 
-    # Create a DataFrame
-    data = {'Original Zip Code': zipcode_list, 'Standardized Zip Code': standardized_zipcodes}
-    df = pd.DataFrame(data)
-
-    return df
-    
     return normalized_zipcodes
-def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
+    
+
+def normalize_dataframe(df: list[str]) -> list[str]:
     """
     This function serves to normalize various columns within a given DataFrame. The columns targeted for normalization
     include "Email", "Phone Number", and "Zipcode". Each of these columns are subjected to their designated normalization 
@@ -74,7 +84,8 @@ def normalize_dataframe(df:pd.DataFrame) -> pd.DataFrame:
     df['Address'] = df['Address'].apply(normalize_address_i18n)
     return df
 
-def normalize_us_phone_number(phone_str: str) -> str:
+
+def normalize_us_phone_number(phones: list[str]) -> list[str]:
     """
     Designed to process U.S. phone numbers, this function:
     1. Extracts all numeric digits.
@@ -83,20 +94,28 @@ def normalize_us_phone_number(phone_str: str) -> str:
     If the input doesn't match expected lengths for U.S. phone numbers, a ValueError is raised.
     
     Parameters:
-    - phone_str (str): The raw phone number string to be normalized.
+    - phone_str (str): The list of raw phone number strings to be normalized.
     
     Returns:
-    - str: Returns the normalized U.S. phone number.
+    - list[str]: Returns the normalized U.S. phone number.
     """
-    digits = ''.join(filter(str.isdigit, phone_str))
-    if len(digits) == 10:
-        return f"+1 {digits[:3]}-{digits[3:6]}-{digits[6:]}"
-    elif len(digits) == 11 and digits[0] == '1':
-        return f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}"
-    else:
-        raise ValueError(f"'{phone_str}' does not match valid U.S. phone number formats.")
+    normalized_phones = []
+    for phone in phones:
+        if not isinstance(phone, str):
+            continue
+        digits = ''.join(filter(str.isdigit, phone))
+        if len(digits) == 10:
+            normalized_phones.append(f"+1 {digits[:3]}-{digits[3:6]}-{digits[6:]}")
+        elif len(digits) == 11 and digits[0] == '1':
+            normalized_phones.append(f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}")
+        else:
+            logging.info(f"{phone} not valid, removing from phone list")
+            continue
 
-def standardizeName(name: str) -> str:
+    return normalized_phones
+
+
+def standardizeName(names: list[str]) -> list[str]:
     """
     This function standardizes business names by:
     1. Converting the entire name to lowercase.
@@ -105,45 +124,60 @@ def standardizeName(name: str) -> str:
     4. Trimming extra spaces.
     
     Parameters:
-    - name (str): The business name that requires standardization.
+    - name (list[str]): The business names that requires standardization.
     
     Returns:
-    - str: Returns the standardized business name.
+    - str: Returns a list of the standardized business names.
     """
-    name = name.lower()
-    name = re.sub('&', ' and ', name)
-    name = re.sub('[^a-z\s-]', '', name)
-    name = re.sub(' {2,}', ' ', name)
-    return name.strip()
+    normalized_names = []
+    for name in names:
+        if not isinstance(name, str):
+            continue
+        try:
+            name = name.lower()
+            name = re.sub('&', ' and ', name)
+            name = re.sub('[^a-z\s-]', '', name)
+            name = re.sub(' {2,}', ' ', name)
+            normalized_names.append(name)
+        except Exception as e:
+            logging.info(f"{name} not valid, removing from list")
+            continue
+    return normalized_names
 
-def normalize_address_i18n(raw_address: str) -> str:
+
+def normalize_address_i18n(addresses: list[str]) -> list[str]:
     """
     Utilizes the i18naddress library to normalize and structure address data.
     
     Parameters:
-    - raw_address (dict): Dictionary containing raw address details.
+    - raw_address (list[str]): Contains list of raw address details.
     
     Returns:
-    - dict: A structured and normalized address dictionary.
+    - list[str]: A structured and normalized address list.
     """
-    try:
-        address_list = raw_address.split(',')
-        address_dict = {
-            'street_address': address_list[0],
-            'city': address_list[1],
-            'country_area': 'Minnesota',
-            'country_code': 'US',
-            'postal_code': address_list[2]
-        }
-        normalized_address = normalize_address(address_dict)
-        logging.info(f"Successfully normalized address: {normalized_address}")
-        normalize_address = f"{normalized_address['street_address']},{normalized_address['city'].lower()},{normalized_address['postal_code']}"
-        return normalized_address
-    except Exception as e:
-        logging.error(f"Failed to normalize address due to error: {str(e)}")
-        return None
+    normalized_addresses = []
+    for address in addresses:
+        try:
+            address_list = address.split(',')
+            address_dict = {
+                'street_address': address_list[0],
+                'city': address_list[1],
+                'country_area': 'Minnesota',
+                'country_code': 'US',
+                'postal_code': address_list[2]
+            }
+            normalized_address = normalize_address(address_dict)
+            logging.info(f"Successfully normalized address: {normalized_address}")
+            valid_normalize_address = f"{normalized_address['street_address']},{normalized_address['city'].lower()},{normalized_address['postal_code']}"
+            normalized_addresses.append(valid_normalize_address)
+        except Exception as e:
+            logging.error(f"{address} not valid, removing from address list")
+            continue
 
-def normalize_url(url: str) -> str:
+    return normalized_addresses
+
+
+def normalize_url(urls: list[str]) -> list[str]:
     """
     This function normalizes URLs by:
     1. Converting the entire URL to lowercase.
@@ -156,24 +190,33 @@ def normalize_url(url: str) -> str:
     Returns:
     - str: Returns the normalized URL.
     """
-    url = url.lower().replace(" ", "")
-    if not url.startswith(('http://', 'https://')):
-        url = 'http://' + url
-    logging.info(f"Successfully normalized URL: {url}")
-    return url
+    normalized_urls = []
+    for url in urls:
+        try:
+            url = url.lower().replace(" ", "")
+            if not url.startswith(('http://', 'https://')):
+                url = 'http://' + url
+            logging.info(f"Successfully normalized URL: {url}")
+            normalized_urls.append(url)
+        except Exception as e:
+            logging.info(f"{url} not valid, removing from list")
+
+    return normalized_urls
+
 
 if __name__ == "__main__":
     # Execute a series of tests to verify the functionality of the normalization functions.
-    business_name = "Example & Co."
+    business_name = ["Example & Co."]
     print("Normalized Business Name:", standardizeName(business_name))
     
-    raw_address = {
-        'country_area': 'CA',
-        'locality': 'Mountain View',
-        'postal_code': '94041',
-        'street_address': '1600 Amphitheatre Pkwy'
-    }
+    raw_address = ["78 Acker St E, Saint Paul, 55117"]
     print("Normalized Address:", normalize_address_i18n(raw_address))
     
-    url = "www.Example.com"
+    url = ["www.Example.com"]
     print("Normalized URL:", normalize_url(url))
+
+    phone = ["6512224355"]
+    print("Normalized Phone: ", normalize_us_phone_number(phone))
+
+    email = ["jimalbinson@gmail.com"]
+    print("Normalized Email: ", normalize_email(email))
