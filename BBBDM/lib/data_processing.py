@@ -180,7 +180,8 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     return valid_rows, invalid_rows
 
-def address_match_found(historical_addresses, found_addresses):
+
+def address_match_found(historical_address, found_address):
     """
     Function to compare historical and new addresses and determine if they match.
     Returns a new DataFrame with a 'match_found' column containing 1 for a match, 2 for matching cities, and 0 for no match.
@@ -191,41 +192,26 @@ def address_match_found(historical_addresses, found_addresses):
     Returns:
     a dataframe containing the historical address, the found address,the match_found and the city columns
     """
+
+    def compare_addresses(old, new):
+        if old == new:
+            return 1
+        elif old.split(",")[-1].strip() == new.split(",")[-1].strip():
+            return 2
+        else:
+            return 0
+
+    if not isinstance(found_address, str):
+        return 0
+
     try:
-        # Create a DataFrame with only the historical and new address columns
-        merged_df = pd.DataFrame(
-            {
-                "historical_address": historical_addresses,
-                "found_address": found_addresses,
-            }
-        )
-
-        def compare_addresses(row):
-            if row["historical_address"] == row["found_address"]:
-                return 1
-            elif (
-                row["historical_address"].split(",")[-1].strip()
-                == row["found_address"].split(",")[-1].strip()
-            ):
-                return 2
-            else:
-                return 0
-
         # Apply the compare_addresses function to each row to determine matches
-        merged_df["match_found"] = merged_df.apply(compare_addresses, axis=1)
+        result = compare_addresses(historical_address, found_address)
+        return result
 
-        # Add 'city_match_name' column using list comprehension
-        merged_df["city_match_name"] = [
-            "N/A" if match != 2 else address.split(",")[-1].strip()
-            for match, address in zip(
-                merged_df["match_found"], merged_df["found_address"]
-            )
-        ]
-        logging.info("Successful merge ")
-        return merged_df
     except Exception as e:
         logging.debug(f"Error occurred: {e}")
-        return False
+        return
 
 
 def is_same_business(
@@ -262,6 +248,9 @@ def is_same_business(
             name = name.replace(suffix, "")
 
         return name.strip()
+
+    if not isinstance(new_name, str):
+        return False
 
     # If not from SOS, preprocess the business names"
     if not is_SOS:

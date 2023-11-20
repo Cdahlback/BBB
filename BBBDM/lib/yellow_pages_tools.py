@@ -1,11 +1,24 @@
 import logging
-
+import time
 import pandas as pd
+
+from pandarallel import pandarallel
 from apify_client import ApifyClient
+from BBBDM.lib.data_processing import is_same_business
+
+pandarallel.initialize()
 
 
-scraped_yellow_pages_data = pd.DataFrame(columns=["Business Name", "City", "BusinessNameYP", "BusinessAddressYP",
-                                                  "BusinessPhoneYP", "BusinessWebsiteYP"])
+scraped_yellow_pages_data = pd.DataFrame(
+    columns=[
+        "Business Name",
+        "City",
+        "BusinessNameYP",
+        "BusinessAddressYP",
+        "BusinessPhoneYP",
+        "BusinessWebsiteYP",
+    ]
+)
 
 
 # Custom Exception class for Authentication Errors.
@@ -25,7 +38,7 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     """
 
     # For each row in the input data, try to scrape Yellow Pages data.
-    data.apply(call_scrape_yellow_page_data, axis=1)
+    data.parallel_apply(call_scrape_yellow_page_data, axis=1)
 
     # Iterate through each row of the data.
     for index, row in data.iterrows():
@@ -37,11 +50,10 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
         ):
             continue
 
+        # TODO: Fix this with a for loop. For each his_name, check if it matches any scraped data
         # Check if we have any data to update from the scraped_yellow_pages_data based on matching business name.
-        business_name = row["BusinessName"]
-        matching_row = scraped_yellow_pages_data[
-            scraped_yellow_pages_data["Business Name"] == business_name
-        ]
+        for his_name in row["BusinessName"]:
+            matching_row = scraped_yellow_pages_data[scraped_yellow_pages_data["Business Name"] == his_name]
 
         if not matching_row.empty:
             # Update data fields if they're not already populated.
@@ -65,22 +77,23 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     return data
 
 
-def call_scrape_yellow_page_data(data: pd.DataFrame) -> None:
+def call_scrape_yellow_page_data(row: pd.Series) -> None:
     """
     Calls the scrape_yellow_page_data function for each row in the dataframe.
     Extracts required fields and invokes the scraper function.
     Results from scraper are stored in a global dataframe.
 
-    :param data: Row from the dataframe.
+    :param row: Row from the dataframe.
     """
 
     # Construct the search term and location from the data.
     search_term = (
-        data["BusinessNameUpdate"]
-        if not pd.isna(data["BusinessNameUpdate"])
-        else data["BusinessName"]
+        row["BusinessNameUpdate"]
+        if not pd.isna(row["BusinessNameUpdate"])
+        # TODO: Change this so it makes sure not to grab a np.nan value
+        else row["BusinessName"][0]
     )
-    location = data["City"] if not pd.isna(data["City"]) else "Minnesota"
+    location = row["City"][0] if not pd.isna(row["City"]) else "Minnesota"
 
     if not isinstance(search_term, str):
         return
@@ -140,9 +153,12 @@ def scrape_yellow_page_data(
         logging.debug(f"Actor petr_cermak/yellow-pages-scraper failed, {e}")
         return False
 
+    # Future improvement: Should implement async instead of sleeping, will save time
+    time.sleep(7)
+
     # Iterate through the actor's results and return the relevant data based on the search term.
     for item in client.dataset(run["defaultDatasetId"]).iterate_items():
-        if item["name"] in searchTerm:
+        if is_same_business(item["name"], searchTerm):
             logging.info(
                 f"Updated row with business name: {searchTerm} from truth source: YP"
             )

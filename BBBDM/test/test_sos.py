@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+import pytest
 
 from BBBDM.lib.sos_tools import compare_dataframes_sos
 
@@ -8,10 +10,11 @@ def test_compare_dataframes_pass1():
     historicalData = pd.DataFrame(
         {
             "Firm_id": [1, 2, 3],
-            "BusinessName": ["XYZ Corp", "LMN Ltd", "ABC Inc"],
-            "Active": [True, False, True],
-            "Address": ["123 Main St", "789 Oak St", "456 Elm St"],
-            "Zip Code": ["12345", "67890", "54321"],
+            "BusinessName": [["XYZ Corp"], ["LMN Ltd"], ["ABC Inc"]],
+            "Active": [True, True, True],
+            "Address": [["123 Main St"], ["789 Oak St"], ["456 Elm St"]],
+            "Zip Code": [["12345"], ["67890"], ["54321"]],
+            "Email": [["cdahlback@gmail.com"], ["cdahlback@yahoo.com"], ["cdahlback@hotmail.com"]]
         }
     )
 
@@ -44,10 +47,10 @@ def test_compare_dataframes_pass2():
     historicalData = pd.DataFrame(
         {
             "Firm_id": [1, 2, 3],
-            "BusinessName": ["XYZ Corp", "LMN Ltd", "ABC Inc"],
+            "BusinessName": [["XYZ Corp"], ["LMN Ltd"], ["ABC Inc"]],
             "Active": [True, False, True],
-            "Address": ["123 Main St", "789 Oak St", "456 Elm St"],
-            "Zip Code": ["12345", "67890", "54321"],
+            "Address": [["123 Main St"], ["789 Oak St"], ["456 Elm St"]],
+            "Zip Code": [["12345"], ["67890"], ["54321"]],
         }
     )
 
@@ -97,18 +100,17 @@ def test_compare_dataframes_fail():
     historicalData = pd.DataFrame(
         {
             "Firm_id": [1, 2, 3],
-            "BusinessName": ["XYZ Corp", "LMN Ltd", "ABC Inc"],
+            "BusinessName": [["XYZ Corp"], ["LMN Ltd"], ["ABC Inc"]],
             "Active": [True, False, True],
-            "Address": ["123 Main St", "789 Oak St", "456 Elm St"],
-            "Zip Code": ["12345", "67890", "54321"],
+            "Address": [["123 Main St"], ["789 Oak St"], ["456 Elm St"]],
+            "Zip Code": [["12345"], ["67890"], ["54321"]],
         }
     )
 
     # Create a sample newData DataFrame which is empty
     newData = pd.DataFrame({})
 
-    # Call your function to find matching datapoints
-    error_message = compare_dataframes_sos(historicalData, newData)
+    # Use pytest.raises to check if compare_dataframes_sos raises ValueError
+    with pytest.raises(ValueError):
+        compare_dataframes_sos(historicalData, newData)
 
-    # Check if the result is an empty DataFrame
-    assert error_message is False
