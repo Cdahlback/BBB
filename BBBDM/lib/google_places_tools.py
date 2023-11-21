@@ -169,7 +169,7 @@ class google_maps:
         return return_values
 
 
-def google_validation(dataframe: pd.Series) -> pd.Series:
+def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     Takes in a Series and checks if the information is valid using the google places API
 
