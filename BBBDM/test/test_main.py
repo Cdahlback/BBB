@@ -403,18 +403,18 @@ def test_regression_join_dataframe_firmid():
     "Firm_Id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
     "state_incorporated": [["MN"],[np.nan],["MN"],["MN"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan], ["MN"], [np.nan]],
     "name_id": [[1], [2,3,4], [5,6], [8,9], [10,11], [np.nan,np.nan] ,[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan] ],
-    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "phone_id":[ [1], [2,3,4], [5], [8,9,10],[11,12],[np.nan,np.nan],[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
-    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "url_id": [[np.nan],[1],[np.nan,np.nan,np.nan,np.nan],[3],[5],[6],[np.nan],[9,10,12,13],[np.nan],[15],[16]],
-    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn","http://asphaltmn.com","http://www.asphaltmn.com","http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
     "email_id": [[np.nan],[2,3],[5,6],[7],[8],[9,11],[np.nan],[12,13],[np.nan],[np.nan],[np.nan]],
-    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
-    "address_1": [["78 Acker St E"],["2200 Nicollet Ave,6855 Rowland Rd,PO Box 46147,2024 Blackberry Ln"],["1408 County Road C W"],["366 Saint Peter St,772 Cleveland Ave S"],["12285 Rush Cir NW,14601 Spring Lake Rd"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com","jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com","office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "address_1": [["78 Acker St E"],["2024 Blackberry Ln","PO Box 46147","2200 Nicollet Ave","6855 Rowland Rd"],["1408 County Road C W"],["772 Cleveland Ave S","366 Saint Peter St"],["14601 Spring Lake Rd","12285 Rush Cir NW"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
-    "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Zipcode": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Zipcode": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
 
      })
     
@@ -432,36 +432,36 @@ def test_regression_valid_invalid_dataframe():
     "Firm_Id": [2, 5, 7, 9, 10, 18, 19, 22, 29, 30, 31],
     "state_incorporated": [["MN"],[np.nan],["MN"],["MN"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan], ["MN"], [np.nan]],
     "name_id": [[1], [2,3,4], [5,6], [8,9], [10,11], [np.nan,np.nan] ,[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan] ],
-    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "phone_id":[ [1], [2,3,4], [5], [8,9,10],[11,12],[np.nan,np.nan],[np.nan],[np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan],[np.nan],[np.nan],[np.nan]],
-    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "url_id": [[np.nan],[1],[np.nan,np.nan,np.nan,np.nan],[3],[5],[6],[np.nan],[9,10,12,13],[np.nan],[15],[16]],
-    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"],["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn","http://asphaltmn.com","http://www.asphaltmn.com","http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
     "email_id": [[np.nan],[2,3],[5,6],[7],[8],[9,11],[np.nan],[12,13],[np.nan],[np.nan],[np.nan]],
-    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
-    "address_1": [["78 Acker St E"],["2200 Nicollet Ave,6855 Rowland Rd,PO Box 46147,2024 Blackberry Ln"],["1408 County Road C W"],["366 Saint Peter St,772 Cleveland Ave S"],["12285 Rush Cir NW,14601 Spring Lake Rd"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"],["donna.dingle@andersencorp.com","jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com","office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "address_1": [["78 Acker St E"],["2024 Blackberry Ln","PO Box 46147","2200 Nicollet Ave","6855 Rowland Rd"],["1408 County Road C W"],["772 Cleveland Ave S","366 Saint Peter St"],["14601 Spring Lake Rd","12285 Rush Cir NW"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "address_2": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],  
-    "City": [["Saint Paul"],["Eden Prairie,Minneapolis,Wayzata"],["Roseville"],["Saint Paul"],["Elk River,Minnetonka"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "zip": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Zipcode": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
 
      })
     expected_valid_rows = pd.DataFrame({
     "Firm_Id": [2, 5, 7, 9, 10],
-    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.,Albin Funeral Chapel Inc,Albin Chapel"],["Albrecht Company,Albrecht Enterprises, LLC"],["Arthur Williams Opticians,Arthur Williams Optical Inc"],["Able Moving & Storage Inc,Able Movers LLC"]],
-    "Phone": [["6512224355"],["6122700491,6128711418,9529149410"],["6516334510"],["7632242883,6516451976,6512242883"],["9529350331,6129913264"]],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"]],
+    "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"]],
     "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
     "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
     "Zipcode": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"]],
-    "Address": [["78 Acker St E ,Saint Paul,55117"],["6855 Rowland Rd ,Eden Prairie,55344,2200 Nicollet Ave ,Minneapolis,55404,PO Box 46147 ,Eden Prairie,55344,2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St  Saint Paul,772 Cleveland Ave S  Saint Paul"],["366 Saint Peter St ,Saint Paul,55102,772 Cleveland Ave S ,Saint Paul,55116"]]
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"]]
 })
 
     expected_invalid_rows =pd.DataFrame({
     "Firm_Id": [18, 19, 22, 29, 30, 31],
     "BusinessName": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Phone": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Website": [["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn,http://asphaltmn.com,http://www.asphaltmn.com,http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
-    "Email": [["donna.dingle@andersencorp.com,jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com,office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "Website": [["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn","http://asphaltmn.com","http://www.asphaltmn.com","http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "Email": [["donna.dingle@andersencorp.com","jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com","office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
     "Zipcode": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Address": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]]
 })
