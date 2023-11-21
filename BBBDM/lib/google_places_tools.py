@@ -55,28 +55,21 @@ class google_maps:
 
         :return: dictionary of the information that is returned from the API
         """
-        url = "https://places.googleapis.com/v1/places:searchText"
+        self.url = "https://places.googleapis.com/v1/places:searchText"
 
-        headers = {
+        self.headers = {
             "Context-Type": "application/json",
             "X-Goog-Api-Key": self.api_key,
             "X-Goog-FieldMask": "places.id",
         }
-        # Appends the first level field to the fields
-        # field_str = ""
-        # for field in fields:
-        #     if field == "displayName":
-        #         field_str = field_str + ",places.displayName.text"
-        #     else:
-        #         field_str = field_str + ",places." + field.strip()
 
-        data = {
+        self.data = {
             "textQuery": input,
         }
         # Sends the request to the API and returns the json
         try:
             logging.info("Sending request to Google API for place_id")
-            response = requests.post(url, headers=headers, data=data)
+            response = requests.post(self.url, headers=self.headers, data=self.data)
             if response.status_code == 200:
                 try:
                     self.place_ids = response.json()["places"].values()
@@ -136,15 +129,9 @@ class google_maps:
                         # Split the address into the different parts and then normalize them based on commas
                         address = response.json()["formattedAddress"].split(",")
                         return_values["Address"].append(
-                            normalize_address_i18n(f"{address[0]}, {address[1]}}"
-                                {
-                                    "street_address": address[0],
-                                    "city": address[1],
-                                    "country_area": address[2].split(" ")[0],
-                                    "postal_code": address[2].split(" ")[1],
-                                }
+                            normalize_address_i18n(f"{address[0]},{address[1]},{address[2].split(' ')[-1]}")
                             )
-                        )
+                        
                         try:
                             return_values["PhoneNumber"].append(
                                 normalize_us_phone_number(
@@ -278,39 +265,67 @@ def google_validation(dataframe: pd.Series) -> pd.Series:
                     if is_same_business(bname, info["Name"]):
                         dataframe["BusinessNameFound"] = "Google"
                         dataframe["BusinessNameCorrect"] = True
-                        dataframe["BusinessNameUpdate"] = info["Name"]
+                        update_names = True
+                        new_names.append(newbname)
                     else:
-                        dataframe["BusinessNameUpdate"] = info["Name"]
+                        # If it doesn't match then we update the dataframe
+                        update_names = True
+                        new_names.append(bname)
                         dataframe["BusinessNameFound"] = "Google"
 
+    if update_names:
+        dataframe["BusinessNameUpdate"] = new_names
+
     # Repat this process for address
-    if not dataframe["Address_Found"]:
-        if (
-            dataframe["Address"]
-            == f"{info['Address']['street_address']}, {info['Address']['city']}, {info['Address']['country_area']}"
-        ):
-            dataframe["Address_Found"] = "Google"
-        else:
-            dataframe[
-                "Address_Update"
-            ] = f"{info['Address']['street_address']}, {info['Address']['city']}, {info['Address']['country_area']}"
-            dataframe["Address_Found"] = "Google"
+    new_addresses = []
+    update_addresses = False
+    if not dataframe["AddressCorrect"]:
+        for baddress in dataframe["Address"]:
+            for newbaddress in info["Address"]:
+                if (baddress == newbaddress):
+                    dataframe["AddressFound"] = "Google"
+                    dataframe["AddressCorrect"] = True
+                    update_addresses = True
+                    new_addresses.append(newbaddress)
+                else:
+                    update_addresses = True
+                    new_addresses.append(baddress)
+                    dataframe["AddressFound"] = "Google"
+
+    if update_addresses:
+        dataframe["AddressUpdate"] = new_addresses
 
     # Repat this process for phone
-    if info["PhoneNumber"]:
-        if dataframe["Phone"] == info["PhoneNumber"]:
-            dataframe["Phone_Found"] = "Google"
-        else:
-            dataframe["Phone_Update"] = info["PhoneNumber"]
-            dataframe["Phone_Found"] = "Google"
+    new_phones = []
+    update_phones = False
+    for phone in dataframe["Phone"]:
+        for newphone in info["PhoneNumber"]:
+            if phone == newphone:
+                dataframe["PhoneFound"] = "Google"
+                dataframe["PhoneCorrect"] = True
+            else:
+                update_phones = True
+                new_phones.append(phone)
+                dataframe["PhoneFound"] = "Google"
+
+    if update_phones:
+        dataframe["PhoneUpdate"] = new_phones
 
     # Repat this process for website
-    if info["Website"]:
-        if dataframe["Website"] == info["Website"]:
-            dataframe["Website_Found"] = "Google"
-        else:
-            dataframe["Website_Update"] = info["Website"]
-            dataframe["Website_Found"] = "Google"
+    new_websites = []
+    update_websites = False
+    for website in dataframe["Website"]:
+        for newwebsite in info["Website"]:
+            if website == newwebsite:
+                dataframe["WebsiteCorrect"] = True
+                dataframe["WebsiteFound"] = "Google"
+            else:
+                update_websites = True
+                new_websites.append(website)
+                dataframe["WebsiteFound"] = "Google"
+
+    if update_websites:
+        dataframe["WebsiteUpdate"] = new_websites
 
     return dataframe
     # Return the dataframe with the updated information
