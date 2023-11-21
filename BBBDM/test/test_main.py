@@ -451,7 +451,7 @@ def test_regression_valid_invalid_dataframe():
     "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"]],
     "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"]],
     "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
-    "Email": [[np.nan],["office@albinchapel.com,jimalbinson@gmail.com"],["edward@albrechtcompany.com,mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
     "Zipcode": [["55117"],["55404,55391,55344"],["55113"],["55102,55116"],["55345,55330"]],
     "Address": [["78 Acker St E ,Saint Paul,55117"],["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"]]
 })
