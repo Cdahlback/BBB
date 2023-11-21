@@ -12,7 +12,7 @@ logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
 
 # Join multiple dataframes on FirmID
-def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame | bool:
+def join_dataframe_firmid(*data_frames: pd.DataFrame) -> pd.DataFrame:
     """
     Pass in dataframes and merge them on the FirmID column
     Remove any duplicate columns also
@@ -141,16 +141,16 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     """
     valid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "Zipcode","Address"]
+        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "City", "Zipcode","Address"]
     )
     invalid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "Zipcode","Address"]
+        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "City", "Zipcode","Address"]
     )
 
     # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
 
     for idx, row in df.iterrows():
-
+        row = row.drop(labels=["state_incorporated", "name_id", "phone_id", "url_id", "email_id", "address_1", "address_2"])
         valid = False
         # Check ifthe 'name' column in the current row has ANY values, other than np.nan
         for name in row["BusinessName"]:
@@ -158,7 +158,7 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
                 valid = True
 
         if not valid:
-            invalid_rows = invalid_rows.loc[len(df.index)] = row
+            invalid_rows.loc[len(df.index)] = row
             continue  # skip the rest of the current loop iteration
 
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
@@ -177,11 +177,9 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
         # Check if the counter( number of non-rmpty columns) is greater than xero
         if counter > 0:
-            
-            valid_rows = valid_rows.loc[len(df.index)] = row
+            valid_rows.loc[len(df.index)] = row
         else:
-            
-            invalid_rows = invalid_rows.loc[len(df.index)] = row
+            invalid_rows.loc[len(df.index)] = row
 
     return valid_rows, invalid_rows
 
