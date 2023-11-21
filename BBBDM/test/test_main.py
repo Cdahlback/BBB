@@ -452,8 +452,8 @@ def test_regression_valid_invalid_dataframe():
     "Firm_Id": [18, 19, 22, 29, 30, 31],
     "BusinessName": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Phone": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
-    "Website": [["http://www.andersencorp.com"],[np.nan],["http://twitter.com/asphaltmn","http://asphaltmn.com","http://www.asphaltmn.com","http://www.facebook.com/asphaltmn"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
-    "Email": [["donna.dingle@andersencorp.com","jennifer.lamson@andersen.com"],[np.nan],["mitch@asphaltmn.com","office@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "Website": [["http://www.andersencorp.com"],[np.nan],["http://www.facebook.com/asphaltmn","http://www.asphaltmn.com","http://twitter.com/asphaltmn","http://asphaltmn.com"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "Email": [["jennifer.lamson@andersen.com","donna.dingle@andersencorp.com"],[np.nan],["office@asphaltmn.com","mitch@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
     "City":[[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Zipcode": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
     "Address": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]]
@@ -481,8 +481,15 @@ def test_regression_valid_invalid_dataframe():
     print(valid_data)
     print(invalid_data)
 
-    assert expected_valid_rows==valid_data
-    assert expected_invalid_rows==invalid_data
+    #Sorts the lists inside the dataframe so that the order of the elements in the list does not matter
+    valid_data = valid_data.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    invalid_data = invalid_data.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    expected_valid_rows = expected_valid_rows.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    expected_invalid_rows = expected_invalid_rows.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+
+    assert expected_valid_rows.equals(valid_data)
+    assert expected_invalid_rows.equals(invalid_data)
+
 test_regression_valid_invalid_dataframe()
 
 
