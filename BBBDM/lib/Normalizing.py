@@ -60,7 +60,7 @@ def normalize_zipcode(zipcodes: list[str]) -> list[str]:
         except Exception as e:
             logging.debug(f"{zipcode} not valid, removing from zipcode list")
             continue
-
+  
     return normalized_zipcodes
     
 
@@ -136,8 +136,8 @@ def standardizeName(names: list[str]) -> list[str]:
         try:
             name = name.lower()
             name = re.sub('&', ' and ', name)
-            name = re.sub('[^a-z\s-]', '', name)
-            name = re.sub(' {2,}', ' ', name)
+            name = re.sub(r'[^a-z\s-]', '', name)
+            name = re.sub(r' {2,}', ' ', name)
             normalized_names.append(name)
         except Exception as e:
             logging.info(f"{name} not valid, removing from list")
