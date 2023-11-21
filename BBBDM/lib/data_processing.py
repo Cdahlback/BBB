@@ -158,7 +158,7 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
                 valid = True
 
         if not valid:
-            invalid_rows.loc[len(df.index)] = row
+            invalid_rows.loc[len(invalid_rows.index)] = row
             continue  # skip the rest of the current loop iteration
 
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
@@ -177,9 +177,9 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
         # Check if the counter( number of non-rmpty columns) is greater than xero
         if counter > 0:
-            valid_rows.loc[len(df.index)] = row
+            valid_rows.loc[len(valid_rows.index)] = row
         else:
-            invalid_rows.loc[len(df.index)] = row
+            invalid_rows.loc[len(invalid_rows.index)] = row
 
     return valid_rows, invalid_rows
 
