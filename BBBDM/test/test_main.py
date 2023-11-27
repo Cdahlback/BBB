@@ -493,60 +493,169 @@ def test_regression_valid_invalid_dataframe():
 test_regression_valid_invalid_dataframe()
 
 
-'''''
 def test_regression_normalize_dataframe():
     valid_rows=pd.DataFrame({
-    "firm_id": [2, 5, 7, 9],
-    "state_incorporated": ["MN", "MN", "MN", "MN"],
-    "name_id": [1, 2, 3, 4],
-    "BusinessName": ["Able Fence, Inc.", "Albin Chapel", "Albin Funeral Chapel Inc", "Albin Endeavor, Inc."],
-    "phone_id": [1, 2, 8, 9],
-    "Phone": ["6512224355", "9529149410", "7632242883", "6516451976"],
-    "url_id": [3, 6, 10, 12],
-    "Website": ["http://www.arthurwilliamsoptical.com/", "http://www.andersencorp.com", "http://www.asphaltmn.com", "http://twitter.com/asphaltmn"],
-    "email_id": [3, 6, 12, 13],
-    "Email": ["jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    "address_2": [np.nan, np.nan, np.nan, np.nan],
-    "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    "zip_code": ["55404", "55344", "55102", "55116"],
-    "Address": [
-        "2200 Nicollet Ave Minneapolis 55404",
-        "PO Box 46147 Eden Prairie 55344",
-        "366 Saint Peter St Saint Paul 55102",
-        "772 Cleveland Ave S Saint Paul 55116"
-    ]
-})
+    "firm_id": [2, 5, 7, 9, 10],
+    # "state_incorporated": ["MN", "MN", "MN", "MN"],
+    # "name_id": [1, 2, 3, 4],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"]],
+    # "phone_id": [1, 2, 8, 9],
+    "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"]],
+    # "url_id": [3, 6, 10, 12],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
+    # "email_id": [3, 6, 12, 13],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    # "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
+    # "address_2": [np.nan, np.nan, np.nan, np.nan],
+    "City":[["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"]],
+    "Zip Code": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],
+                ["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],
+                ["1408 County Road C W ,Roseville,55113"],
+                ["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],
+                ["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"]]
+    })
+
     invalid_rows=pd.DataFrame()
 
-    expected_normalize_valid_rows=pd.DataFrame({
-    "firm_id": [2, 5, 7, 9],
-    "state_incorporated": ["MN", "MN", "MN", "MN"],
-    "name_id": [1, 2, 3, 4],
-    "BusinessName": ["able fence, inc.", "albin chapel", "albin funeral chapel inc", "albin endeavor inc."],
-    "phone_id": [1, 2, 8, 9],
-    "Phone": ["+1 651-222-4355", "+1 952-914-9410", "+1 763-224-2883", "+1 651-645-1976"],
-    "url_id": [3, 6, 10, 12],
-    "Website": ["http://www.arthurwilliamsoptical.com/", "http://www.andersencorp.com", "http://www.asphaltmn.com", "http://twitter.com/asphaltmn"],
-    "email_id": [3, 6, 12, 13],
-    "Email": ["jimalbinson@gmail.com", "edward@albrechtcompany.com", "office@asphaltmn.com", "office@asphaltmn.com"],
-    "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
-    "address_2": [np.nan, np.nan, np.nan, np.nan],
-    "city": ["Minneapolis", "Eden Prairie", "Saint Paul", "Saint Paul"],
-    "zip_code": ["55404", "55344", "55102", "55116"],
+    expected_normalized_rows=pd.DataFrame({
+    "firm_id": [2, 5, 7, 9, 10],
+    # "state_incorporated": ["MN", "MN", "MN", "MN"],
+    # "name_id": [1, 2, 3, 4],
+    "BusinessName": [["able fence, inc."], ["albin endeavor inc.", "albin funeral chapel inc", "albin chapel"], ["albrecht company", "albrecht enterprises llc"],["arthur williams opticians","arthur williams optical inc"],["able moving and storage snc","able movers llc"]],
+    # "phone_id": [1, 2, 8, 9],
+    "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
+    # "url_id": [3, 6, 10, 12],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
+    # "email_id": [3, 6, 12, 13],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    # "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
+    # "address_2": [np.nan, np.nan, np.nan, np.nan],
+    "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"]],
+    "Zip Code": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"]],
     "Address": [
-        "2200 Nicollet Ave Minneapolis 55404",
-        "PO Box 46147 Eden Prairie 55344",
-        "366 Saint Peter St Saint Paul 55102",
-        "772 Cleveland Ave S Saint Paul 55116"
-    ]
-})
-'''''
-'''''
+        ["78 Acker St E ,saint paul,55117"],
+        ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
+        ["1408 County Road C W ,roseville,55113"],
+        ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
+        ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]
+    ]})
+
+    normalized_df = normalize_dataframe(valid_rows)
+
+    normalized_df = normalized_df.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    expected_normalized_rows = expected_normalized_rows.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+
+    assert expected_normalized_rows.equals(normalized_df)
+
+
 def test_regression_sos_comparison():
-    pass
+    normalized_rows=pd.DataFrame({
+    "firm_id": [2, 5, 7, 9, 10],
+    # "state_incorporated": ["MN", "MN", "MN", "MN"],
+    # "name_id": [1, 2, 3, 4],
+    "BusinessName": [["able fence"], ["albin endeavor", "albin funeral chapel inc", "albin chapel"], ["albrecht company", "albrecht enterprises llc"],["arthur williams opticians","arthur williams optical inc"],["able moving and storage snc","able movers llc"]],
+    # "phone_id": [1, 2, 8, 9],
+    "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
+    # "url_id": [3, 6, 10, 12],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
+    # "email_id": [3, 6, 12, 13],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    # "address_1": ["2200 Nicollet Ave", "PO Box 46147", "366 Saint Peter St", "772 Cleveland Ave S"],
+    # "address_2": [np.nan, np.nan, np.nan, np.nan],
+    "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"]],
+    "Zip Code": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"]],
+    "Address": [
+        ["78 Acker St E ,saint paul,55117"],
+        ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
+        ["1408 County Road C W ,roseville,55113"],
+        ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
+        ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]
+    ]})
+
+    expected_sos_output = pd.DataFrame({
+        "firm_id": [2, 5, 7, 9, 10],
+        "BusinessName": [["able fence, inc."], ["albin endeavor inc.", "albin funeral chapel inc", "albin chapel"],
+                         ["albrecht company", "albrecht enterprises llc"],
+                         ["arthur williams opticians","arthur williams optical inc"],
+                         ["able moving and storage snc","able movers llc"]],
+        "BusinessNameUpdate": [[""], [""], [""], [""], [""]],
+        "BusinessNameCorrect": [True, True, True, True, True],
+        "BusinessNameFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
+        "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],
+                  ["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
+        "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],
+                    ["http://www.ablemovers.net"]],
+        "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],
+                  ["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],
+                  ["ablemovers@izoom.net"]],
+        "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],
+                 ["Saint Paul"],["Minnetonka","Elk River"]],
+        "Zip Code": [["55117"], ["55404", "55391", "55344"], ["55113"], ["55102", "55116"], ["55345", "55330"]],
+        "ZipUpdate": [[""], [""], [""], [""], [""]],
+        "ZipCorrect": [True, True, True, True, True],
+        "ZipFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
+        "Address": [["78 Acker St E ,saint paul,55117"],
+                ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
+                ["1408 County Road C W ,roseville,55113"],
+                ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
+                ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]],
+        "AddressUpdate": [[""], [""], [""], [""], [""]],
+        "AddressCorrect": [True, True, True, True, True],
+        "AddressFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
+    })
+
+    sos_data = extract_data(str(Path(__file__).parent.parent / "Data/sos_data.csv"))
+    sos_data = sos_data.drop(labels=['Business Filing Type', 'Filing Date', 'Business Address Type', 'Region Code', 'Zip Code Ext', 'Business Party Name Type', 'Party Full Name', 'Next Renewal Due Date'], axis=1)
+
+    updated_df_sos = compare_dataframes_sos(normalized_rows, sos_data)
+
+    assert not updated_df_sos.empty
+
+
 
 def test_regression_yellow_pages_comparison():
-    pass
-''''' 
-    
+    google_places_output = pd.DataFrame({
+        "firm_id": [2, 5, 7, 9, 10],
+        "BusinessName": [["able fence, inc."], ["albin endeavor inc.", "albin funeral chapel inc", "albin chapel"],
+                         ["albrecht company", "albrecht enterprises llc"],
+                         ["arthur williams opticians","arthur williams optical inc"],
+                         ["able moving and storage snc","able movers llc"]],
+        "BusinessNameUpdate": ["Able Fence, Inc.", np.nan, "Albrecht Enterprises, LLC", np.nan, np.nan],
+        "BusinessNameCorrect": [True, False, True, False, False],
+        "BusinessNameFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+        "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],
+                  ["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
+        "PhoneUpdate": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "PhoneCorrect": [False, False, False, False, False],
+        "PhoneFound": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],
+                    ["http://www.ablemovers.net"]],
+        "WebsiteUpdate": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "WebsiteCorrect": [False, False, False, False, False],
+        "WebsiteFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+        "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],
+                  ["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],
+                  ["ablemovers@izoom.net"]],
+        "EmailUpdate": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "EmailCorrect": [False, False, False, False, False],
+        "EmailFound": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],
+                 ["Saint Paul"],["Minnetonka","Elk River"]],
+        "Zip Code": [["55117"], ["55404", "55391", "55344"], ["55113"], ["55102", "55116"], ["55345", "55330"]],
+        "ZipUpdate": ["55117", np.nan, "55113", np.nan, np.nan],
+        "ZipCorrect": [True, False, True, False, False],
+        "ZipFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+        "Address": [["78 Acker St E ,saint paul,55117"],
+                ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
+                ["1408 County Road C W ,roseville,55113"],
+                ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
+                ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]],
+        "AddressUpdate": ["78 Acker Str E, St Paul, 55117", np.nan, "1408 W Co Rd C, Roseville, 55113", np.nan, np.nan],
+        "AddressCorrect": [True, False, True, False, False],
+        "AddressFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+    })
+
+    yp_updated = update_dataframe_with_yellow_pages_data(google_places_output)
+
+    assert not yp_updated.empty

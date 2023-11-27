@@ -197,6 +197,8 @@ def address_match_found(historical_address, found_address):
     """
 
     def compare_addresses(old, new):
+        if "nan" in old or "nan" in new:
+            return 0
         if old == new:
             return 1
         elif old.split(",")[-1].strip() == new.split(",")[-1].strip():
@@ -253,6 +255,9 @@ def is_same_business(
         return name.strip()
 
     if not isinstance(new_name, str):
+        return False
+
+    if not isinstance(historical_name, str):
         return False
 
     # If not from SOS, preprocess the business names"
