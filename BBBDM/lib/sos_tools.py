@@ -77,22 +77,22 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
 def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     # Give null values for all columns, which we will fill out when needed
     data["BusinessNameCorrect"] = False
-    data["BusinessNameUpdate"] = np.nan
+    data["BusinessNameUpdate"] = [np.nan]
     data["BusinessNameFound"] = np.nan
     data["AddressCorrect"] = False
-    data["AddressUpdate"] = np.nan
+    data["AddressUpdate"] = [np.nan]
     data["AddressFound"] = np.nan
     data["ZipCorrect"] = False
-    data["ZipUpdate"] = np.nan
+    data["ZipUpdate"] = [np.nan]
     data["ZipFound"] = np.nan
     data["PhoneCorrect"] = False
-    data["PhoneUpdate"] = np.nan
+    data["PhoneUpdate"] = [np.nan]
     data["PhoneFound"] = np.nan
     data["EmailCorrect"] = False
-    data["EmailUpdate"] = np.nan
+    data["EmailUpdate"] = [np.nan]
     data["EmailFound"] = np.nan
     data["WebsiteCorrect"] = False
-    data["WebsiteUpdate"] = np.nan
+    data["WebsiteUpdate"] = [np.nan]
     data["WebsiteFound"] = np.nan
 
     return data
