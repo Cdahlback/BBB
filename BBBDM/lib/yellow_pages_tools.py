@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 
 import numpy as np
@@ -181,7 +182,7 @@ def login_yellow_pages():
     """
 
     try:
-        client = ApifyClient("apify_api_U8uBSwlhXCfv3sghNe50sbJ3udhdsY3loZKy")
+        client = ApifyClient(os.getenv("YELLOW_PAGES_API_TOKEN"))
         logging.info("ApifyClient API token success")
         return client
     except Exception as e:

@@ -288,7 +288,33 @@ def is_same_business(
     )
 
 
-def get_valid_businesses_info(file_path:str) -> pd.DataFrame:
+def normalize_email(email: str) -> str:
+    """
+    This is a helper function that normalizes the email to fit BBB expectations
+
+    :param email: str of the email
+
+    :returns: email as a str that is normalized"""
+
+    try:
+        # Normalize and validate the email using email-validator library
+        # 1. Strip leading and trailing spaces in the email
+        # 2. Convert all characters to lowercase
+        # 3. Remove non-alphanumeric characters except for . _ - @
+        normalized_email = "".join(
+            e.lower() for e in email.strip() if e.isalnum() or e in "._-@"
+        )
+        # normalized the valid email
+        valid_email = validate_email(normalized_email).normalized
+        logging.info("Valid email normalized")
+        return valid_email
+    except EmailNotValidError as e:
+        # Handle invalid emails by logging and returning the original email
+        logging.debug(f"Invalid email: {str(e)}")
+        return email  # Return the original email for invalid ones
+
+
+def get_valid_businesses_info(file_path: str) -> pd.DataFrame:
     """
     Read the data from the specified file into a DataFrame and filter the DataFrame to only keep rows where
     'active' == 'TRUE'. If an error occurs, None is returned.

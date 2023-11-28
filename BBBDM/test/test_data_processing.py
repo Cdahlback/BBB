@@ -1,5 +1,10 @@
 import numpy as np
 import pandas as pd
+import os
+from pathlib import Path
+import sys
+
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from BBBDM.lib.data_processing import (
     address_match_found,
@@ -7,7 +12,6 @@ from BBBDM.lib.data_processing import (
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
-
 
 
 
@@ -193,28 +197,31 @@ def test_join_dataframe_firmid():
     expected_output = pd.DataFrame(
         {
             "firm_id": [1, 2, 3],
-            "state_incorporated": ["MN", "MN", "MN"],
-            "name_id": [1.0, 2.0, 3.0],
-            "BusinessName": ["ABC Inc.", "XYZ Corp.", "123 LLC"],
-            "phone_id": [1.0, 2.0, 3.0],
-            "Phone": ["123-456-7890", "555-555-5555", "999-999-9999"],
-            "url_id": [np.nan, 1.0, 2.0],
-            "Website": [np.nan, "http://www.xyzcorp.com", "http://www.123llc.com"],
-            "email_id": [np.nan, 1.0, 2.0],
-            "Email": [np.nan, "info@xyzcorp.com", "info@123llc.com"],
-            "address_1": ["123 Main St", np.nan, "456 Elm St"],
-            "address_2": ["Suite 100", np.nan, "Suite 200"],
-            "City": ["Minneapolis", np.nan, "St. Paul"],
-            "zip_code": ["55401", np.nan, "55101"],
+            "state_incorporated": [["MN"], ["MN"], ["MN"]],
+            "name_id": [[1.0], [2.0], [3.0]],
+            "BusinessName": [["ABC Inc."], ["XYZ Corp."], ["123 LLC"]],
+            "phone_id": [[1.0], [2.0], [3.0]],
+            "Phone": [["123-456-7890"], ["555-555-5555"], ["999-999-9999"]],
+            "url_id": [[np.nan], [1.0], [2.0]],
+            "Website": [[np.nan], ["http://www.xyzcorp.com"], ["http://www.123llc.com"]],
+            "email_id": [[np.nan], [1.0], [2.0]],
+            "Email": [[np.nan], ["info@xyzcorp.com"], ["info@123llc.com"]],
+            "address_1": [["123 Main St"], [np.nan], ["456 Elm St"]],
+            "address_2": [["Suite 100"], [np.nan], ["Suite 200"]],
+            "City": [["Minneapolis"], [np.nan], ["St. Paul"]],
+            "zip_code": [["55401"], [np.nan], ["55101"]],
             "Address": [
-                "123 Main St Suite 100 Minneapolis",
-                np.nan,
-                "456 Elm St Suite 200 St. Paul",
+                ["123 Main St Suite 100 Minneapolis"],
+                [np.nan],
+                ["456 Elm St Suite 200 St. Paul"],
             ],
         }
     )
 
-    assert join_dataframe_firmid(df1, df2, df3).equals(expected_output)
+    #Resulting DataFrame
+    result = join_dataframe_firmid(df1, df2, df3)
+
+    assert result.equals(expected_output)
 
     # test function with no dataframes
     assert join_dataframe_firmid() == False
