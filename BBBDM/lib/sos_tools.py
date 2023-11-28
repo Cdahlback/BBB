@@ -85,6 +85,15 @@ def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     data["ZipCorrect"] = False
     data["ZipUpdate"] = np.nan
     data["ZipFound"] = np.nan
+    data["PhoneCorrect"] = False
+    data["PhoneUpdate"] = np.nan
+    data["PhoneFound"] = np.nan
+    data["EmailCorrect"] = False
+    data["EmailUpdate"] = np.nan
+    data["EmailFound"] = np.nan
+    data["WebsiteCorrect"] = False
+    data["WebsiteUpdate"] = np.nan
+    data["WebsiteFound"] = np.nan
 
     return data
 
@@ -159,8 +168,17 @@ def compare_dataframes_sos(
             "BusinessNameUpdate",
             "BusinessNameFound",
             "Phone",
+            "PhoneCorrect",
+            "PhoneUpdate",
+            "PhoneFound",
             "Website",
+            "WebsiteCorrect",
+            "WebsiteUpdate",
+            "WebsiteFound",
             "Email",
+            "EmailCorrect",
+            "EmailUpdate",
+            "EmailFound",
             "City",
             "Address",
             "AddressCorrect",
