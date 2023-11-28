@@ -18,19 +18,19 @@ def update_columns_sos_two(row: pd.Series) -> pd.Series:
     Returns: updated row in the dataframe
     """
     if row["BusinessNameCorrect"] and row["AddressCorrect"]:
-        row["BusinessNameUpdate"] = row["Business Name"]
+        row["BusinessNameUpdate"][0] = row["Business Name"]
         row["BusinessNameFound"] = (
             "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
         )
 
         # Add address columns
-        row["AddressUpdate"] = f"{row['Address 1']}, {row['City']}, {row['Zip Code'][0]}"
+        row["AddressUpdate"][0] = f"{row['Address 1']}, {row['City']}, {row['Zip Code'][0]}"
         row["AddressFound"] = (
             "SOS" if not pd.isna(row["AddressUpdate"]) else np.nan
         )
 
         # Add zip columns
-        row["ZipUpdate"] = row["Zip Code New"]
+        row["ZipUpdate"][0] = row["Zip Code New"]
         row["ZipFound"] = (
             "SOS" if not pd.isna(row["ZipUpdate"]) else np.nan
         )
