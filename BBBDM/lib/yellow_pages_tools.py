@@ -1,6 +1,8 @@
 import logging
 import os
 import time
+
+import numpy as np
 import pandas as pd
 
 from pandarallel import pandarallel
@@ -27,6 +29,13 @@ class AuthenticationError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
+def add_yp_columns(data):
+    data["BusinessNameYP"] = np.nan
+    data["AddressYP"] = np.nan
+    data["PhoneYP"] = np.nan
+    data["WebsiteYP"] = np.nan
+    return data
+
 
 def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     """
@@ -38,42 +47,41 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     :return: Updated DataFrame.
     """
 
+    data = add_yp_columns(data)
+
     # For each row in the input data, try to scrape Yellow Pages data.
-    data.parallel_apply(call_scrape_yellow_page_data, axis=1)
+    data = data.apply(call_scrape_yellow_page_data, axis=1)
 
     # Iterate through each row of the data.
     for index, row in data.iterrows():
-        # If all update fields have data, skip processing for this row.
-        if (
-            pd.notna(row["BusinessWebsiteUpdate"])
-            and pd.notna(row["BusinessPhoneUpdate"])
-            and pd.notna(row["BusinessAddressUpdate"])
-        ):
+        # Check all columns in the row, to see if we need to check with yp
+        if ((row['BusinessNameCorrect'] == True) & (row['PhoneCorrect'] == True) & (row['WebsiteCorrect'] == True) &
+            (row['EmailCorrect']) & (row['ZipCorrect']) & (row['AddressCorrect'])):
             continue
+        else:
+            # If we haven't found a business name to update with
+            if not row['BusinessNameCorrect']:
+                # Check if it's the same business
+                if is_same_business(row["BusinessNameYP"], row["BusinessName"][0]):
+                    row['BusinessNameUpdate'] = row["BusinessNameYP"]
+                    row["BusinessNameFound"] = "YP"
+                    row["BusinessNameCorrect"] = True
 
-        # TODO: Fix this with a for loop. For each his_name, check if it matches any scraped data
-        # Check if we have any data to update from the scraped_yellow_pages_data based on matching business name.
-        for his_name in row["BusinessName"]:
-            matching_row = scraped_yellow_pages_data[scraped_yellow_pages_data["Business Name"] == his_name]
+            # Update the rest of the missing information
+            if not row["PhoneCorrect"] and row["BusinessNameCorrect"]:
+                row["PhoneUpdate"] = row["PhoneYP"]
+                row["PhoneFound"] = "YP" if pd.notna(row["PhoneYP"]) else np.nan
+                row["PhoneCorrect"] = True if pd.notna(row["PhoneYP"]) else False
+            if not row["WebsiteCorrect"] and row["BusinessNameCorrect"]:
+                row["WebsiteUpdate"] = row["WebsiteYP"]
+                row["WebsiteFound"] = "YP" if pd.notna(row["WebsiteYP"]) else np.nan
+                row["WebsiteCorrect"] = True if pd.notna(row["WebsiteYP"]) else False
+            if not row["AddressCorrect"] and row["BusinessNameCorrect"]:
+                row["AddressUpdate"] = row["AddressYP"]
+                row["AddressFound"] = "YP" if pd.notna(row["AddressYP"]) else np.nan
+                row["AddressCorrect"] = True if pd.notna(row["AddressYP"]) else False
 
-        if not matching_row.empty:
-            # Update data fields if they're not already populated.
-            # Here we're looking for BusinessName, Website, Phone, and Address.
-            # If found in the Yellow Pages data, we update the original dataframe and mark the source as 'YP'.
-            for column, yp_column in [
-                ("BusinessNameUpdate", "BusinessNameYP"),
-                ("BusinessWebsiteUpdate", "BusinessWebsiteYP"),
-                ("BusinessPhoneUpdate", "BusinessPhoneYP"),
-                ("BusinessAddressUpdate", "BusinessAddressYP"),
-            ]:
-                if pd.isna(row[column]):
-                    data.at[index, column] = matching_row.iloc[0][yp_column]
-                    data.at[index, column.replace("Update", "Found")] = "YP"
-
-    # Clean up the Yellow Pages data for next usage by dropping all its columns.
-    scraped_yellow_pages_data.drop(
-        columns=scraped_yellow_pages_data.columns, inplace=True
-    )
+            data.loc[index] = row
 
     return data
 
@@ -91,29 +99,26 @@ def call_scrape_yellow_page_data(row: pd.Series) -> None:
     search_term = (
         row["BusinessNameUpdate"]
         if not pd.isna(row["BusinessNameUpdate"])
-        # TODO: Change this so it makes sure not to grab a np.nan value
         else row["BusinessName"][0]
     )
-    location = row["City"][0] if not pd.isna(row["City"]) else "Minnesota"
+    location = row["City"][0] if not pd.isna(row["City"][0]) else "Minnesota"
 
     if not isinstance(search_term, str):
-        return
+        return row
     # Invoke the scraper for the given search term and location.
     result = scrape_yellow_page_data(search_term, location, maxItems=1)
 
+    if not result:
+        return row
+
     # Add the scraped data to the global dataframe.
     global scraped_yellow_pages_data
-    scraped_yellow_pages_data = scraped_yellow_pages_data.append(
-        {
-            "Business Name": search_term,
-            "City": location,
-            "BusinessNameYP": result["name"],
-            "BusinessAddressYP": result["address"],
-            "BusinessPhoneYP": result["phone"],
-            "BusinessWebsiteYP": result["url"],
-        },
-        ignore_index=True,
-    )
+    row["BusinessNameYP"] = result["name"]
+    row["AddressYP"] = result["address"]
+    row["PhoneYP"] = result["phone"]
+    row["WebsiteYP"] = result["url"]
+
+    return row
 
 
 def scrape_yellow_page_data(

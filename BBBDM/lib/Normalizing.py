@@ -22,6 +22,7 @@ def normalize_email(emails: list[str]) -> list[str]:
 
     for email in emails:
         if not isinstance(email, str):
+            normalized_emails.append(email)
             continue
         try:
             # Steps 1-3
@@ -49,6 +50,7 @@ def normalize_zipcode(zipcodes: list[str]) -> list[str]:
 
     for zipcode in zipcodes:
         if not isinstance(zipcode, str):
+            normalized_zipcodes.append(zipcode)
             continue
         try:
             # Remove white spaces and non-numeric characters
@@ -77,8 +79,8 @@ def normalize_dataframe(df: list[str]) -> list[str]:
     - pd.DataFrame: Returns the DataFrame after normalization.
     """
     df['Email'] = df['Email'].apply(normalize_email)
-    df['Phone Number'] = df['Phone Number'].apply(normalize_us_phone_number)
-    df['Zipcode'] = df['Zipcode'].apply(normalize_zipcode)
+    df['Phone'] = df['Phone'].apply(normalize_us_phone_number)
+    df['Zip Code'] = df['Zip Code'].apply(normalize_zipcode)
     df['BusinessName'] = df['BusinessName'].apply(standardizeName)
     df['Website'] = df['Website'].apply(normalize_url)
     df['Address'] = df['Address'].apply(normalize_address_i18n)
@@ -112,6 +114,7 @@ def normalize_us_phone_number(phones: list[str]) -> list[str]:
         return normalized_phones
     for phone in phones:
         if not isinstance(phone, str):
+            normalized_phones.append(phone)
             continue
         digits = ''.join(filter(str.isdigit, phone))
         if len(digits) == 10:
@@ -125,7 +128,7 @@ def normalize_us_phone_number(phones: list[str]) -> list[str]:
     return normalized_phones
 
 
-def standardizeName(names: list[str]) -> list[str]:
+def standardizeName(names, is_sos=False):
     """
     This function standardizes business names by:
     1. Converting the entire name to lowercase.
@@ -153,6 +156,7 @@ def standardizeName(names: list[str]) -> list[str]:
         return normalized_names
     for name in names:
         if not isinstance(name, str):
+            normalized_names.append(name)
             continue
         try:
             name = name.lower()
@@ -163,7 +167,24 @@ def standardizeName(names: list[str]) -> list[str]:
         except Exception as e:
             logging.info(f"{name} not valid, removing from list")
             continue
+
+    if is_sos:
+        normalized_names = [name.replace("llc", "") if isinstance(name, str) else name for name in normalized_names]
+        normalized_names = [name.replace("l l c", "") if isinstance(name, str) else name for name in normalized_names]
+        normalized_names = [name.replace("inc", "") if isinstance(name, str) else name for name in normalized_names]
+        normalized_names = [name.replace("co", "") if isinstance(name, str) else name for name in normalized_names]
+        normalized_names = [name.replace("ltd", "") if isinstance(name, str) else name for name in normalized_names]
+        normalized_names = [name.rstrip() if isinstance(name, str) else name for name in normalized_names]
+
     return normalized_names
+
+def normalize_name(name):
+    """
+    Replaces llc, l l c, inc, co, ltd with empty
+    """
+    name = name.replace("llc", "") if isinstance(name, str) else name
+    name = name.rstrip() if isinstance(name, str) else name
+    return name
 
 
 def normalize_address_i18n(addresses: list[str]) -> list[str]:
@@ -196,6 +217,9 @@ def normalize_address_i18n(addresses: list[str]) -> list[str]:
             return ""
         return normalized_addresses
     for address in addresses:
+        if not isinstance(address, str):
+            normalized_addresses.append(address)
+            continue
         try:
             address_list = address.split(',')
             address_dict = {
@@ -242,6 +266,9 @@ def normalize_url(urls: list[str]) -> list[str]:
             return ""
         return normalized_urls
     for url in urls:
+        if not isinstance(url, str):
+            normalized_urls.append(url)
+            continue
         try:
             url = url.lower().replace(" ", "")
             if not url.startswith(('http://', 'https://')):
@@ -256,17 +283,17 @@ def normalize_url(urls: list[str]) -> list[str]:
 
 if __name__ == "__main__":
     # Execute a series of tests to verify the functionality of the normalization functions.
-    business_name = ["Example & Co."]
-    print("Normalized Business Name:", standardizeName(business_name))
+    # business_name = ["Example & Co."]
+    # print("Normalized Business Name:", standardizeName(business_name))
     
-    raw_address = ["78 Acker St E, Saint Paul, 55117"]
+    raw_address = ["2200 Nicollet Ave, Minneapolis, 55404"]
     print("Normalized Address:", normalize_address_i18n(raw_address))
     
-    url = ["www.Example.com"]
-    print("Normalized URL:", normalize_url(url))
-
-    phone = ["6512224355"]
-    print("Normalized Phone: ", normalize_us_phone_number(phone))
-
-    email = ["jimalbinson@gmail.com"]
-    print("Normalized Email: ", normalize_email(email))
+    # url = ["www.Example.com"]
+    # print("Normalized URL:", normalize_url(url))
+    #
+    # phone = ["6512224355"]
+    # print("Normalized Phone: ", normalize_us_phone_number(phone))
+    #
+    # email = ["jimalbinson@gmail.com"]
+    # print("Normalized Email: ", normalize_email(email))
