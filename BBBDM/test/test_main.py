@@ -1,10 +1,5 @@
-import importlib.util
-import os
 from pathlib import Path
 import numpy as np
-
-import pandas as pd
-import pytest
 import sys
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
@@ -573,38 +568,7 @@ def test_regression_sos_comparison():
         ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]
     ]})
 
-    expected_sos_output = pd.DataFrame({
-        "firm_id": [2, 5, 7, 9, 10],
-        "BusinessName": [["able fence, inc."], ["albin endeavor inc.", "albin funeral chapel inc", "albin chapel"],
-                         ["albrecht company", "albrecht enterprises llc"],
-                         ["arthur williams opticians","arthur williams optical inc"],
-                         ["able moving and storage snc","able movers llc"]],
-        "BusinessNameUpdate": [[""], [""], [""], [""], [""]],
-        "BusinessNameCorrect": [True, True, True, True, True],
-        "BusinessNameFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
-        "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],
-                  ["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
-        "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],
-                    ["http://www.ablemovers.net"]],
-        "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],
-                  ["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],
-                  ["ablemovers@izoom.net"]],
-        "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],
-                 ["Saint Paul"],["Minnetonka","Elk River"]],
-        "Zip Code": [["55117"], ["55404", "55391", "55344"], ["55113"], ["55102", "55116"], ["55345", "55330"]],
-        "ZipUpdate": [[""], [""], [""], [""], [""]],
-        "ZipCorrect": [True, True, True, True, True],
-        "ZipFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
-        "Address": [["78 Acker St E ,saint paul,55117"],
-                ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
-                ["1408 County Road C W ,roseville,55113"],
-                ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
-                ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]],
-        "AddressUpdate": [[""], [""], [""], [""], [""]],
-        "AddressCorrect": [True, True, True, True, True],
-        "AddressFound": ["SOS", "SOS", "SOS", "SOS", "SOS"],
-    })
-
+    string = str(Path(__file__).parent.parent / "Data/sos_data.csv")
     sos_data = extract_data(str(Path(__file__).parent.parent / "Data/sos_data.csv"))
     sos_data = sos_data.drop(labels=['Business Filing Type', 'Filing Date', 'Business Address Type', 'Region Code', 'Zip Code Ext', 'Business Party Name Type', 'Party Full Name', 'Next Renewal Due Date'], axis=1)
 

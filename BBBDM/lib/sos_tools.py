@@ -127,7 +127,6 @@ def compare_dataframes_sos(
         for name in row_names:
             name = normalize_name(name)
             # Check if we have a match in sos_data
-            # TODO: Change this to use the is_same_business() function
             if name in sos_names_normal:
                 # Find the row in sos_data
                 sos_update_row = newData[newData['Business Name'] == mapping[name]]
