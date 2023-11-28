@@ -6,3 +6,5 @@ TEST.py
 venv/
 *./log
 bbbdm/test/sample_business.csv
+.env
+functions.log
