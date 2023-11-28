@@ -10,7 +10,6 @@ from BBBDM.lib.data_processing import (
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
-from BBBDM.lib.google_places_tools import *
 from BBBDM.lib.Normalizing import normalize_dataframe
 from BBBDM.lib.sos_tools import compare_dataframes_sos
 from BBBDM.lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
@@ -567,7 +566,6 @@ def test_regression_sos_comparison():
         ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
         ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]
     ]})
-
     string = str(Path(__file__).parent.parent / "Data/sos_data.csv")
     sos_data = extract_data(str(Path(__file__).parent.parent / "Data/sos_data.csv"))
     sos_data = sos_data.drop(labels=['Business Filing Type', 'Filing Date', 'Business Address Type', 'Region Code', 'Zip Code Ext', 'Business Party Name Type', 'Party Full Name', 'Next Renewal Due Date'], axis=1)
