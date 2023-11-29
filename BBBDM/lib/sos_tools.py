@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 
 
-from lib.data_processing import address_match_found, is_same_business
-from lib.Normalizing import standardizeName, normalize_name
+from BBBDM.lib.data_processing import address_match_found, is_same_business
+from BBBDM.lib.Normalizing import standardizeName, normalize_name
 
 
 def update_columns_sos_two(row: pd.Series) -> pd.Series:
@@ -18,19 +18,19 @@ def update_columns_sos_two(row: pd.Series) -> pd.Series:
     Returns: updated row in the dataframe
     """
     if row["BusinessNameCorrect"] and row["AddressCorrect"]:
-        row["BusinessNameUpdate"][0] = row["Business Name"]
+        row["BusinessNameUpdate"].append(row["Business Name"])
         row["BusinessNameFound"] = (
             "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
         )
 
         # Add address columns
-        row["AddressUpdate"][0] = f"{row['Address 1']}, {row['City']}, {row['Zip Code'][0]}"
+        row["AddressUpdate"].append(f"{row['Address 1']}, {row['City']}, {row['Zipcode'][0]}")
         row["AddressFound"] = (
             "SOS" if not pd.isna(row["AddressUpdate"]) else np.nan
         )
 
         # Add zip columns
-        row["ZipUpdate"][0] = row["Zip Code New"]
+        row["ZipUpdate"].append(row["Zip Code New"])
         row["ZipFound"] = (
             "SOS" if not pd.isna(row["ZipUpdate"]) else np.nan
         )
@@ -64,11 +64,11 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
 
     # If address matches OR city matches, assume correct
     for address in row["Address"]:
-        if address_match_found(address, f'{row["Address 1"]}, {row["City"]}, {row["Zip Code"][0]}'):
+        if address_match_found(address, f'{row["Address 1"]}, {row["City"]}, {row["Zipcode"][0]}'):
             row["AddressCorrect"] = True
             break
 
-    row["ZipCorrect"] = (row["Zip Code"][0] == row["Zip Code New"])
+    row["ZipCorrect"] = (row["Zipcode"][0] == row["Zip Code New"])
 
     row = update_columns_sos_two(row)
     return row
@@ -77,22 +77,22 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
 def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     # Give null values for all columns, which we will fill out when needed
     data["BusinessNameCorrect"] = False
-    data["BusinessNameUpdate"] = [np.nan]
+    data["BusinessNameUpdate"] = [[] for _ in range(len(data))]
     data["BusinessNameFound"] = np.nan
     data["AddressCorrect"] = False
-    data["AddressUpdate"] = [np.nan]
+    data["AddressUpdate"] = [[] for _ in range(len(data))]
     data["AddressFound"] = np.nan
     data["ZipCorrect"] = False
-    data["ZipUpdate"] = [np.nan]
+    data["ZipUpdate"] = [[] for _ in range(len(data))]
     data["ZipFound"] = np.nan
     data["PhoneCorrect"] = False
-    data["PhoneUpdate"] = [np.nan]
+    data["PhoneUpdate"] = [[] for _ in range(len(data))]
     data["PhoneFound"] = np.nan
     data["EmailCorrect"] = False
-    data["EmailUpdate"] = [np.nan]
+    data["EmailUpdate"] = [[] for _ in range(len(data))]
     data["EmailFound"] = np.nan
     data["WebsiteCorrect"] = False
-    data["WebsiteUpdate"] = [np.nan]
+    data["WebsiteUpdate"] = [[] for _ in range(len(data))]
     data["WebsiteFound"] = np.nan
 
     return data
@@ -122,6 +122,8 @@ def compare_dataframes_sos(
     if newData.empty:
         raise ValueError("The SOS dataframe is empty, check file to ensure contents present")
 
+    historicalData.rename(columns={'Firm_Id': 'firm_id'}, inplace=True)
+
     columns_to_update = ["Business Name", "Address 1", "Zip Code New", "City"]
     historicalData = add_update_columns(historicalData)
 
@@ -139,8 +141,8 @@ def compare_dataframes_sos(
             # Check if we have a match in sos_data
             if name in sos_names_normal:
                 # Find the row in sos_data
-                sos_update_row = newData[newData['Business Name'] == mapping[name]]
-                # Shape dataframe into row, since we know there is a 1-1 mapping in sos
+                sos_update_row = newData[newData['Business Name'] == mapping[name]].head(1)
+                # Shape dataframe into row, since we know there is a 1-1 mapping
                 sos_update_row = sos_update_row.squeeze(axis=0)
 
                 # Now, update the columns in the historical dataframe, these will be used for comparing
@@ -184,7 +186,7 @@ def compare_dataframes_sos(
             "AddressCorrect",
             "AddressUpdate",
             "AddressFound",
-            "Zip Code",
+            "Zipcode",
             "ZipCorrect",
             "ZipUpdate",
             "ZipFound"

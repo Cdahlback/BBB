@@ -50,7 +50,7 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     data = add_yp_columns(data)
 
     # For each row in the input data, try to scrape Yellow Pages data.
-    data = data.apply(call_scrape_yellow_page_data, axis=1)
+    data = data.parallel_apply(call_scrape_yellow_page_data, axis=1)
 
     # Iterate through each row of the data.
     for index, row in data.iterrows():
@@ -98,10 +98,10 @@ def call_scrape_yellow_page_data(row: pd.Series) -> None:
     # Construct the search term and location from the data.
     search_term = (
         row["BusinessNameUpdate"][0]
-        if not pd.isna(row["BusinessNameUpdate"][0])
+        if len(row["BusinessNameUpdate"]) > 0
         else row["BusinessName"][0]
     )
-    location = row["City"][0] if not pd.isna(row["City"][0]) else "Minnesota"
+    location = row["City"] if pd.notna(row["City"]) else "Minnesota"
 
     if not isinstance(search_term, str):
         return row
@@ -113,10 +113,13 @@ def call_scrape_yellow_page_data(row: pd.Series) -> None:
 
     # Add the scraped data to the global dataframe.
     global scraped_yellow_pages_data
-    row["BusinessNameYP"] = result["name"]
-    row["AddressYP"] = result["address"]
-    row["PhoneYP"] = result["phone"]
-    row["WebsiteYP"] = result["url"]
+    try:
+        row["BusinessNameYP"] = result["name"]
+        row["AddressYP"] = result["address"]
+        row["PhoneYP"] = result["phone"]
+        row["WebsiteYP"] = result["url"]
+    except Exception as e:
+        print(str(e))
 
     return row
 
