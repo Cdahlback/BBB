@@ -7,8 +7,8 @@ import os
 import pandas as pd
 import numpy as np
 import requests
-from data_processing import is_same_business
-from Normalizing import (
+from lib.data_processing import is_same_business
+from lib.Normalizing import (
     normalize_address_i18n,
     normalize_url,
     normalize_us_phone_number,

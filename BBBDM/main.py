@@ -30,7 +30,7 @@ from lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 # Loads the .env file
-ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
+ENV_PATH = str(Path(__file__).parent.parent / ".env")
 load_dotenv(dotenv_path=ENV_PATH)
 
 
@@ -39,13 +39,13 @@ def main():
     Function which sets up our environment variables and runs the system
     """
     # Extract the data
-    mn_business = get_valid_businesses_info("Data/mn_business.csv")
-    mn_business_address = extract_data("Data/mn_business_address.csv")
-    mn_business_contact = extract_data("Data/mn_business_contact.csv")
-    mn_business_email = extract_data("Data/mn_business_email.csv")
-    mn_business_name = extract_data("Data/mn_business_name.csv")
-    mn_business_phone = extract_data("Data/mn_business_phone.csv")
-    mn_business_url = extract_data("Data/mn_business_url.csv")
+    mn_business = get_valid_businesses_info("Data/mn_business.csv").head(100)
+    mn_business_address = extract_data("Data/mn_business_address.csv").head(100)
+    mn_business_contact = extract_data("Data/mn_business_contact.csv").head(100)
+    mn_business_email = extract_data("Data/mn_business_email.csv").head(100)
+    mn_business_name = extract_data("Data/mn_business_name.csv").head(100)
+    mn_business_phone = extract_data("Data/mn_business_phone.csv").head(100)
+    mn_business_url = extract_data("Data/mn_business_url.csv").head(100)
 
     # Merge the data
     merged_data = join_dataframe_firmid(
@@ -66,19 +66,21 @@ def main():
     invalid_data = normalize_dataframe(invalid_data)
 
     # Compare to SOS, updating when necessary
-    path_to_sos = ""
+    path_to_sos = "Data/sos_data.csv"
     SOS_data = extract_data(path_to_sos)
     valid_data = compare_dataframes_sos(valid_data, SOS_data)
 
     # Compare to Google API
-    # TODO: Get chris's pull request merged
-
+    valid_data = valid_data.apply(google_validation, axis=1)
     # Compare to YP
     valid_data = update_dataframe_with_yellow_pages_data(valid_data)
     # Merge with bad data
 
-    # Output csv
-    pass
+    #Print the data to csv
+    valid_data.to_csv("Data/valid_data.csv")
+    invalid_data.to_csv("Data/invalid_data.csv") 
+
+    logging.info("Data has been printed to csv - Success")
 
 
 if __name__ == "__main__":

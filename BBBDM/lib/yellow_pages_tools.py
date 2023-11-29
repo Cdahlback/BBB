@@ -7,7 +7,7 @@ import pandas as pd
 
 from pandarallel import pandarallel
 from apify_client import ApifyClient
-from BBBDM.lib.data_processing import is_same_business
+from lib.data_processing import is_same_business
 
 pandarallel.initialize()
 

@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 
 
-from BBBDM.lib.data_processing import address_match_found, is_same_business
-from BBBDM.lib.Normalizing import standardizeName, normalize_name
+from lib.data_processing import address_match_found, is_same_business
+from lib.Normalizing import standardizeName, normalize_name
 
 
 def update_columns_sos_two(row: pd.Series) -> pd.Series:
