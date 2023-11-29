@@ -64,7 +64,7 @@ def main():
     invalid_data = normalize_dataframe(invalid_data)
 
     # Compare to SOS, updating when necessary
-    path_to_sos = "Data/sos_data.csv"
+    path_to_sos = (str(Path(__file__).parent / "Data/sos_data.csv"))
     SOS_data = extract_data(path_to_sos)
     valid_data = compare_dataframes_sos(valid_data, SOS_data)
 
@@ -75,8 +75,8 @@ def main():
     # Merge with bad data
 
     #Print the data to csv
-    valid_data.to_csv("Data/valid_data.csv")
-    invalid_data.to_csv("Data/invalid_data.csv") 
+    valid_data.to_csv(str(Path(__file__).parent / "Data/valid_data.csv"))
+    invalid_data.to_csv(str(Path(__file__).parent / "Data/invalid_data.csv")) 
 
     logging.info("Data has been printed to csv - Success")
 

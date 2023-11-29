@@ -80,7 +80,7 @@ def normalize_dataframe(df: list[str]) -> list[str]:
     """
     df['Email'] = df['Email'].apply(normalize_email)
     df['Phone'] = df['Phone'].apply(normalize_us_phone_number)
-    df['Zip Code'] = df['Zip Code'].apply(normalize_zipcode)
+    df['Zipcode'] = df['Zipcode'].apply(normalize_zipcode)
     df['BusinessName'] = df['BusinessName'].apply(standardizeName)
     df['Website'] = df['Website'].apply(normalize_url)
     df['Address'] = df['Address'].apply(normalize_address_i18n)

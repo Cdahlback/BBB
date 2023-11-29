@@ -8,3 +8,4 @@ venv/
 bbbdm/test/sample_business.csv
 .env
 functions.log
+bbbdm/data/sos_data.csv

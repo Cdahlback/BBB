@@ -1,0 +1,71 @@
+,Firm_Id,BusinessName,Phone,Website,Email,City,Zipcode,Address
+0,96.0,[nan],[nan],[nan],['catholic2@msn.com'],['Oakdale'],['55128'],"['7010 6th St N ,oakdale,55128']"
+1,97.0,[nan],[nan],['http://www.armorsecurity.com'],['pros@armorsecurity.com'],['Minneapolis'],"['55405', '55408']","['2601 Stevens Ave ,minneapolis,55408', '2313 Hennepin Ave ,minneapolis,55405']"
+2,100.0,[nan],[nan],['http://www.bobandcarls.com'],['info@bobandcarls.com'],['Osseo'],['55369'],"['107 Central Ave ,osseo,55369']"
+3,103.0,[nan],[nan],['https://www.bergerallied.com'],['marketingteam@bergerallied.com'],['Saint Paul'],['55113'],"['2950 Long Lake Rd ,saint paul,55113']"
+4,104.0,[nan],[nan],['http://www.besterbros.com'],"['paull@besterbros.com', 'info@besterbros.com']",['South Saint Paul'],['55075'],"['260 Hardman Ave S ,south saint paul,55075']"
+5,105.0,[nan],[nan],['http://www.bolander.com'],['info@bolander.com'],"['Rosemount', 'Saint Paul']","['55068', '55107']","['251 Starkey St ,saint paul,55107', '13425 Court House Blvd ,rosemount,55068', 'PO Box 7216 ,saint paul,55107']"
+6,106.0,[nan],[nan],['http://www.bonfesauto.com'],"['tomdbonfe@aol.com', 'bonfe@aol.com']",['Saint Paul'],['55102'],"['337 7th St W ,saint paul,55102']"
+7,109.0,[nan],[nan],['https://www.buildersandremodelers.com'],[nan],['Minneapolis'],['55408'],"['3517 Hennepin Ave ,minneapolis,55408']"
+8,110.0,[nan],[nan],['http://www.boehmheatingco.com'],['office@boehmheatingco.com'],"['Mendota Hts', 'Saint Paul']","['55120', '55104', '55116']","['1598 Selby Ave ,saint paul,55104', '1040 Highway 110 ,mendota hts,55120', '1259 Scheffer Ave ,saint paul,55116']"
+9,111.0,[nan],[nan],['http://www.bemis.com'],[nan],['Neenah'],['54956'],[]
+10,113.0,[nan],[nan],['http://www.berwaldroofing.com'],"['stacym@berwaldroofing.com', 'paulavan@berwaldroofing.com', 'elizabeths@berwaldroofing.com', 'joyces@berwaldroofing.com', 'sundaem@berwaldroofing.com']",['North Saint Paul'],['55109'],"['2440 Charles St N ,north saint paul,55109']"
+11,114.0,[nan],[nan],"['http://bloomingtonmn.abbeycarpet.com', 'http://galaxiefloorstores.com', 'http://bloomingtonmn.abbeycarpetandfloor.com', 'http://www.blcflooring.com']",['jodyc@gfloors.biz'],"['Bloomington', 'Apple Valley']","['55124', '55420']","['9939 Lyndale Ave S ,bloomington,55420', '6808 151st St W STE 104 ,apple valley,55124']"
+12,115.0,[nan],[nan],"['http://www.brede.com', 'http://www.bredeexhibitsplus.com']",['sanderson@brede.com'],"['Boston', 'Minneapolis']","['02127', '55413']","['2211 Broadway St NE ,minneapolis,55413']"
+13,116.0,[nan],[nan],['http://www.bringlass.com'],['dnelson@bringlass.com'],['Minneapolis'],['55411'],"['2300 N 2nd St ,minneapolis,55411']"
+14,120.0,[nan],[nan],['http://www.facebook.com/bergstromjewelers'],[nan],[nan],[nan],[nan]
+15,125.0,[nan],[nan],[nan],[nan],['Minneapolis'],['55413'],"['2001 Broadway St NE ,minneapolis,55413']"
+16,132.0,[nan],[nan],[nan],['chuck@bckitchens.com'],['Hopkins'],['55343'],"['4332 Shady Oak Rd S Ste B ,hopkins,55343']"
+17,133.0,[nan],[nan],['http://www.bmfurnitureonline.com'],['eabramson@b-and-m-furniture.com'],['Saint Paul'],"['55101', '55114']","['2117 Charles Ave Ste 9 ,saint paul,55114', '256 7th St E ,saint paul,55101']"
+18,135.0,[nan],[nan],['http://www.burnsvillevw.com'],"['cathy.mohler@burnsvillevw.com', 'jay.radue@burnsvillevw.com']",['Burnsville'],"['55306', '55337']","['12020 Highway 35W S ,burnsville,55337', '14550 Buck Hill Rd ,burnsville,55306', '14700 Buck Hill Rd ,burnsville,55306']"
+19,136.0,[nan],[nan],[nan],"['maryann.murphy@suddath.com', 'bill.johnson@barrettmoving.com', 'marketing@suddath.com', 'brigitt.berlin@suddath.com', 'legal@suddath.com', 'mike.nash@suddath.com', 'michael.nash@suddath.com', 'bill.johnson@suddath.com', 'webleads283@suddath.com']",['Eden Prairie'],['55344'],"['7100 Washington Ave S ,eden prairie,55344']"
+20,143.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+21,146.0,[nan],[nan],[nan],['info@baberautorepair.com'],[nan],[nan],[nan]
+22,148.0,[nan],[nan],['http://www.bachmans.com'],['cdejarlais@bachmans.com'],[nan],[nan],[nan]
+23,149.0,[nan],[nan],"['https://www.facebook.com/pages/basement-water-controlled/181275151910046', 'http://www.safedrybasement.com', 'https://www.youtube.com/watch?t=27&v=zb5msyrt_pk']",['bwckevins@gmail.com'],[nan],[nan],[nan]
+24,152.0,[nan],[nan],[nan],['gwen@brookparkrealty.com'],[nan],[nan],[nan]
+25,154.0,[nan],[nan],['http://www.bluecrossmn.com'],[nan],[nan],[nan],[nan]
+26,155.0,[nan],[nan],"['http://www.facebook.com/beltmannrelocation', 'http://twitter.com/beltmanngroup', 'http://www.beltmann.com']","['mike.peshut@beltmann.com', 'ben.branson@beltmann.com', 'lyle.saumweber@beltmann.com', 'ryan.seabright@beltmann.com', 'fred.mcpherson@beltmann.com']",[nan],[nan],[nan]
+27,156.0,[nan],[nan],[nan],['info@budgetinsulation.com'],[nan],[nan],[nan]
+28,157.0,[nan],[nan],['http://www.btaapartments.com'],"['jloney@kleinmanrealty.com', 'loneyjm@comcast.net']",[nan],[nan],[nan]
+29,159.0,[nan],[nan],"['http://www.sanfordbrown.edu', 'http://www.browncollege.edu']",['wcowan@browncollege.edu'],[nan],[nan],[nan]
+30,163.0,[nan],[nan],"['https://plus.google.com/u/0/101341587337255851302/posts', 'https://twitter.com/rbhonda', 'https://www.rbhonda.com', 'https://www.facebook.com/richfieldbloomingtonhonda']",[nan],[nan],[nan],[nan]
+31,164.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+32,165.0,[nan],[nan],['https://www.superiorford.com'],[nan],[nan],[nan],[nan]
+33,167.0,[nan],[nan],['http://www.cbburnet.com'],[nan],[nan],[nan],[nan]
+34,168.0,[nan],[nan],['http://lundsandbyerlys.com/'],[nan],[nan],[nan],[nan]
+35,169.0,[nan],[nan],['http://www.invergroveford.com'],[nan],[nan],[nan],[nan]
+36,171.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+37,172.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+38,179.0,[nan],[nan],['http://www.barnettchrysler.com'],[nan],[nan],[nan],[nan]
+39,183.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+40,184.0,[nan],[nan],"['http://www.facebook.com/pages/brambillas-inc/191042452283', 'http://www.brambillasinc.com']",[nan],[nan],[nan],[nan]
+41,185.0,[nan],[nan],['http://www.broadwayrental.com'],[nan],[nan],[nan],[nan]
+42,187.0,[nan],[nan],['http://www.blainestatebank.com'],[nan],[nan],[nan],[nan]
+43,188.0,[nan],[nan],['http://www.republicservices.com'],[nan],[nan],[nan],[nan]
+44,190.0,[nan],[nan],"['http://twitter.com/beisselwindows', 'http://www.beisselwindows.com', 'http://www.facebook.com/beisselwindows']",[nan],[nan],[nan],[nan]
+45,192.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+46,194.0,[nan],[nan],['http://www.iverhcarlson.com'],[nan],[nan],[nan],[nan]
+47,197.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+48,198.0,[nan],[nan],['http://www.centralinsulation.net'],[nan],[nan],[nan],[nan]
+49,201.0,[nan],[nan],['http://www.culliganredwing.com'],[nan],[nan],[nan],[nan]
+50,202.0,[nan],[nan],"['http://www.goldpoints.com', 'http://www.carlson.com']",[nan],[nan],[nan],[nan]
+51,207.0,[nan],[nan],['http://www.cdsdoor.com'],[nan],[nan],[nan],[nan]
+52,209.0,[nan],[nan],['http://www.cub.com'],[nan],[nan],[nan],[nan]
+53,211.0,[nan],[nan],['http://www.commerceexpressinc.com'],[nan],[nan],[nan],[nan]
+54,212.0,[nan],[nan],['http://www.campustravelmn.com'],[nan],[nan],[nan],[nan]
+55,214.0,[nan],[nan],['http://www.centraire.com'],[nan],[nan],[nan],[nan]
+56,216.0,[nan],[nan],['http://www.custompoolsinc.com'],[nan],[nan],[nan],[nan]
+57,220.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+58,227.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+59,229.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+60,230.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+61,231.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+62,232.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+63,233.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+64,241.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+65,243.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+66,266.0,[nan],[nan],['http://www.coit.com'],[nan],[nan],[nan],[nan]
+67,276.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+68,17044.0,[nan],[nan],[nan],[nan],[nan],[nan],[nan]
+69,96369566.0,[nan],[nan],[nan],[nan],['St. Paul'],['55141'],"['1458 Thomas St. ,st. paul,55141']"
