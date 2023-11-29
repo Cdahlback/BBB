@@ -39,19 +39,17 @@ def main():
     Function which sets up our environment variables and runs the system
     """
     # Extract the data
-    mn_business = get_valid_businesses_info("Data/mn_business.csv").head(100)
-    mn_business_address = extract_data("Data/mn_business_address.csv").head(100)
-    mn_business_contact = extract_data("Data/mn_business_contact.csv").head(100)
-    mn_business_email = extract_data("Data/mn_business_email.csv").head(100)
-    mn_business_name = extract_data("Data/mn_business_name.csv").head(100)
-    mn_business_phone = extract_data("Data/mn_business_phone.csv").head(100)
-    mn_business_url = extract_data("Data/mn_business_url.csv").head(100)
+    mn_business = get_valid_businesses_info((str(Path(__file__).parent / "Data/mn_business.csv"))).head(100)
+    mn_business_address = extract_data((str(Path(__file__).parent / "Data/mn_business_address.csv"))).head(100)
+    mn_business_email = extract_data((str(Path(__file__).parent / "Data/mn_business_email.csv"))).head(100)
+    mn_business_name = extract_data((str(Path(__file__).parent / "Data/mn_business_name.csv"))).head(100)
+    mn_business_phone = extract_data((str(Path(__file__).parent / "Data/mn_business_phone.csv"))).head(100)
+    mn_business_url = extract_data((str(Path(__file__).parent / "Data/mn_business_url.csv"))).head(100)
 
     # Merge the data
     merged_data = join_dataframe_firmid(
         mn_business,
         mn_business_address,
-        mn_business_contact,
         mn_business_email,
         mn_business_name,
         mn_business_phone,
