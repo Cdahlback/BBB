@@ -10,6 +10,7 @@ from BBBDM.lib.data_processing import (
     get_valid_businesses_info,
     join_dataframe_firmid,
 )
+from BBBDM.lib.google_places_tools import google_validation
 from BBBDM.lib.Normalizing import normalize_dataframe
 from BBBDM.lib.sos_tools import compare_dataframes_sos
 from BBBDM.lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
@@ -417,8 +418,7 @@ def test_regression_join_dataframe_firmid():
     mn_columns_expected_set=set(expected_result.columns)
     mn_columns_set=set(actual_result_df.columns)
     assert mn_columns_set==mn_columns_expected_set
-    
-test_regression_join_dataframe_firmid()  
+     
 
 
 def test_regression_valid_invalid_dataframe():
@@ -484,7 +484,62 @@ def test_regression_valid_invalid_dataframe():
     assert expected_valid_rows.equals(valid_data)
     assert expected_invalid_rows.equals(invalid_data)
 
-test_regression_valid_invalid_dataframe()
+
+
+def test_regression_google_places():
+    """
+    Tests the google_places function with a sample dataframe
+    """
+    expected_valid_rows = pd.DataFrame({
+    "Firm_Id": [2, 5, 7, 9, 10],
+    "BusinessName": [["Able Fence, Inc."], ["Albin Endeavor, Inc.","Albin Funeral Chapel Inc","Albin Chapel"],["Albrecht Company","Albrecht Enterprises, LLC"],["Arthur Williams Opticians","Arthur Williams Optical Inc"],["Able Moving & Storage Inc","Able Movers LLC"]],
+    "Phone": [["6512224355"],["6122700491","6128711418","9529149410"],["6516334510"],["7632242883","6516451976","6512242883"],["9529350331","6129913264"]],
+    "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],["http://www.ablemovers.net"]],
+    "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],["ablemovers@izoom.net"]],
+    "City":[["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],["Saint Paul"],["Minnetonka","Elk River"]],
+    "Zipcode": [["55117"],["55404","55391","55344"],["55113"],["55102","55116"],["55345","55330"]],
+    "Address": [["78 Acker St E ,Saint Paul,55117"],["PO Box 46147 ,Eden Prairie,55344","2200 Nicollet Ave ,Minneapolis,55404","6855 Rowland Rd ,Eden Prairie,55344","2024 Blackberry Ln ,Wayzata,55391"],["1408 County Road C W ,Roseville,55113"],["366 Saint Peter St ,Saint Paul,55102","772 Cleveland Ave S ,Saint Paul,55116"],["14601 Spring Lake Rd ,Minnetonka,55345","12285 Rush Cir NW ,Elk River,55330"]]
+})
+    expected_invalid_rows =pd.DataFrame({
+    "Firm_Id": [18, 19, 22, 29, 30, 31],
+    "BusinessName": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Phone": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Website": [["http://www.andersencorp.com"],[np.nan],["http://www.facebook.com/asphaltmn","http://www.asphaltmn.com","http://twitter.com/asphaltmn","http://asphaltmn.com"],[np.nan],["http://www.adt.com"],["http://www.amfam.com"]],
+    "Email": [["jennifer.lamson@andersen.com","donna.dingle@andersencorp.com"],[np.nan],["office@asphaltmn.com","mitch@asphaltmn.com"],[np.nan],[np.nan],[np.nan]],
+    "City":[[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Zipcode": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]],
+    "Address": [[np.nan],[np.nan],[np.nan],[np.nan],[np.nan],[np.nan]]
+})
+    print(expected_valid_rows)
+    print(expected_invalid_rows)
+     # There are no invalid rows in the provided DataFrame
+
+    mn_business = get_valid_businesses_info(str(Path(__file__).parent.parent / "Data/mn_business.csv"))
+    mn_business_address = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_address.csv"))
+    mn_business_email = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_email.csv"))
+    mn_business_name = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_name.csv"))
+    mn_business_phone = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_phone.csv"))
+    mn_business_url = extract_data(str(Path(__file__).parent.parent / "Data/mn_business_url.csv"))
+
+    merged_df= join_dataframe_firmid(
+    mn_business.head(10),
+    mn_business_address.head(10),
+    mn_business_email.head(10),
+    mn_business_name.head(10),
+    mn_business_phone.head(10),
+    mn_business_url.head(10)
+)
+    valid_data, invalid_data = filter_dataframes(merged_df)
+    print(valid_data)
+    print(invalid_data)
+
+    #Sorts the lists inside the dataframe so that the order of the elements in the list does not matter
+    valid_data = valid_data.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    invalid_data = invalid_data.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    expected_valid_rows = expected_valid_rows.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+    expected_invalid_rows = expected_invalid_rows.applymap(lambda x: sorted(x) if isinstance(x, list) else x)
+
+
 
 
 def test_regression_normalize_dataframe():

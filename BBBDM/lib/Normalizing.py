@@ -102,6 +102,16 @@ def normalize_us_phone_number(phones: list[str]) -> list[str]:
     - list[str]: Returns the normalized U.S. phone number.
     """
     normalized_phones = []
+    if not isinstance(phones, list):
+        digits = ''.join(filter(str.isdigit, phones))
+        if len(digits) == 10:
+            normalized_phones = f"+1 {digits[:3]}-{digits[3:6]}-{digits[6:]}"
+        elif len(digits) == 11 and digits[0] == '1':
+            normalized_phones = f"+{digits[0]} {digits[1:4]}-{digits[4:7]}-{digits[7:]}"
+        else:
+            logging.info(f"{phones} not valid, removing from phone list")
+            return ""
+        return normalized_phones
     for phone in phones:
         if not isinstance(phone, str):
             normalized_phones.append(phone)
@@ -133,6 +143,17 @@ def standardizeName(names, is_sos=False):
     - str: Returns a list of the standardized business names.
     """
     normalized_names = []
+    if not isinstance(names, list):
+        try:
+            names = names.lower()
+            names = re.sub('&', ' and ', names)
+            names = re.sub(r'[^a-z\s-]', '', names)
+            names = re.sub(r' {2,}', ' ', names)
+            normalized_names = names
+        except Exception as e:
+            logging.info(f"{names} not valid, removing from list")
+            return ""
+        return normalized_names
     for name in names:
         if not isinstance(name, str):
             normalized_names.append(name)
@@ -177,6 +198,24 @@ def normalize_address_i18n(addresses: list[str]) -> list[str]:
     - list[str]: A structured and normalized address list.
     """
     normalized_addresses = []
+    if not isinstance(addresses, list):
+        try:
+            address_list = addresses.split(',')
+            address_dict = {
+                'street_address': address_list[0],
+                'city': address_list[1],
+                'country_area': 'Minnesota',
+                'country_code': 'US',
+                'postal_code': address_list[2]
+            }
+            normalized_address = normalize_address(address_dict)
+            logging.info(f"Successfully normalized address: {normalized_address}")
+            valid_normalize_address = f"{normalized_address['street_address']},{normalized_address['city'].lower()},{normalized_address['postal_code']}"
+            normalized_addresses = valid_normalize_address
+        except Exception as e:
+            logging.error(f"{addresses} not valid, removing from address list")
+            return ""
+        return normalized_addresses
     for address in addresses:
         if not isinstance(address, str):
             normalized_addresses.append(address)
@@ -215,6 +254,17 @@ def normalize_url(urls: list[str]) -> list[str]:
     - str: Returns the normalized URL.
     """
     normalized_urls = []
+    if not isinstance(urls, list):
+        try:
+            url = urls.lower().replace(" ", "")
+            if not url.startswith(('http://', 'https://')):
+                url = 'http://' + url
+            logging.info(f"Successfully normalized URL: {url}")
+            normalized_urls = url
+        except Exception as e:
+            logging.info(f"{urls} not valid, removing from list")
+            return ""
+        return normalized_urls
     for url in urls:
         if not isinstance(url, str):
             normalized_urls.append(url)

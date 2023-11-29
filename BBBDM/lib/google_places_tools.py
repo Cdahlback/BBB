@@ -5,17 +5,20 @@ import logging
 import os
 
 import pandas as pd
+import numpy as np
 import requests
-from lib.data_processing import is_same_business
-from lib.Normalizing import (
+from data_processing import is_same_business
+from Normalizing import (
     normalize_address_i18n,
     normalize_url,
     normalize_us_phone_number,
     standardizeName,
 )
+from dotenv import load_dotenv
+from pathlib import Path
 
-# ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
-# load_dotenv(dotenv_path=ENV_PATH)
+ENV_PATH = str(Path(__file__).parent.parent.parent / ".env")
+load_dotenv(dotenv_path=ENV_PATH)
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
@@ -72,7 +75,10 @@ class google_maps:
             response = requests.post(self.url, headers=self.headers, data=self.data)
             if response.status_code == 200:
                 try:
-                    self.place_ids = response.json()["places"].values()
+                    json_value = response.json()
+                    for place in json_value["places"]:
+                        self.place_ids.append(place["id"])
+
                 except KeyError:
                     logging.error("Could not find place_id, no results returned")
                     return None
@@ -195,7 +201,7 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     sos_worked = False
     business_name = "BusinessName"
     address = "Address"
-
+    
     if dataframe["BusinessNameCorrect"]:
         sos_worked = True
         for name in dataframe["BusinessNameUpdate"]:
@@ -211,13 +217,13 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     if sos_worked:
         search_list = [business_name, address]
     else:
-        search_list = ["Address", "Phone", "Website", "BusinessName"]
+        search_list = ["BusinessName", "Address", "Phone", "Website"]
 
     success = False
 
     for search in search_list:
         # If the information was not found then it will search for the information using the google places API
-        if pd.isna(dataframe[search]):
+        if pd.isna(dataframe[search][0]):
             continue
         else:
             logging.info(f"Searching for {search} using Google Places API")
@@ -303,6 +309,8 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
             if phone == newphone:
                 dataframe["PhoneFound"] = "Google"
                 dataframe["PhoneCorrect"] = True
+                update_phones = True
+                new_phones.append(phone)
             else:
                 update_phones = True
                 new_phones.append(phone)
@@ -319,13 +327,64 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
             if website == newwebsite:
                 dataframe["WebsiteCorrect"] = True
                 dataframe["WebsiteFound"] = "Google"
+                new_websites.append(website)
+                update_websites = True
             else:
                 update_websites = True
                 new_websites.append(website)
                 dataframe["WebsiteFound"] = "Google"
+                update_websites = True
 
     if update_websites:
         dataframe["WebsiteUpdate"] = new_websites
+    #Just incase we need to use this again
+    google_maps.place_ids = []
 
     return dataframe
     # Return the dataframe with the updated information
+
+
+if __name__ == "__main__":
+    sos_output = pd.DataFrame({
+        "firm_id": [2, 5, 7, 9, 10],
+        "BusinessName": [["able fence, inc."], ["albin endeavor inc.", "albin funeral chapel inc", "albin chapel"],
+                         ["albrecht company", "albrecht enterprises llc"],
+                         ["arthur williams opticians","arthur williams optical inc"],
+                         ["able moving and storage snc","able movers llc"]],
+        "BusinessNameUpdate": [["Able Fence, Inc."], [np.nan], ["Albrecht Enterprises, LLC"], [np.nan], [np.nan]],
+        "BusinessNameCorrect": [True, False, True, False, False],
+        "BusinessNameFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+        "Phone": [["+1 651-222-4355"], ["+1 612-270-0491","+1 612-871-1418","+1 952-914-9410"],["+1 651-633-4510"],
+                  ["+1 763-224-2883","+1 651-645-1976","+1 651-224-2883"],["+1 952-935-0331","+1 612-991-3264"]],
+        "PhoneUpdate": [[np.nan], [np.nan], [np.nan], [np.nan], [np.nan]],
+        "PhoneCorrect": [False, False, False, False, False],
+        "PhoneFound": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "Website": [[np.nan],["http://www.albinchapel.com/"],[np.nan],["http://www.arthurwilliamsoptical.com/"],
+                    ["http://www.ablemovers.net"]],
+        "WebsiteUpdate": [[np.nan], [np.nan], [np.nan], [np.nan], [np.nan]],
+        "WebsiteCorrect": [False, False, False, False, False],
+        "WebsiteFound": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "Email": [[np.nan],["office@albinchapel.com","jimalbinson@gmail.com"],
+                  ["edward@albrechtcompany.com","mail@albrechtcompany.com"],["arthurwilliamsoptical@gmail.com"],
+                  ["ablemovers@izoom.net"]],
+        "EmailUpdate": [[np.nan], [np.nan], [np.nan], [np.nan], [np.nan]],
+        "EmailCorrect": [False, False, False, False, False],
+        "EmailFound": [np.nan, np.nan, np.nan, np.nan, np.nan],
+        "City": [["Saint Paul"],["Wayzata","Eden Prairie","Minneapolis"],["Roseville"],
+                 ["Saint Paul"],["Minnetonka","Elk River"]],
+        "Zip Code": [["55117"], ["55404", "55391", "55344"], ["55113"], ["55102", "55116"], ["55345", "55330"]],
+        "ZipUpdate": [["55117"], [np.nan], ["55113"], [np.nan], [np.nan]],
+        "ZipCorrect": [True, False, True, False, False],
+        "ZipFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+        "Address": [["78 Acker St E ,saint paul,55117"],
+                ["PO Box 46147 ,eden prairie,55344","2200 Nicollet Ave ,minneapolis,55404","6855 Rowland Rd ,eden prairie,55344","2024 Blackberry Ln ,wayzata,55391"],
+                ["1408 County Road C W ,roseville,55113"],
+                ["366 Saint Peter St ,saint paul,55102","772 Cleveland Ave S ,saint paul,55116"],
+                ["14601 Spring Lake Rd ,minnetonka,55345","12285 Rush Cir NW ,elk river,55330"]],
+        "AddressUpdate": [["78 Acker Str E, St Paul, 55117"], [np.nan], ["1408 W Co Rd C, Roseville, 55113"], [np.nan], [np.nan]],
+        "AddressCorrect": [True, False, True, False, False],
+        "AddressFound": ["SOS", np.nan, "SOS", np.nan, np.nan],
+    })
+    newoutput = sos_output.apply(google_validation, axis=1)
+
+    print(newoutput.head())
