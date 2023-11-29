@@ -3,10 +3,12 @@ import logging
 import numpy as np
 import pandas as pd
 
+
 from BBBDM.lib.data_processing import address_match_found, is_same_business
+from BBBDM.lib.Normalizing import standardizeName, normalize_name
 
 
-def update_columns_sos(row: pd.Series) -> pd.Series:
+def update_columns_sos_two(row: pd.Series) -> pd.Series:
     """
     Takes in a row of our dataframe with filled out values for row["BusinessNameCorrect"], row["BusinessAddressCorrect"],
     and row["BusinessZipCorrect"]
@@ -15,22 +17,22 @@ def update_columns_sos(row: pd.Series) -> pd.Series:
 
     Returns: updated row in the dataframe
     """
-    if row["BusinessNameCorrect"] and row["BusinessAddressCorrect"]:
-        row["BusinessNameUpdate"] = row["Business Name"]
+    if row["BusinessNameCorrect"] and row["AddressCorrect"]:
+        row["BusinessNameUpdate"].append(row["Business Name"])
         row["BusinessNameFound"] = (
             "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
         )
 
         # Add address columns
-        row["BusinessAddressUpdate"] = row["Address 1"]
-        row["BusinessAddressFound"] = (
-            "SOS" if not pd.isna(row["BusinessAddressUpdate"]) else np.nan
+        row["AddressUpdate"].append(f"{row['Address 1']}, {row['City']}, {row['Zipcode'][0]}")
+        row["AddressFound"] = (
+            "SOS" if not pd.isna(row["AddressUpdate"]) else np.nan
         )
 
         # Add zip columns
-        row["BusinessZipUpdate"] = row["Zip Code New"]
-        row["BusinessZipFound"] = (
-            "SOS" if not pd.isna(row["BusinessZipUpdate"]) else np.nan
+        row["ZipUpdate"].append(row["Zip Code New"])
+        row["ZipFound"] = (
+            "SOS" if not pd.isna(row["ZipUpdate"]) else np.nan
         )
 
         logging.info(
@@ -40,7 +42,7 @@ def update_columns_sos(row: pd.Series) -> pd.Series:
     return row
 
 
-def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
+def update_sos_columns_one(row: pd.Series) -> pd.Series:
     """
     Calculates if our data is correct or not when compared to SOS (Secretary of State).
     Sets null values for other columns and performs additional data processing.
@@ -55,104 +57,143 @@ def add_sos_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A modified DataFrame with added columns and null values, ready for further processing.
     """
+    for name in row["BusinessName"]:
+        if is_same_business(name, row["Business Name"], 80, "", "a", True):
+            row['BusinessNameCorrect'] = True
+            break
 
-    # See if the business name and address match
-    merged_data["BusinessNameCorrect"] = is_same_business(
-        merged_data["BusinessName"], merged_data["Business Name"], 80, None, None, True
-    )
-    merged_data["BusinessAddressCorrect"] = address_match_found(
-        merged_data["Address"], merged_data["Address 1"]
-    )
-    merged_data["BusinessZipCorrect"] = (
-        merged_data["Zip Code"] == merged_data["Zip Code New"]
-    )
+    # If address matches OR city matches, assume correct
+    for address in row["Address"]:
+        if address_match_found(address, f'{row["Address 1"]}, {row["City"]}, {row["Zipcode"][0]}'):
+            row["AddressCorrect"] = True
+            break
 
+    row["ZipCorrect"] = (row["Zipcode"][0] == row["Zip Code New"])
+
+    row = update_columns_sos_two(row)
+    return row
+
+
+def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     # Give null values for all columns, which we will fill out when needed
-    merged_data["BusinessNameUpdate"] = np.nan
-    merged_data["BusinessNameFound"] = np.nan
-    merged_data["BusinessAddressUpdate"] = np.nan
-    merged_data["BusinessAddressFound"] = np.nan
-    merged_data["BusinessZipUpdate"] = np.nan
-    merged_data["BusinessZipFound"] = np.nan
+    data["BusinessNameCorrect"] = False
+    data["BusinessNameUpdate"] = [[] for _ in range(len(data))]
+    data["BusinessNameFound"] = np.nan
+    data["AddressCorrect"] = False
+    data["AddressUpdate"] = [[] for _ in range(len(data))]
+    data["AddressFound"] = np.nan
+    data["ZipCorrect"] = False
+    data["ZipUpdate"] = [[] for _ in range(len(data))]
+    data["ZipFound"] = np.nan
+    data["PhoneCorrect"] = False
+    data["PhoneUpdate"] = [[] for _ in range(len(data))]
+    data["PhoneFound"] = np.nan
+    data["EmailCorrect"] = False
+    data["EmailUpdate"] = [[] for _ in range(len(data))]
+    data["EmailFound"] = np.nan
+    data["WebsiteCorrect"] = False
+    data["WebsiteUpdate"] = [[] for _ in range(len(data))]
+    data["WebsiteFound"] = np.nan
 
-    merged_data.apply(update_columns_sos, axis=1)
-    logging.info("add_sos_columns function executed successfully")
-    return merged_data
+    return data
+
+
+def add_update_columns(data: pd.DataFrame) -> pd.DataFrame:
+    data["Business Name"] = np.nan
+    data["Address 1"] = np.nan
+    data["Zip Code New"] = np.nan
+    data["City"] = np.nan
+
+    return data
 
 
 def compare_dataframes_sos(
-    historicalData: pd.DataFrame, newData: pd.DataFrame
+        historicalData: pd.DataFrame, newData: pd.DataFrame
 ) -> pd.DataFrame:
     """
-    Compares old data to new, deleting duplicate rows, and adding the necessary columns
-     Parameters:
-        historicalData (pd.DataFrame): The historical data DataFrame.
-        newData (pd.DataFrame): The new data DataFrame containing Secretary of State information.
+        Compares old data to new, deleting duplicate rows, and adding the necessary columns
+         Parameters:
+            historicalData (pd.DataFrame): The historical data DataFrame.
+            newData (pd.DataFrame): The new data DataFrame containing Secretary of State information.
 
-    Returns: Dataframe containing updated information from SOS
-    """
-    left_on = "BusinessName"
-    right_on = "Business Name"
+        Returns: Dataframe containing updated information from SOS
+        """
+
+    if newData.empty:
+        raise ValueError("The SOS dataframe is empty, check file to ensure contents present")
+
+    historicalData.rename(columns={'Firm_Id': 'firm_id'}, inplace=True)
+
+    columns_to_update = ["Business Name", "Address 1", "Zip Code New", "City"]
+    historicalData = add_update_columns(historicalData)
+
+    sos_names = list(newData["Business Name"])
+    sos_names_normal = standardizeName(list(newData["Business Name"]), is_sos=True)
+    mapping = {normalized_value: original_value for original_value, normalized_value in zip(sos_names, sos_names_normal)}
+
+    # Loop over each historical row
+    for his_idx, his_row in historicalData.iterrows():
+        # Extract list of business names
+        row_names = his_row["BusinessName"]
+        # Loop over list of names
+        for name in row_names:
+            name = normalize_name(name)
+            # Check if we have a match in sos_data
+            if name in sos_names_normal:
+                # Find the row in sos_data
+                sos_update_row = newData[newData['Business Name'] == mapping[name]].head(1)
+                # Shape dataframe into row, since we know there is a 1-1 mapping
+                sos_update_row = sos_update_row.squeeze(axis=0)
+
+                # Now, update the columns in the historical dataframe, these will be used for comparing
+                historicalData.loc[his_idx, 'Business Name'] = sos_update_row["Business Name"]
+                historicalData.loc[his_idx, 'Address 1'] = sos_update_row["Address 1"]
+                historicalData.loc[his_idx, 'Zip Code New'] = sos_update_row["Zip Code"]
+                historicalData.loc[his_idx, 'City'] = sos_update_row["City"]
+
+                break
 
     try:
-        # Merge the data, keeping all rows from historicalData and rows from newData where theres a match for BusinessNames
-        merged_data = historicalData.merge(
-            newData, left_on=left_on, right_on=right_on, how="inner"
-        )
-        # Add that merged data back to the
-        merged_data = pd.concat([historicalData, merged_data], ignore_index=True)
-
-        # Drop duplicate rows which contain no updated information
-        merged_data["is_duplicate"] = merged_data.duplicated(
-            subset="Firm_id", keep=False
-        )
-        merged_data = merged_data[
-            (merged_data["is_duplicate"] & merged_data["Business Name"].notna())
-            | (~merged_data["is_duplicate"])
-        ]
-        merged_data.drop(columns=["is_duplicate"], inplace=True)
-
-        logging.info("Successfully merged the data with sos and dropped duplicate rows")
-    except KeyError as e:
-        logging.debug(
-            "Exception: KeyError {0} occurred when merging historicalData with secretary of state".format(
-                e
-            )
-        )
-        logging.debug("Length historical data: {0}".format(len(historicalData)))
-        logging.debug("Length new data: {0}".format(len(newData)))
-        return False
-
-    try:
-        add_sos_columns(merged_data)
+        historicalData = add_sos_columns(historicalData)
+        historicalData = historicalData.apply(update_sos_columns_one, axis=1)
         logging.info("Columns for SOS have been added - Success")
     except KeyError as e:
         logging.debug("Exception: KeyError {0} occurred when adding columns".format(e))
         return False
 
     # Select the desired columns
-    result_df = merged_data[
+    result_df = historicalData[
         [
-            "Firm_id",
+            "firm_id",
             "BusinessName",
             "BusinessNameCorrect",
             "BusinessNameUpdate",
             "BusinessNameFound",
+            "Phone",
+            "PhoneCorrect",
+            "PhoneUpdate",
+            "PhoneFound",
+            "Website",
+            "WebsiteCorrect",
+            "WebsiteUpdate",
+            "WebsiteFound",
+            "Email",
+            "EmailCorrect",
+            "EmailUpdate",
+            "EmailFound",
+            "City",
             "Address",
-            "BusinessAddressCorrect",
-            "BusinessAddressUpdate",
-            "BusinessAddressFound",
-            "Zip Code",
-            "BusinessZipCorrect",
-            "BusinessZipUpdate",
-            "BusinessZipFound"
+            "AddressCorrect",
+            "AddressUpdate",
+            "AddressFound",
+            "Zipcode",
+            "ZipCorrect",
+            "ZipUpdate",
+            "ZipFound"
             # Optional output columns
             # 'Business Filing Type', 'Filing Date', 'Status', 'Address 2', 'City', 'Region Code', 'Party Full Name',
             # 'Next Renewal Due Date'
         ]
     ]
 
-    logging.info(
-        "historicalData has been merged with Secretary Of State data Successfully"
-    )
     return result_df
