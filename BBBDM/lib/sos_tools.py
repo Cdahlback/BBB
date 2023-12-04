@@ -3,9 +3,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-
-from lib.data_processing import address_match_found, is_same_business
-from lib.Normalizing import standardizeName, normalize_name
+from BBBDM.lib.data_processing import *
+from BBBDM.lib.Normalizing import *
 
 
 def update_columns_sos_two(row: pd.Series) -> pd.Series:
@@ -17,27 +16,22 @@ def update_columns_sos_two(row: pd.Series) -> pd.Series:
 
     Returns: updated row in the dataframe
     """
-    if row["BusinessNameCorrect"] and row["AddressCorrect"]:
+    if not row["BusinessNameCorrect"]:
         row["BusinessNameUpdate"].append(row["Business Name"])
-        row["BusinessNameFound"] = (
-            "SOS" if not pd.isna(row["BusinessNameUpdate"]) else np.nan
-        )
+        row["BusinessNameFound"] = "SOS" if not row["BusinessNameCorrect"] else np.nan
 
+    if not row["AddressCorrect"]:
         # Add address columns
-        row["AddressUpdate"].append(f"{row['Address 1']}, {row['City']}, {row['Zipcode'][0]}")
-        row["AddressFound"] = (
-            "SOS" if not pd.isna(row["AddressUpdate"]) else np.nan
-        )
-
+        row["AddressUpdate"].append(f"{row['Address New']}")
+        row["AddressFound"] = "SOS" if not row["AddressCorrect"] else np.nan
+    if not row["ZipCorrect"]:
         # Add zip columns
         row["ZipUpdate"].append(row["Zip Code New"])
-        row["ZipFound"] = (
-            "SOS" if not pd.isna(row["ZipUpdate"]) else np.nan
-        )
+        row["ZipFound"] = "SOS" if not row["ZipCorrect"] else np.nan
 
-        logging.info(
-            f'Updated row with business name: {row["BusinessNameUpdate"]} from truth source: {row["BusinessNameFound"]}'
-        )
+    logging.info(
+        f'Updated row with business name: {row["BusinessNameUpdate"]} from truth source: {row["BusinessNameFound"]}'
+    )
 
     return row
 
@@ -57,18 +51,34 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
     Returns:
         pd.DataFrame: A modified DataFrame with added columns and null values, ready for further processing.
     """
+    business_matches = []
+    address_matches = []
+
     for name in row["BusinessName"]:
-        if is_same_business(name, row["Business Name"], 80, "", "a", True):
-            row['BusinessNameCorrect'] = True
+        if not isinstance(row["Business Name"], str):
             break
+        if is_same_business(name, row["Business Name"], 80, "", "a", True):
+            business_matches.append(True)
+        else:
+            business_matches.append(False)
 
     # If address matches OR city matches, assume correct
     for address in row["Address"]:
-        if address_match_found(address, f'{row["Address 1"]}, {row["City"]}, {row["Zipcode"][0]}'):
-            row["AddressCorrect"] = True
+        if not isinstance(row["Address New"], str):
             break
+        if address_match_found_sos(address, row["Address New"]):
+            address_matches.append(True)
+        else:
+            address_matches.append(False)
 
-    row["ZipCorrect"] = (row["Zipcode"][0] == row["Zip Code New"])
+    row["BusinessNameCorrect"] = (
+        any(business_matches) if len(business_matches) > 0 else True
+    )
+    row["AddressCorrect"] = any(address_matches) if len(address_matches) > 0 else True
+    if isinstance(row["Zip Code New"], str):
+        row["ZipCorrect"] = row["Zip Code New"] in row["Zipcode"]
+    else:
+        row["Address New"] = True
 
     row = update_columns_sos_two(row)
     return row
@@ -76,22 +86,22 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
 
 def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     # Give null values for all columns, which we will fill out when needed
-    data["BusinessNameCorrect"] = False
+    data["BusinessNameCorrect"] = True
     data["BusinessNameUpdate"] = [[] for _ in range(len(data))]
     data["BusinessNameFound"] = np.nan
-    data["AddressCorrect"] = False
+    data["AddressCorrect"] = True
     data["AddressUpdate"] = [[] for _ in range(len(data))]
     data["AddressFound"] = np.nan
-    data["ZipCorrect"] = False
+    data["ZipCorrect"] = True
     data["ZipUpdate"] = [[] for _ in range(len(data))]
     data["ZipFound"] = np.nan
-    data["PhoneCorrect"] = False
+    data["PhoneCorrect"] = True
     data["PhoneUpdate"] = [[] for _ in range(len(data))]
     data["PhoneFound"] = np.nan
-    data["EmailCorrect"] = False
+    data["EmailCorrect"] = True
     data["EmailUpdate"] = [[] for _ in range(len(data))]
     data["EmailFound"] = np.nan
-    data["WebsiteCorrect"] = False
+    data["WebsiteCorrect"] = True
     data["WebsiteUpdate"] = [[] for _ in range(len(data))]
     data["WebsiteFound"] = np.nan
 
@@ -100,7 +110,7 @@ def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
 
 def add_update_columns(data: pd.DataFrame) -> pd.DataFrame:
     data["Business Name"] = np.nan
-    data["Address 1"] = np.nan
+    data["Address New"] = np.nan
     data["Zip Code New"] = np.nan
     data["City"] = np.nan
 
@@ -108,28 +118,33 @@ def add_update_columns(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def compare_dataframes_sos(
-        historicalData: pd.DataFrame, newData: pd.DataFrame
+    historicalData: pd.DataFrame, newData: pd.DataFrame
 ) -> pd.DataFrame:
     """
-        Compares old data to new, deleting duplicate rows, and adding the necessary columns
-         Parameters:
-            historicalData (pd.DataFrame): The historical data DataFrame.
-            newData (pd.DataFrame): The new data DataFrame containing Secretary of State information.
+    Compares old data to new, deleting duplicate rows, and adding the necessary columns
+     Parameters:
+        historicalData (pd.DataFrame): The historical data DataFrame.
+        newData (pd.DataFrame): The new data DataFrame containing Secretary of State information.
 
-        Returns: Dataframe containing updated information from SOS
-        """
+    Returns: Dataframe containing updated information from SOS
+    """
 
     if newData.empty:
-        raise ValueError("The SOS dataframe is empty, check file to ensure contents present")
+        raise ValueError(
+            "The SOS dataframe is empty, check file to ensure contents present"
+        )
 
-    historicalData.rename(columns={'Firm_Id': 'firm_id'}, inplace=True)
+    historicalData.rename(columns={"Firm_Id": "firm_id"}, inplace=True)
 
     columns_to_update = ["Business Name", "Address 1", "Zip Code New", "City"]
     historicalData = add_update_columns(historicalData)
 
     sos_names = list(newData["Business Name"])
     sos_names_normal = standardizeName(list(newData["Business Name"]), is_sos=True)
-    mapping = {normalized_value: original_value for original_value, normalized_value in zip(sos_names, sos_names_normal)}
+    mapping = {
+        normalized_value: original_value
+        for original_value, normalized_value in zip(sos_names, sos_names_normal)
+    }
 
     # Loop over each historical row
     for his_idx, his_row in historicalData.iterrows():
@@ -141,15 +156,21 @@ def compare_dataframes_sos(
             # Check if we have a match in sos_data
             if name in sos_names_normal:
                 # Find the row in sos_data
-                sos_update_row = newData[newData['Business Name'] == mapping[name]].head(1)
+                sos_update_row = newData[
+                    newData["Business Name"] == mapping[name]
+                ].head(1)
                 # Shape dataframe into row, since we know there is a 1-1 mapping
                 sos_update_row = sos_update_row.squeeze(axis=0)
 
                 # Now, update the columns in the historical dataframe, these will be used for comparing
-                historicalData.loc[his_idx, 'Business Name'] = sos_update_row["Business Name"]
-                historicalData.loc[his_idx, 'Address 1'] = sos_update_row["Address 1"]
-                historicalData.loc[his_idx, 'Zip Code New'] = sos_update_row["Zip Code"]
-                historicalData.loc[his_idx, 'City'] = sos_update_row["City"]
+                historicalData.loc[his_idx, "Business Name"] = sos_update_row[
+                    "Business Name"
+                ]
+                historicalData.loc[
+                    his_idx, "Address New"
+                ] = f"{sos_update_row['Address 1']}, {sos_update_row['City']}, {sos_update_row['Zip Code']}"
+                historicalData.loc[his_idx, "Zip Code New"] = sos_update_row["Zip Code"]
+                historicalData.loc[his_idx, "City"] = sos_update_row["City"]
 
                 break
 
