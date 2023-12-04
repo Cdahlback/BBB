@@ -141,16 +141,44 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
 
     """
     valid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "City", "Zipcode","Address"]
+        columns=[
+            "Firm_Id",
+            "BusinessName",
+            "Phone",
+            "Website",
+            "Email",
+            "City",
+            "Zipcode",
+            "Address",
+        ]
     )
     invalid_rows = pd.DataFrame(
-        columns=["Firm_Id", "BusinessName", "Phone","Website", "Email", "City", "Zipcode","Address"]
+        columns=[
+            "Firm_Id",
+            "BusinessName",
+            "Phone",
+            "Website",
+            "Email",
+            "City",
+            "Zipcode",
+            "Address",
+        ]
     )
 
     # Loop through each row in the dataframe. "idx" is the index of the row, and "row" is the data in the row
 
     for idx, row in df.iterrows():
-        row = row.drop(labels=["state_incorporated", "name_id", "phone_id", "url_id", "email_id", "address_1", "address_2"])
+        row = row.drop(
+            labels=[
+                "state_incorporated",
+                "name_id",
+                "phone_id",
+                "url_id",
+                "email_id",
+                "address_1",
+                "address_2",
+            ]
+        )
         valid = False
         # Check ifthe 'name' column in the current row has ANY values, other than np.nan
         for name in row["BusinessName"]:
@@ -164,7 +192,14 @@ def filter_dataframes(df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
         # I nitialize a counter to count the number of non-empty data types excluding 'name'
         counter = 0
 
-        for column in ["BusinessName", "Phone","Website", "Email", "Zipcode","Address"]:
+        for column in [
+            "BusinessName",
+            "Phone",
+            "Website",
+            "Email",
+            "Zipcode",
+            "Address",
+        ]:
             found = False
             # Check ifthe column in the current row has ANY values, other than np.nan
             for val in row[column]:
@@ -330,10 +365,10 @@ def get_valid_businesses_info(file_path: str) -> pd.DataFrame:
         df = pd.read_csv(file_path)
 
         # Ensure the "active" column is treated as a string
-        df['active'] = df['active'].astype(str)
+        df["active"] = df["active"].astype(str)
 
         # Standardize 'active' values regardless of capitalization
-        df['active'] = df['active'].str.strip().str.upper()
+        df["active"] = df["active"].str.strip().str.upper()
 
         # Filter the DataFrame to only keep rows where 'active' is 'TRUE' (case-insensitive)
         active_businesses_df = df[df['active'] == 'TRUE']
