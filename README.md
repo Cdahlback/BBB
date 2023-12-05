@@ -20,7 +20,18 @@ Better Business Bureau Data Management (BBBDM) is a tool designed by the Data De
 * Tests can be run by running pytest –v in the BBBDM/test folder
 * Run the main file located in BBBDM/main.py to start
 
-### What to do when an API token runs out?
+### What to do when an API token (Google, Yellow Pages) expires?
+##### Google Places API token
+* Open the below link and follow the steps
+  * https://developers.google.com/maps/documentation/places/web-service/get-api-key
+  * Ensure you do this with the correct account which has a billing account set up
+  * In the .env file, update the GOOGLE_PLACES_TOKEN with the new value
+ 
+##### Yellow Pages API token
+* Open th below link and click "add token"
+  * https://console.apify.com/account/integrations
+  * This can be done with any account.
+  * In the .env file, update the YELLOW_PAGES_TOKEn with the new value
 
 
 ### Useful commands 
