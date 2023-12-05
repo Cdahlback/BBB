@@ -252,7 +252,7 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     if not success:
         logging.info("Could not find any information using Google Places API")
         return dataframe
-
+    dataframe = dataframe.apply(lambda x: [i for n, i in enumerate(x) if i not in x[:n]] if isinstance(x, list) else x)
     # Checks to see if the BusinessNames match, if not update dataframe['BusinessName_Update'] to the new value, always update dataframe['BusinessName_Found'] to Google
     new_names = []
     update_names = False

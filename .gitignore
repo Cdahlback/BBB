@@ -9,3 +9,5 @@ bbbdm/test/sample_business.csv
 .env
 functions.log
 bbbdm/data/sos_data.csv
+bbbdm/data/invalid_data.csv
+bbbdm/data/valid_data.csv
