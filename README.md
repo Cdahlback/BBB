@@ -20,9 +20,25 @@ Better Business Bureau Data Management (BBBDM) is a tool designed by the Data De
 * Tests can be run by running pytest –v in the BBBDM/test folder
 * Run the main file located in BBBDM/main.py to start
 
+### What to do when an API token runs out?
+
+
+### Useful commands for 
+
+* pdoc BBBDM:
+  * Must be located in BBB folder
+  * (What it does)
+* coverage html
+  * Must be located in BBBDM folder
+  * (What it does)
+* pre-commit run --all-files
+  * Must be located in BBBDM folder
+  * (What it does)
+* pytest
+  * Must be in the BBBDM folder
+  * (What it does)
 
 ### Who do I talk to? ###
-
 
 * BBBDM – Data Defenders
 * Collin Dahlback – collin.dahlback@mnsu.edu
