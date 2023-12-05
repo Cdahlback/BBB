@@ -4,10 +4,9 @@ import time
 
 import numpy as np
 import pandas as pd
-
-from pandarallel import pandarallel
 from apify_client import ApifyClient
 from lib.data_processing import is_same_business
+from pandarallel import pandarallel
 
 pandarallel.initialize()
 
@@ -28,6 +27,7 @@ scraped_yellow_pages_data = pd.DataFrame(
 class AuthenticationError(Exception):
     def __init__(self, message):
         super().__init__(message)
+
 
 def add_yp_columns(data):
     data["BusinessNameYP"] = np.nan
@@ -55,33 +55,40 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     # Iterate through each row of the data.
     for index, row in data.iterrows():
         # Check all columns in the row, to see if we need to check with yp
-        if ((row['BusinessNameCorrect'] == True) & (row['PhoneCorrect'] == True) & (row['WebsiteCorrect'] == True) &
-            (row['EmailCorrect']) & (row['ZipCorrect']) & (row['AddressCorrect'])):
+        if (
+            (row["BusinessNameCorrect"] == False)
+            & (row["PhoneCorrect"] == False)
+            & (row["WebsiteCorrect"] == False)
+            & (row["EmailCorrect"] == False)
+            & (row["ZipCorrect"] == False)
+            & (row["AddressCorrect"] == False)
+        ):
             continue
         else:
             # If we haven't found a business name to update with
-            if not row['BusinessNameCorrect']:
-                # Check if it's the same business
+            if not isinstance(row["BusinessNameFound"], str):
+
+                # Check if we have any new values from YP
                 if is_same_business(row["BusinessNameYP"], row["BusinessName"][0]):
-                    row['BusinessNameUpdate'].append(row["BusinessNameYP"])
+                    row["BusinessNameUpdate"].append(row["BusinessNameYP"])
                     row["BusinessNameFound"] = "YP"
-                    row["BusinessNameCorrect"] = True
+                    row["BusinessNameCorrect"] = False
 
-            # Update the rest of the missing information
-            if not row["PhoneCorrect"] and row["BusinessNameCorrect"]:
-                row["PhoneUpdate"].append(row["PhoneYP"])
-                row["PhoneFound"] = "YP" if pd.notna(row["PhoneYP"]) else np.nan
-                row["PhoneCorrect"] = True if pd.notna(row["PhoneYP"]) else False
-            if not row["WebsiteCorrect"] and row["BusinessNameCorrect"]:
-                row["WebsiteUpdate"].append(row["WebsiteYP"])
-                row["WebsiteFound"] = "YP" if pd.notna(row["WebsiteYP"]) else np.nan
-                row["WebsiteCorrect"] = True if pd.notna(row["WebsiteYP"]) else False
-            if not row["AddressCorrect"] and row["BusinessNameCorrect"]:
-                row["AddressUpdate"].append(row["AddressYP"])
-                row["AddressFound"] = "YP" if pd.notna(row["AddressYP"]) else np.nan
-                row["AddressCorrect"] = True if pd.notna(row["AddressYP"]) else False
+                # Update the rest of the missing information
+                if row["PhoneCorrect"] and row["BusinessNameCorrect"]:
+                    row["PhoneUpdate"].append(row["PhoneYP"])
+                    row["PhoneFound"] = "YP" if pd.notna(row["PhoneYP"]) else np.nan
+                    row["PhoneCorrect"] = False if pd.notna(row["PhoneYP"]) else True
+                if row["WebsiteCorrect"] and row["BusinessNameCorrect"]:
+                    row["WebsiteUpdate"].append(row["WebsiteYP"])
+                    row["WebsiteFound"] = "YP" if pd.notna(row["WebsiteYP"]) else np.nan
+                    row["WebsiteCorrect"] = False if pd.notna(row["WebsiteYP"]) else True
+                if row["AddressCorrect"] and row["BusinessNameCorrect"]:
+                    row["AddressUpdate"].append(row["AddressYP"])
+                    row["AddressFound"] = "YP" if pd.notna(row["AddressYP"]) else np.nan
+                    row["AddressCorrect"] = False if pd.notna(row["AddressYP"]) else True
 
-            data.loc[index] = row
+                data.loc[index] = row
 
     return data
 
@@ -189,5 +196,5 @@ def login_yellow_pages():
         logging.info("ApifyClient API token success")
         return client
     except Exception as e:
-        logging.debug(f"ApifyClient API token expired, {e}")
+        logging.error(f"ApifyClient API token expired, {e}")
         return False
