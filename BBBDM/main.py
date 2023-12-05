@@ -42,22 +42,22 @@ def main():
     # Extract the data
     mn_business = get_valid_businesses_info(
         (str(Path(__file__).parent / "Data/mn_business.csv"))
-    ).head(100)
+    ).head(10)
     mn_business_address = extract_data(
         (str(Path(__file__).parent / "Data/mn_business_address.csv"))
-    ).head(100)
+    ).head(10)
     mn_business_email = extract_data(
         (str(Path(__file__).parent / "Data/mn_business_email.csv"))
-    ).head(100)
+    ).head(10)
     mn_business_name = extract_data(
         (str(Path(__file__).parent / "Data/mn_business_name.csv"))
-    ).head(100)
+    ).head(10)
     mn_business_phone = extract_data(
         (str(Path(__file__).parent / "Data/mn_business_phone.csv"))
-    ).head(100)
+    ).head(10)
     mn_business_url = extract_data(
         (str(Path(__file__).parent / "Data/mn_business_url.csv"))
-    ).head(100)
+    ).head(10)
 
     # Merge the data
     merged_data = join_dataframe_firmid(

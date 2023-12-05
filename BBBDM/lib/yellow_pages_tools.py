@@ -126,7 +126,7 @@ def call_scrape_yellow_page_data(row: pd.Series) -> None:
         row["PhoneYP"] = result["phone"]
         row["WebsiteYP"] = result["url"]
     except Exception as e:
-        print(str(e))
+        logging.debug(str(e))
 
     return row
 

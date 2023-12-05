@@ -3,8 +3,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from BBBDM.lib.data_processing import *
-from BBBDM.lib.Normalizing import *
+from lib.data_processing import *
+from lib.Normalizing import *
 
 
 def update_columns_sos_two(row: pd.Series) -> pd.Series:

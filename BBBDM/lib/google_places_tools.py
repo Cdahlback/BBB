@@ -252,7 +252,9 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     if not success:
         logging.info("Could not find any information using Google Places API")
         return dataframe
+    #Deduplicate the normal and then the nans
     dataframe = dataframe.apply(lambda x: [i for n, i in enumerate(x) if i not in x[:n]] if isinstance(x, list) else x)
+    dataframe = dataframe.apply(lambda x: [x[i] for i in range(len(x)) if not pd.isna(x[i]) or (pd.isna(x[i]) and x[:i].count(np.nan) < 1)] if isinstance(x, list) else x)
     # Checks to see if the BusinessNames match, if not update dataframe['BusinessName_Update'] to the new value, always update dataframe['BusinessName_Found'] to Google
     new_names = []
     update_names = False
@@ -273,11 +275,6 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
                         dataframe["BusinessNameCorrect"] = True
                         update_names = True
                         new_names.append(newbname)
-                    else:
-                        # If it doesn't match then we update the dataframe
-                        update_names = True
-                        new_names.append(bname)
-                        dataframe["BusinessNameFound"] = "Google"
 
     if update_names:
         dataframe["BusinessNameUpdate"] = new_names
@@ -285,18 +282,20 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
     # Repat this process for address
     new_addresses = []
     update_addresses = False
-    if not dataframe["AddressCorrect"]:
-        for baddress in dataframe["Address"]:
-            for newbaddress in info["Address"]:
-                if (baddress == newbaddress):
+    for baddress in dataframe["Address"]:
+        for newbaddress in info["Address"]:
+            if (baddress == newbaddress):
+                dataframe["AddressFound"] = "Google"
+                dataframe["AddressCorrect"] = True
+                update_addresses = True
+                new_addresses.append(newbaddress)
+            else:
+                if is_same_business(baddress, newbaddress):
                     dataframe["AddressFound"] = "Google"
                     dataframe["AddressCorrect"] = True
                     update_addresses = True
-                    new_addresses.append(newbaddress)
-                else:
-                    update_addresses = True
                     new_addresses.append(baddress)
-                    dataframe["AddressFound"] = "Google"
+
 
     if update_addresses:
         dataframe["AddressUpdate"] = new_addresses
@@ -311,10 +310,7 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
                 dataframe["PhoneCorrect"] = True
                 update_phones = True
                 new_phones.append(phone)
-            else:
-                update_phones = True
-                new_phones.append(phone)
-                dataframe["PhoneFound"] = "Google"
+
 
     if update_phones:
         dataframe["PhoneUpdate"] = new_phones
@@ -328,11 +324,6 @@ def google_validation(dataframe: pd.DataFrame) -> pd.DataFrame:
                 dataframe["WebsiteCorrect"] = True
                 dataframe["WebsiteFound"] = "Google"
                 new_websites.append(website)
-                update_websites = True
-            else:
-                update_websites = True
-                new_websites.append(website)
-                dataframe["WebsiteFound"] = "Google"
                 update_websites = True
 
     if update_websites:
