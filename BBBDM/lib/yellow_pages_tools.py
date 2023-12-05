@@ -56,12 +56,12 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
     for index, row in data.iterrows():
         # Check all columns in the row, to see if we need to check with yp
         if (
-            (row["BusinessNameCorrect"] == False)
-            & (row["PhoneCorrect"] == False)
-            & (row["WebsiteCorrect"] == False)
-            & (row["EmailCorrect"] == False)
-            & (row["ZipCorrect"] == False)
-            & (row["AddressCorrect"] == False)
+            (row["BusinessNameCorrect"] == True)
+            & (row["PhoneCorrect"] == True)
+            & (row["WebsiteCorrect"] == True)
+            & (row["EmailCorrect"] == True)
+            & (row["ZipCorrect"] == True)
+            & (row["AddressCorrect"] == True)
         ):
             continue
         else:
@@ -72,21 +72,21 @@ def update_dataframe_with_yellow_pages_data(data) -> pd.DataFrame:
                 if is_same_business(row["BusinessNameYP"], row["BusinessName"][0]):
                     row["BusinessNameUpdate"].append(row["BusinessNameYP"])
                     row["BusinessNameFound"] = "YP"
-                    row["BusinessNameCorrect"] = False
+                    row["BusinessNameCorrect"] = True
 
                 # Update the rest of the missing information
                 if row["PhoneCorrect"] and row["BusinessNameCorrect"]:
                     row["PhoneUpdate"].append(row["PhoneYP"])
                     row["PhoneFound"] = "YP" if pd.notna(row["PhoneYP"]) else np.nan
-                    row["PhoneCorrect"] = False if pd.notna(row["PhoneYP"]) else True
+                    row["PhoneCorrect"] = True if pd.notna(row["PhoneYP"]) else False
                 if row["WebsiteCorrect"] and row["BusinessNameCorrect"]:
                     row["WebsiteUpdate"].append(row["WebsiteYP"])
                     row["WebsiteFound"] = "YP" if pd.notna(row["WebsiteYP"]) else np.nan
-                    row["WebsiteCorrect"] = False if pd.notna(row["WebsiteYP"]) else True
+                    row["WebsiteCorrect"] = True if pd.notna(row["WebsiteYP"]) else False
                 if row["AddressCorrect"] and row["BusinessNameCorrect"]:
                     row["AddressUpdate"].append(row["AddressYP"])
                     row["AddressFound"] = "YP" if pd.notna(row["AddressYP"]) else np.nan
-                    row["AddressCorrect"] = False if pd.notna(row["AddressYP"]) else True
+                    row["AddressCorrect"] = True if pd.notna(row["AddressYP"]) else False
 
                 data.loc[index] = row
 

@@ -3,8 +3,8 @@ import logging
 import numpy as np
 import pandas as pd
 
-from lib.data_processing import *
-from lib.Normalizing import *
+from BBBDM.lib.data_processing import *
+from BBBDM.lib.Normalizing import *
 
 
 def update_columns_sos_two(row: pd.Series) -> pd.Series:
@@ -16,18 +16,16 @@ def update_columns_sos_two(row: pd.Series) -> pd.Series:
 
     Returns: updated row in the dataframe
     """
-    if not row["BusinessNameCorrect"]:
+    if row["BusinessNameCorrect"] and row["AddressCorrect"]:
         row["BusinessNameUpdate"].append(row["Business Name"])
-        row["BusinessNameFound"] = "SOS" if not row["BusinessNameCorrect"] else np.nan
-
-    if not row["AddressCorrect"]:
-        # Add address columns
+        row["BusinessNameFound"] = "SOS" if row["BusinessNameCorrect"] else np.nan
         row["AddressUpdate"].append(f"{row['Address New']}")
-        row["AddressFound"] = "SOS" if not row["AddressCorrect"] else np.nan
-    if not row["ZipCorrect"]:
-        # Add zip columns
+        row["AddressFound"] = "SOS" if row["AddressCorrect"] else np.nan
         row["ZipUpdate"].append(row["Zip Code New"])
-        row["ZipFound"] = "SOS" if not row["ZipCorrect"] else np.nan
+        row["ZipFound"] = "SOS" if row["ZipCorrect"] else np.nan
+    else:
+        row["BusinessNameCorrect"] = False
+        row["AddressCorrect"] = False
 
     logging.info(
         f'Updated row with business name: {row["BusinessNameUpdate"]} from truth source: {row["BusinessNameFound"]}'
@@ -51,34 +49,28 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
     Returns:
         pd.DataFrame: A modified DataFrame with added columns and null values, ready for further processing.
     """
-    business_matches = []
-    address_matches = []
+    business_matches = False
+    address_matches = False
 
     for name in row["BusinessName"]:
         if not isinstance(row["Business Name"], str):
             break
         if is_same_business(name, row["Business Name"], 80, "", "a", True):
-            business_matches.append(True)
-        else:
-            business_matches.append(False)
+            business_matches = True
 
     # If address matches OR city matches, assume correct
     for address in row["Address"]:
         if not isinstance(row["Address New"], str):
             break
-        if address_match_found_sos(address, row["Address New"]):
-            address_matches.append(True)
-        else:
-            address_matches.append(False)
+        if address_match_found(address, row["Address New"]):
+            address_matches = True
 
-    row["BusinessNameCorrect"] = (
-        any(business_matches) if len(business_matches) > 0 else True
-    )
-    row["AddressCorrect"] = any(address_matches) if len(address_matches) > 0 else True
+    row["BusinessNameCorrect"] = business_matches
+    row["AddressCorrect"] = address_matches
     if isinstance(row["Zip Code New"], str):
         row["ZipCorrect"] = row["Zip Code New"] in row["Zipcode"]
     else:
-        row["Address New"] = True
+        row["ZipCorrect"] = False
 
     row = update_columns_sos_two(row)
     return row
@@ -86,22 +78,22 @@ def update_sos_columns_one(row: pd.Series) -> pd.Series:
 
 def add_sos_columns(data: pd.DataFrame) -> pd.DataFrame:
     # Give null values for all columns, which we will fill out when needed
-    data["BusinessNameCorrect"] = True
+    data["BusinessNameCorrect"] = False
     data["BusinessNameUpdate"] = [[] for _ in range(len(data))]
     data["BusinessNameFound"] = np.nan
-    data["AddressCorrect"] = True
+    data["AddressCorrect"] = False
     data["AddressUpdate"] = [[] for _ in range(len(data))]
     data["AddressFound"] = np.nan
-    data["ZipCorrect"] = True
+    data["ZipCorrect"] = False
     data["ZipUpdate"] = [[] for _ in range(len(data))]
     data["ZipFound"] = np.nan
-    data["PhoneCorrect"] = True
+    data["PhoneCorrect"] = False
     data["PhoneUpdate"] = [[] for _ in range(len(data))]
     data["PhoneFound"] = np.nan
-    data["EmailCorrect"] = True
+    data["EmailCorrect"] = False
     data["EmailUpdate"] = [[] for _ in range(len(data))]
     data["EmailFound"] = np.nan
-    data["WebsiteCorrect"] = True
+    data["WebsiteCorrect"] = False
     data["WebsiteUpdate"] = [[] for _ in range(len(data))]
     data["WebsiteFound"] = np.nan
 
