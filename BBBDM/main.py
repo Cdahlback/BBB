@@ -26,13 +26,13 @@ from lib.google_places_tools import google_validation
 from lib.Normalizing import normalize_dataframe
 from lib.sos_tools import compare_dataframes_sos
 from lib.yellow_pages_tools import update_dataframe_with_yellow_pages_data
-
+from pandarallel import pandarallel
 pd.options.mode.chained_assignment = None  # Disable the warning
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 # Loads the .env file
 ENV_PATH = str(Path(__file__).parent.parent / ".env")
 load_dotenv(dotenv_path=ENV_PATH)
-
+pandarallel.initialize(progress_bar=True)
 
 def main():
     """
@@ -69,7 +69,7 @@ def main():
     valid_data = compare_dataframes_sos(valid_data, SOS_data)
 
     # Compare to Google API
-    valid_data = valid_data.apply(google_validation, axis=1)
+    valid_data = valid_data.parallel_apply(google_validation, axis=1)
     # Compare to YP
     valid_data = update_dataframe_with_yellow_pages_data(valid_data)
     # Merge with bad data
