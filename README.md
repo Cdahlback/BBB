@@ -23,7 +23,7 @@ Better Business Bureau Data Management (BBBDM) is a tool designed by the Data De
 ### What to do when an API token runs out?
 
 
-### Useful commands for 
+### Useful commands 
 
 * pdoc BBBDM:
   * Must be located in BBB folder
