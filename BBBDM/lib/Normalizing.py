@@ -4,10 +4,12 @@ import re
 import pandas as pd
 from email_validator import EmailNotValidError, validate_email
 from i18naddress import normalize_address
+from pandarallel import pandarallel
 
 # Setup logging to capture detailed logs about warnings, errors, and other critical information.
 logging.basicConfig(filename="functions.log", level=logging.DEBUG)
 
+pandarallel.initialize()
 
 def normalize_email(emails):
     """
@@ -82,12 +84,12 @@ def normalize_dataframe(df):
     Returns:
     - pd.DataFrame: Returns the DataFrame after normalization.
     """
-    df["Email"] = df["Email"].apply(normalize_email)
-    df["Phone"] = df["Phone"].apply(normalize_us_phone_number)
-    df["Zipcode"] = df["Zipcode"].apply(normalize_zipcode)
-    df["BusinessName"] = df["BusinessName"].apply(standardizeName)
-    df["Website"] = df["Website"].apply(normalize_url)
-    df["Address"] = df["Address"].apply(normalize_address_i18n)
+    df["Email"] = df["Email"].parallel_apply(normalize_email)
+    df["Phone"] = df["Phone"].parallel_apply(normalize_us_phone_number)
+    df["Zipcode"] = df["Zipcode"].parallel_apply(normalize_zipcode)
+    df["BusinessName"] = df["BusinessName"].parallel_apply(standardizeName)
+    df["Website"] = df["Website"].parallel_apply(normalize_url)
+    df["Address"] = df["Address"].parallel_apply(normalize_address_i18n)
     return df
 
 
